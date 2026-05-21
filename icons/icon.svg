@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E05516"/>
+      <stop offset="100%" stop-color="#8A2E08"/>
+    </linearGradient>
+  </defs>
+  <!-- Fundo arredondado -->
+  <rect width="512" height="512" rx="96" fill="#0A0A0A"/>
+  <!-- Gradiente de brasa -->
+  <rect x="32" y="32" width="448" height="448" rx="72" fill="url(#bg)"/>
+  <!-- S centralizado -->
+  <text
+    x="256"
+    y="370"
+    font-family="Arial Black, Arial, sans-serif"
+    font-size="310"
+    font-weight="900"
+    text-anchor="middle"
+    fill="white"
+    letter-spacing="-10"
+  >S</text>
+</svg>

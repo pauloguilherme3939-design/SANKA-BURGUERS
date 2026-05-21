@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin-clube.html
+Disallow: /api/
+Disallow: /data/
+
+# TODO: SANKA — Atualizar domínio real antes de publicar
+Sitemap: https://sankaburgers.com.br/sitemap.xml

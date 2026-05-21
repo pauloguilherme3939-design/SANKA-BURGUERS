@@ -1,0 +1,35 @@
+{
+  "name": "Sanka Burgers",
+  "short_name": "Sanka",
+  "description": "Hambúrgueres artesanais em Rio Claro/SP. Blend exclusivo, moído no dia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#C2410C",
+  "orientation": "portrait-primary",
+  "lang": "pt-BR",
+  "categories": ["food"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cardápio",
+      "short_name": "Cardápio",
+      "description": "Ver o cardápio completo",
+      "url": "/cardapio.html",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "any" }]
+    }
+  ]
+}

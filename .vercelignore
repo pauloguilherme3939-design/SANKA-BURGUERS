@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env*
+data/
+server.js
+AUDITORIA.md
+screenshots/
+package-lock.json
