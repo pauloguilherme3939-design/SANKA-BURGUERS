@@ -127,6 +127,7 @@ export const SANKA_BURGERS = [
     price: 27.9,
     tag: null,
     tags: "burger,sausage",
+    src: "/assets/burgers/sb-012.png",
   },
   {
     name: "X Azeitonado",
