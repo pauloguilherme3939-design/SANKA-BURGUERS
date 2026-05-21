@@ -147,6 +147,7 @@ export const SANKA_BURGERS = [
     price: 28.9,
     tag: "NOVO",
     tags: "broccoli,burger",
+    src: "/assets/burgers/sb-014.png",
   },
   {
     name: "X Panceta",
