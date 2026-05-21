@@ -1,9 +1,10 @@
 // nossa-carne-app.jsx — Sanka Burgers · Página diferencial da carne
 // Tom: direto, orgulhoso, quase provocador. Sem clichês.
-// Animações: Framer Motion v10 (CDN global: window.Motion)
+
+import { FoodPlaceholder } from './placeholders.jsx'
 
 const { useState, useEffect } = React;
-const { motion } = Motion;
+const { motion } = Motion; // Motion = Framer Motion CDN global
 
 /* ── Ease e helpers ────────────────────────────────────────── */
 const EASE = [0.16, 1, 0.3, 1];

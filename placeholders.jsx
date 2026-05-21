@@ -63,20 +63,23 @@ function moodSvg(m, seed) {
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
 
-function FoodPlaceholder({ label, sub, mood, tags, prompt, seed }) {
+export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src }) {
   const idx = typeof mood === "number" ? mood % FOOD_MOODS.length : moodIndex((label || "") + (sub || ""));
   const m = FOOD_MOODS[idx];
   const moodSeed = ((label || "") + (sub || "") + idx).split("").reduce((a, c) => a + c.charCodeAt(0), 7);
   const url = moodSvg(m, moodSeed);
 
   const [loaded, setLoaded] = React.useState(false);
+  const [realFailed, setRealFailed] = React.useState(false);
+
   const imgSeed = seed != null ? seed : moodSeed;
-  // Use Loremflickr — fast Flickr CC image CDN. `tags` is a comma-list of tags;
-  // for back-compat we also accept a `prompt` string and just pass it through.
   const tagPath = (tags || prompt || "").trim();
-  const imgUrl = tagPath
-    ? `https://loremflickr.com/640/512/${encodeURIComponent(tagPath)}?lock=${imgSeed}`
-    : null;
+  // Usa imagem real se disponível; cai para loremflickr só se não houver src
+  const imgUrl = src && !realFailed
+    ? src
+    : tagPath
+      ? `https://loremflickr.com/640/512/${encodeURIComponent(tagPath)}?lock=${imgSeed}`
+      : null;
 
   return (
     <div className="ph">
@@ -95,7 +98,13 @@ function FoodPlaceholder({ label, sub, mood, tags, prompt, seed }) {
           alt={label || "Foto"}
           loading="lazy"
           onLoad={() => setLoaded(true)}
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
+          onError={(e) => {
+            if (src && !realFailed) {
+              setRealFailed(true);
+            } else {
+              e.currentTarget.style.display = "none";
+            }
+          }}
         />
       )}
       <div className="ph-grain" />
@@ -112,7 +121,7 @@ function FoodPlaceholder({ label, sub, mood, tags, prompt, seed }) {
   );
 }
 
-function FeatureIcon({ name }) {
+export function FeatureIcon({ name }) {
   const stroke = "var(--amber)";
   const sw = 1.5;
   const common = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke, strokeWidth: sw, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -131,4 +140,3 @@ function FeatureIcon({ name }) {
   return null;
 }
 
-Object.assign(window, { FoodPlaceholder, FeatureIcon });

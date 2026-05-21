@@ -1,5 +1,7 @@
 // checkout-modal.jsx — Sanka Burgers · Formulário de fechamento do pedido
-// Monta mensagem formatada e abre wa.me — sem cadastro, sem login.
+
+import { SANKA_CONFIG } from './lib/config.js'
+import { useCartContext } from './cart.jsx'
 
 const { useState, useEffect } = React;
 
@@ -393,4 +395,4 @@ function CheckoutModal() {
   );
 }
 
-Object.assign(window, { CheckoutModal });
+export { CheckoutModal };

@@ -1,10 +1,12 @@
 // clube-modal.jsx — Clube Sanka: banner + modal de cadastro
 // Cria seu próprio React root (#clube-root) — não interfere com o #root de cada página.
 
+import { SANKA_CONFIG } from './lib/config.js'
+
 const { useState, useEffect, useRef } = React;
 
 /* ── Config ──────────────────────────────────────────────────── */
-const CLUBE_WA     = (window.SANKA_CONFIG && window.SANKA_CONFIG.whatsapp) || '5519999999999';
+const CLUBE_WA     = SANKA_CONFIG.whatsapp;
 const LS_JOINED    = 'sanka_clube_joined';
 const LS_DISMISSED = 'sanka_clube_dismissed';
 const DISMISS_TTL  = 7 * 24 * 60 * 60 * 1000; // 7 dias

@@ -1,6 +1,6 @@
 // Dados — Sanka Burguers
 
-const SANKA_CATS = [
+export const SANKA_CATS = [
   { id: "classicos", label: "Clássicos" },
   { id: "queijos", label: "Queijos & Mel" },
   { id: "carnes", label: "Carnes Especiais" },
@@ -8,7 +8,7 @@ const SANKA_CATS = [
   { id: "vegetal", label: "Vegetais" },
 ];
 
-const SANKA_BURGERS = [
+export const SANKA_BURGERS = [
   {
     name: "X Misto",
     cat: "classicos",
@@ -17,6 +17,7 @@ const SANKA_BURGERS = [
     price: 18.9,
     tag: null,
     tags: "burger,cheese",
+    src: "/assets/burgers/sb-001.png",
   },
   {
     name: "Hot Dog",
@@ -26,6 +27,7 @@ const SANKA_BURGERS = [
     price: 16.5,
     tag: null,
     tags: "hotdog,sausage",
+    src: "/assets/burgers/sb-002.png",
   },
   {
     name: "X Americano",
@@ -35,6 +37,7 @@ const SANKA_BURGERS = [
     price: 24.9,
     tag: "FAVORITO",
     tags: "cheeseburger,egg",
+    src: "/assets/burgers/sb-003.png",
   },
   {
     name: "X Provolone ao Mel",
@@ -44,6 +47,7 @@ const SANKA_BURGERS = [
     price: 28.9,
     tag: "ASSINATURA",
     tags: "burger,honey",
+    src: "/assets/burgers/sb-004.png",
   },
   {
     name: "X Acebolado",
@@ -53,6 +57,7 @@ const SANKA_BURGERS = [
     price: 26.9,
     tag: null,
     tags: "burger,onion",
+    src: "/assets/burgers/sb-005.png",
   },
   {
     name: "X Provolone",
@@ -62,6 +67,7 @@ const SANKA_BURGERS = [
     price: 27.9,
     tag: null,
     tags: "burger,provolone",
+    src: "/assets/burgers/sb-006.png",
   },
   {
     name: "X Biquinho",
@@ -71,6 +77,7 @@ const SANKA_BURGERS = [
     price: 29.9,
     tag: null,
     tags: "burger,pepper",
+    src: "/assets/burgers/sb-007.png",
   },
   {
     name: "X Egg",
@@ -80,6 +87,7 @@ const SANKA_BURGERS = [
     price: 25.9,
     tag: null,
     tags: "burger,egg",
+    src: "/assets/burgers/sb-008.png",
   },
   {
     name: "X Hamburgão",
@@ -89,6 +97,7 @@ const SANKA_BURGERS = [
     price: 39.9,
     tag: "TOP 3",
     tags: "burger,double",
+    src: "/assets/burgers/sb-009.png",
   },
   {
     name: "X Frango",
@@ -98,6 +107,7 @@ const SANKA_BURGERS = [
     price: 26.9,
     tag: null,
     tags: "chicken,burger",
+    src: "/assets/burgers/sb-010.png",
   },
   {
     name: "X Frango Catupiry",
@@ -107,6 +117,7 @@ const SANKA_BURGERS = [
     price: 28.9,
     tag: null,
     tags: "chicken,burger,cheese",
+    src: "/assets/burgers/sb-011.png",
   },
   {
     name: "X Calabresa",
@@ -125,6 +136,7 @@ const SANKA_BURGERS = [
     price: 27.9,
     tag: null,
     tags: "burger,olive",
+    src: "/assets/burgers/sb-013.png",
   },
   {
     name: "X Brócolis Catupiry",
@@ -143,6 +155,7 @@ const SANKA_BURGERS = [
     price: 34.9,
     tag: "ASSINATURA",
     tags: "burger,pancetta",
+    src: "/assets/burgers/sb-015.png",
   },
   {
     name: "X Bacon",
@@ -152,6 +165,7 @@ const SANKA_BURGERS = [
     price: 31.9,
     tag: "FAVORITO",
     tags: "burger,bacon",
+    src: "/assets/burgers/sb-016.png",
   },
   {
     name: "X Bacon Azeitonado",
@@ -161,10 +175,11 @@ const SANKA_BURGERS = [
     price: 33.9,
     tag: null,
     tags: "burger,bacon,olive",
+    src: "/assets/burgers/sb-017.png",
   },
 ];
 
-const SANKA_EXTRAS = [
+export const SANKA_EXTRAS = [
   { name: "Catupiry", price: 4.0, ico: "◐" },
   { name: "Cheddar",  price: 4.0, ico: "❒" },
   { name: "Ovo",      price: 3.0, ico: "◯" },
@@ -188,7 +203,7 @@ const SANKA_EXTRAS = [
   { name: "Azeitona Preta", price: 3.0, ico: "●" },
 ];
 
-const SANKA_DRINKS = [
+export const SANKA_DRINKS = [
   {
     name: "Suco de Laranja Natural",
     desc: "Espremido na hora. Sem açúcar, sem água, sem desculpa.",
@@ -296,7 +311,7 @@ const SANKA_DRINKS = [
   },
 ];
 
-const SANKA_FEATURES = [
+export const SANKA_FEATURES = [
   { num: "01", title: "Ingredientes Selecionados", desc: "Hortifrúti diário, queijos da serra mineira, carne fresca moída na casa. Sem congelado, sem atalho.", icon: "leaf" },
   { num: "02", title: "Hambúrguer Artesanal", desc: "Blend exclusivo de acém, peito e fraldinha. Moído duas vezes, prensado leve, ponto suculento.", icon: "flame" },
   { num: "03", title: "Entrega Rápida", desc: "Saímos da chapa direto pra moto. Raio de 6km coberto em até 35 minutos ou o próximo é por nossa conta.", icon: "rocket" },
@@ -305,14 +320,14 @@ const SANKA_FEATURES = [
   { num: "06", title: "Atendimento Premium", desc: "Pedido confirmado em segundos, status em tempo real, e atendente humano quando você precisa.", icon: "heart" },
 ];
 
-const SANKA_TESTIMONIALS = [
+export const SANKA_TESTIMONIALS = [
   { quote: "Melhor hambúrguer da cidade. Surreal.", stars: 5, name: "Mariana S.", meta: "Pedido #4827 · Cliente recorrente" },
   { quote: "A panceta deles é absurda. Voltei três vezes essa semana.", stars: 5, name: "Diego R.", meta: "Pedido #4901 · Cliente recorrente" },
   { quote: "X Provolone ao Mel mudou minha vida. Só isso.", stars: 5, name: "Camila A.", meta: "Pedido #4756 · Primeira vez" },
 ];
 
 // ============================== COMBOS ==============================
-const SANKA_COMBOS = [
+export const SANKA_COMBOS = [
   {
     code: "CB-01",
     name: "Combo Clássico",
@@ -364,7 +379,7 @@ const SANKA_COMBOS = [
 ];
 
 // ============================== PORÇÕES ==============================
-const SANKA_SIDES = [
+export const SANKA_SIDES = [
   {
     code: "PR-01",
     name: "Batata Frita Simples",
@@ -422,7 +437,7 @@ const SANKA_SIDES = [
 ];
 
 // ============================== SOBREMESAS ==============================
-const SANKA_DESSERTS = [
+export const SANKA_DESSERTS = [
   {
     name: "Milkshake Ovomaltine",
     desc: "Sorvete cremoso de baunilha, leite gelado e flocos crocantes de ovomaltine batidos na hora.",
@@ -443,7 +458,3 @@ const SANKA_DESSERTS = [
   },
 ];
 
-Object.assign(window, {
-  SANKA_CATS, SANKA_BURGERS, SANKA_EXTRAS, SANKA_DRINKS, SANKA_FEATURES, SANKA_TESTIMONIALS,
-  SANKA_COMBOS, SANKA_SIDES, SANKA_DESSERTS,
-});

@@ -1,6 +1,6 @@
 // cart.jsx — Sanka Burgers · Carrinho global + Drawer lateral
-// CartProvider gerencia itens, drawer, checkout e toast.
-// Expõe CartProvider, useCartContext via window.
+
+import { FoodPlaceholder } from './placeholders.jsx'
 
 const { createContext, useContext, useState, useEffect } = React;
 
@@ -265,4 +265,4 @@ function CartItem({ item, brl, onRemove, onQty, onObs }) {
   );
 }
 
-Object.assign(window, { CartProvider, useCartContext });
+export { CartProvider, useCartContext };

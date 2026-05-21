@@ -58,6 +58,29 @@ fbq('track','PageView');
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXXXX&ev=PageView&noscript=1"/></noscript>
 
+<!-- ── Tailwind Play CDN ──────────────────────────────────── -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        fire:   { DEFAULT: '#C2410C', light: '#EA580C', dark: '#9A3412' },
+        amber:  { DEFAULT: '#D97706', light: '#F59E0B' },
+        ink:    { DEFAULT: '#F8F4F0', mute: '#9CA3AF', dim: '#6B7280' },
+        carbon: { DEFAULT: '#0F0D0B', mid: '#1A1714', surface: '#242019' },
+      },
+      fontFamily: {
+        display: ['Anton', 'sans-serif'],
+        black:   ['"Archivo Black"', 'sans-serif'],
+        body:    ['"Space Grotesk"', 'sans-serif'],
+        mono:    ['"JetBrains Mono"', 'monospace'],
+      },
+    },
+  },
+}
+</script>
+
 <!-- ── Fonts ──────────────────────────────────────────────── -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -80,16 +103,9 @@ if ('serviceWorker' in navigator) {
 <!-- Analytics helpers (plain JS — sem Babel) -->
 <script src="analytics.js"></script>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 
-<script type="text/babel" src="data.jsx"></script>
-<script type="text/babel" src="placeholders.jsx"></script>
-<script type="text/babel" src="lib/config.js"></script>
-<script type="text/babel" src="cart.jsx"></script>
-<script type="text/babel" src="checkout-modal.jsx"></script>
-<script type="text/babel" src="cardapio-app.jsx"></script>
-<script type="text/babel" src="clube-modal.jsx"></script>
+<script src="/dist/cardapio.js"></script>
 </body>
 </html>

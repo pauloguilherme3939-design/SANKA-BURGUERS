@@ -1,6 +1,7 @@
 // app.jsx — Sanka Burgers
 // Composição da home · Scroll reveal via IntersectionObserver
-// (Framer Motion será adicionado na migração para Next.js)
+
+import { Nav, Hero, Proof, FeaturedMenu, HowItWorks, Reviews, Location, Footer } from './sections.jsx'
 
 const { useEffect } = React;
 

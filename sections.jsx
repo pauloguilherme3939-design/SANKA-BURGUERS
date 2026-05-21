@@ -1,6 +1,10 @@
 // sections.jsx — Sanka Burgers
 // Home focada em conversão · Mobile-first
 
+import { FoodPlaceholder } from './placeholders.jsx'
+import { SANKA_BURGERS } from './data.jsx'
+import { SANKA_CONFIG } from './lib/config.js'
+
 const { useState, useEffect } = React;
 
 /* ── Ícones inline SVG ──────────────────────────────────────── */
@@ -61,7 +65,7 @@ function IcoArrow() {
 /* ── Helper: monta link wa.me a partir de SANKA_CONFIG ─────────
    Chamado em render time — SANKA_CONFIG já está disponível.      */
 function waLink(msg) {
-  var num = (window.SANKA_CONFIG && window.SANKA_CONFIG.whatsapp) || '5519999999999';
+  var num = SANKA_CONFIG.whatsapp;
   return msg
     ? 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg)
     : 'https://wa.me/' + num;
@@ -360,6 +364,7 @@ function FeaturedMenu() {
                     tags={burger.tags}
                     mood={idx + 1}
                     seed={100 + idx}
+                    src={burger.src}
                   />
 
                   {/* Badges sobre a imagem */}
@@ -685,8 +690,5 @@ function Footer() {
   );
 }
 
-/* ── Exporta tudo para o escopo global (acessado por app.jsx) ── */
-Object.assign(window, {
-  Nav, Hero, Proof, FeaturedMenu, HowItWorks, Reviews, Location, Footer,
-  IcoWA, IcoPin, IcoClock, IcoPhone, IcoIG, IcoArrow,
-});
+export { Nav, Hero, Proof, FeaturedMenu, HowItWorks, Reviews, Location, Footer };
+export { IcoWA, IcoPin, IcoClock, IcoPhone, IcoIG, IcoArrow };

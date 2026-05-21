@@ -5,11 +5,16 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "build": "node build.mjs",
+    "dev": "concurrently \"node build.mjs --watch\" \"node server.js\""
   },
   "dependencies": {
     "@vercel/blob": "^0.27.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.28.0"
   }
 }

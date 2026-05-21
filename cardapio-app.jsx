@@ -1,6 +1,11 @@
 // cardapio-app.jsx — Sanka Burgers · Página de Cardápio
 // Arquitetura de menu psicológica: entry / hero / premium
-// Depende de: data.jsx (globals), placeholders.jsx (FoodPlaceholder)
+
+import { SANKA_CATS, SANKA_BURGERS, SANKA_SIDES, SANKA_DRINKS, SANKA_DESSERTS } from './data.jsx'
+import { FoodPlaceholder } from './placeholders.jsx'
+import { CartProvider, useCartContext } from './cart.jsx'
+import { CheckoutModal } from './checkout-modal.jsx'
+import { SANKA_CONFIG } from './lib/config.js'
 
 const { useState, useEffect, useMemo } = React;
 
@@ -197,7 +202,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
             )}
           </div>
         ) : (
-          <FoodPlaceholder tags={imgTags} label={item.name} />
+          <FoodPlaceholder tags={imgTags} label={item.name} src={item.src} />
         )}
         {item.tag && !hasGradient && (
           <span className={`badge ${badgeVariant} menu-card-badge`}>
@@ -350,9 +355,7 @@ function CardapioPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const WA = (window.SANKA_CONFIG && window.SANKA_CONFIG.whatsapp)
-    ? 'https://wa.me/' + window.SANKA_CONFIG.whatsapp + '?text=' + encodeURIComponent('Olá! Quero fazer um pedido. 🍔')
-    : 'https://wa.me/5519999999999';
+  const WA = 'https://wa.me/' + SANKA_CONFIG.whatsapp + '?text=' + encodeURIComponent('Olá! Quero fazer um pedido. 🍔');
 
   return (
     <>

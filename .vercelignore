@@ -4,5 +4,9 @@ node_modules/
 data/
 server.js
 AUDITORIA.md
+MIGRACAO.md
 screenshots/
 package-lock.json
+src/
+build.mjs
+CARDAPIO SANKA BURGUERS/
