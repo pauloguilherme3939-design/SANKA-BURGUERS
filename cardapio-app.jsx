@@ -191,7 +191,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
   const imgTags = item.tags || (item.name || '').toLowerCase().replace(/\s+/g, ',');
 
   return (
-    <article className={cls} data-reveal data-delay={delay}>
+    <article className={cls} id={item.code ? item.code.toLowerCase() : undefined} data-reveal data-delay={delay}>
 
       {/* Mídia */}
       <div className="menu-card-media">

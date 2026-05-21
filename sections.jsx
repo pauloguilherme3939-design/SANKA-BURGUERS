@@ -329,14 +329,13 @@ function FeaturedMenu() {
 
         <div className="featured-head">
           <div>
-            <div className="eyebrow">Cardápio em destaque</div>
+            <div className="eyebrow">Nossos Destaques</div>
             <h2 id="featured-title" className="section-title">
               Os que mais<br /><em>viciam.</em>
             </h2>
           </div>
-          {/* TODO: SANKA — Quando criar página /cardapio, trocar href para aquela URL */}
-          <a href="#como-funciona" className="btn btn-outline" style={{ alignSelf: 'flex-end' }}>
-            Como pedir <IcoArrow />
+          <a href="cardapio.html" className="btn btn-outline" style={{ alignSelf: 'flex-end' }}>
+            Cardápio Completo <IcoArrow />
           </a>
         </div>
 
@@ -365,6 +364,8 @@ function FeaturedMenu() {
                     mood={idx + 1}
                     seed={100 + idx}
                     src={burger.src}
+                    eager
+                    priority
                   />
 
                   {/* Badges sobre a imagem */}
@@ -402,7 +403,7 @@ function FeaturedMenu() {
                       {burger.price.toFixed(2).replace('.', ',')}
                     </div>
                     <a
-                      href="cardapio.html"
+                      href={`cardapio.html#${burger.code.toLowerCase()}`}
                       className="add-btn"
                       aria-label={`Ver ${burger.name} no cardápio`}
                     >

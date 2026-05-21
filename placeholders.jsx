@@ -63,7 +63,7 @@ function moodSvg(m, seed) {
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
 
-export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src }) {
+export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src, eager, priority }) {
   const idx = typeof mood === "number" ? mood % FOOD_MOODS.length : moodIndex((label || "") + (sub || ""));
   const m = FOOD_MOODS[idx];
   const moodSeed = ((label || "") + (sub || "") + idx).split("").reduce((a, c) => a + c.charCodeAt(0), 7);
@@ -95,8 +95,9 @@ export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src }) {
         <img
           className={`ph-img${loaded ? " loaded" : ""}`}
           src={imgUrl}
-          alt={label || "Foto"}
-          loading="lazy"
+          alt={label || ""}
+          loading={eager ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
           onLoad={() => setLoaded(true)}
           onError={(e) => {
             if (src && !realFailed) {
