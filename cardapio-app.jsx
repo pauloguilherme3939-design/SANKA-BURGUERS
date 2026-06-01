@@ -187,7 +187,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
     : item.tag === 'NOVO'                        ? 'badge-new'
     :                                              'badge-hot';
 
-  const hasGradient = !!item.bg;
+  const hasGradient = !!item.bg && !item.src;
   const imgTags = item.tags || (item.name || '').toLowerCase().replace(/\s+/g, ',');
 
   return (

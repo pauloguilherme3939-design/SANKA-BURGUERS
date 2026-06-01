@@ -1,0 +1,1 @@
+import '../pedido-app.jsx'

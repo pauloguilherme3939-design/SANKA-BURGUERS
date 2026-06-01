@@ -211,6 +211,7 @@ export const SANKA_DRINKS = [
     desc: "Espremido na hora. Sem açúcar, sem água, sem desculpa.",
     price: 12.0,
     tag: "Natural",
+    src: "/assets/drinks/suco-laranja.png",
     bg: "linear-gradient(155deg, #ff9a3c 0%, #e0581a 60%, #7a2900 100%)",
   },
   {
@@ -218,6 +219,7 @@ export const SANKA_DRINKS = [
     desc: "A explosão tropical com a profundidade do açaí amazônico.",
     price: 16.0,
     tag: "Combo",
+    src: "/assets/drinks/suco-laranja-acai.png",
     bg: "linear-gradient(155deg, #ff8a3c 0%, #6a2a8a 65%, #1a0a3a 100%)",
   },
   {
@@ -225,6 +227,7 @@ export const SANKA_DRINKS = [
     desc: "Açaí puro batido na hora. Cremoso, gelado, intenso.",
     price: 14.0,
     tag: "Puro",
+    src: "/assets/drinks/suco-acai.png",
     bg: "linear-gradient(155deg, #5e2a8a 0%, #2a0a4a 70%, #0a0014 100%)",
   },
   {
@@ -232,6 +235,7 @@ export const SANKA_DRINKS = [
     desc: "A doçura que abraça o azedinho. Sobremesa em copo.",
     price: 16.0,
     tag: "Doce",
+    src: "/assets/drinks/acai-leite-condensado.png",
     bg: "linear-gradient(155deg, #b88aff 0%, #6a3a9a 55%, #2a0a4a 100%)",
   },
   {
@@ -239,6 +243,7 @@ export const SANKA_DRINKS = [
     desc: "Limão batido com casca, leite condensado e muito gelo. Cremosa e refrescante.",
     price: 13.0,
     tag: "Refresca",
+    src: "/assets/drinks/limonada-suica.png",
     bg: "linear-gradient(155deg, #b8e88a 0%, #4a7a2a 60%, #1a3a0a 100%)",
   },
   {
@@ -246,6 +251,7 @@ export const SANKA_DRINKS = [
     desc: "Polpa fresca peneirada, açúcar na medida e gelo. Azedinho equilibrado.",
     price: 13.0,
     tag: "Natural",
+    src: "/assets/drinks/suco-maracuja.png",
     bg: "linear-gradient(155deg, #ffd24a 0%, #d8941a 55%, #4a2a00 100%)",
   },
   {
@@ -253,6 +259,7 @@ export const SANKA_DRINKS = [
     desc: "Uva integral 100% sem açúcar adicionado. Servido bem gelado em copo alto.",
     price: 11.0,
     tag: "Integral",
+    src: "/assets/drinks/suco-uva.png",
     bg: "linear-gradient(155deg, #7a2a8a 0%, #3a0a4a 60%, #1a0214 100%)",
   },
   {
@@ -260,6 +267,7 @@ export const SANKA_DRINKS = [
     desc: "Chá mate tostado infusionado a frio, com fatia de limão e folhas de hortelã.",
     price: 10.0,
     tag: "Gelado",
+    src: "/assets/drinks/mate-gelado.png",
     bg: "linear-gradient(155deg, #c8a05a 0%, #6a4a2a 55%, #2a1a0a 100%)",
   },
   {
@@ -267,6 +275,7 @@ export const SANKA_DRINKS = [
     desc: "Coca-Cola, Coca Zero, Guaraná Antarctica, Sprite ou Fanta. Sempre gelada.",
     price: 7.0,
     tag: "350ml",
+    src: "/assets/drinks/refrigerante-lata.png",
     bg: "linear-gradient(155deg, #2a2a2a 0%, #1a0a0a 100%)",
   },
   {
@@ -390,6 +399,7 @@ export const SANKA_SIDES = [
     price: 18.9,
     tag: null,
     tags: "fries,frenchfries",
+    src: "/assets/sides/batata-simples.png",
   },
   {
     code: "PR-02",
@@ -408,6 +418,7 @@ export const SANKA_SIDES = [
     price: 42.9,
     tag: "PRA DIVIDIR",
     tags: "loaded,fries,cheese",
+    src: "/assets/sides/batata-especial.png",
   },
   {
     code: "PR-04",
@@ -435,6 +446,7 @@ export const SANKA_SIDES = [
     price: 26.9,
     tag: "NOVO",
     tags: "polenta,fried",
+    src: "/assets/sides/polenta-frita.png",
   },
 ];
 

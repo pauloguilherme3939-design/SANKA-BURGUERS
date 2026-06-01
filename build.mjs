@@ -16,6 +16,10 @@ const pages = [
   { entryPoints: ['src/cardapio.jsx'],    outfile: 'dist/cardapio.js'    },
   { entryPoints: ['src/nossa-carne.jsx'], outfile: 'dist/nossa-carne.js' },
   { entryPoints: ['src/admin.jsx'],       outfile: 'dist/admin.js'       },
+  { entryPoints: ['src/monte.jsx'],          outfile: 'dist/monte.js'          },
+  { entryPoints: ['src/oferta.jsx'],         outfile: 'dist/oferta.js'         },
+  { entryPoints: ['src/pedido.jsx'],         outfile: 'dist/pedido.js'         },
+  { entryPoints: ['src/admin-pedidos.jsx'],  outfile: 'dist/admin-pedidos.js'  },
 ]
 
 if (isWatch) {
