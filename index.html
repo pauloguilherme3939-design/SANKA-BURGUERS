@@ -64,33 +64,19 @@
     "latitude": "-22.4106",
     "longitude": "-47.5598"
   },
-  "telephone": "TODO: SANKA — +55 19 9XXXX-XXXX",
+  "telephone": "+5516993138450",
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Tuesday","Wednesday","Thursday","Sunday"],
-      "opens": "TODO: SANKA",
-      "closes": "TODO: SANKA"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Friday","Saturday"],
-      "opens": "TODO: SANKA",
-      "closes": "TODO: SANKA"
+      "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      "opens": "18:00",
+      "closes": "23:30"
     }
   ],
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "bestRating": "5",
-    "reviewCount": "TODO: SANKA — Número real de avaliações"
-  },
   "menu": "https://sankaburgers.com.br/cardapio.html",
   "hasDeliveryMethod": "http://schema.org/DeliveryMethod/DeliverAtAddress",
-  "sameAs": [
-    "TODO: SANKA — URL do Instagram",
-    "TODO: SANKA — URL do iFood"
-  ]
+  "servesCuisine": ["Hamburger", "Lanche Prensado"],
+  "sameAs": []
 }
 </script>
 
@@ -159,43 +145,48 @@ tailwind.config = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "A Sanka Burgers faz entrega?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Sim, entregamos em Rio Claro/SP. O pedido é feito pelo WhatsApp e a entrega chega em até 35 minutos."
-      }
+      "name": "A Sanka Burgers fica em Rio Claro?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim! A Sanka Burgers é uma hamburgueria localizada em Rio Claro/SP. Atendemos pelo WhatsApp e fazemos delivery na cidade." }
     },
     {
       "@type": "Question",
-      "name": "Quais formas de pagamento a Sanka aceita?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Aceitamos Pix, cartão de crédito e débito, e dinheiro."
-      }
+      "name": "A Sanka trabalha com lanche prensado?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim. Cada lanche é prensado na chapa — o pão tosta por fora e fica crocante enquanto o queijo derrete por dentro. É o estilo São Carlos de fazer lanche, agora em Rio Claro." }
     },
     {
       "@type": "Question",
-      "name": "Qual o horário de funcionamento?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Funcionamos de terça a domingo. Consulte os horários exatos no Google Meu Negócio ou pelo WhatsApp."
-      }
+      "name": "Posso pedir pelo WhatsApp?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim, é a forma principal de pedido. Sem app, sem cadastro. Você abre o WhatsApp, manda sua escolha e a gente confirma em segundos." }
     },
     {
       "@type": "Question",
-      "name": "Como faço um pedido?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Você pode pedir pelo WhatsApp enviando mensagem diretamente, ou usar o site para montar seu pedido no cardápio e finalizar pelo WhatsApp."
-      }
+      "name": "A Sanka tem delivery em Rio Claro?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim, fazemos delivery em Rio Claro/SP. O pedido é feito pelo WhatsApp e entregamos no seu endereço." }
     },
     {
       "@type": "Question",
-      "name": "O hambúrguer da Sanka é congelado?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Não. O blend de acém, peito e costela é moído na casa todo dia. Não trabalhamos com hambúrguer congelado ou industrial."
-      }
+      "name": "O lanche da Sanka é grande mesmo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim. O padrão Sanka é lanche grande, sem miséria. A carne pesa 150g (alguns têm duas), o recheio é generoso e o queijo cobre tudo. É o estilo São Carlos — lanche grande prensado, não lanche de vitrine." }
+    },
+    {
+      "@type": "Question",
+      "name": "O que é o Clube Sanka?",
+      "acceptedAnswer": { "@type": "Answer", "text": "O Clube Sanka é o programa de fidelidade da hamburgueria. Você se cadastra gratuitamente e ganha o direito de girar a roleta de prêmios todo dia — descontos de 10% a 25%, bebida grátis, batata grátis ou frete grátis." }
+    },
+    {
+      "@type": "Question",
+      "name": "Tem cupom de desconto para a primeira compra?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim! Estamos em fase de inauguração e oferecemos o cupom SANKA10 para 10% off no primeiro pedido. Mencione o cupom ao pedir pelo WhatsApp." }
+    },
+    {
+      "@type": "Question",
+      "name": "A Sanka é estilo São Carlos?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Exato. O estilo São Carlos de hamburguer é conhecido pelo lanche prensado, tamanho generoso e pão tostado na chapa. A Sanka trouxe esse estilo para Rio Claro com identidade própria." }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual o horário de funcionamento da Sanka?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Funcionamos de terça a domingo, das 18h às 23h30. Segunda-feira é nosso dia de folga." }
     }
   ]
 }

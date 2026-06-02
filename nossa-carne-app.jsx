@@ -300,7 +300,7 @@ function OPao() {
             <FoodPlaceholder
               tags="brioche,bread,bun,bakery,golden"
               label="Pão Sankinha"
-              sub="TODO: NOME DA PADARIA"
+              sub="Padaria parceira local"
               mood={4}
               seed={33}
             />
@@ -311,8 +311,7 @@ function OPao() {
               <p className="eyebrow">O pão</p>
               <h2 id="nc-bread-title" className="nc-section-title">
                 Brioche.<br />
-                {/* TODO: SANKA — Substituir [PADARIA] pelo nome real da padaria parceira */}
-                Da [PADARIA].<br />
+                De padaria local.<br />
                 Assado hoje.
               </h2>
             </Reveal>

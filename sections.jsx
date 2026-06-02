@@ -928,13 +928,100 @@ function LaunchCoupon() {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   14. FAQ — SEO local + conversão
+═══════════════════════════════════════════════════════════════ */
+const FAQ_ITEMS = [
+  { q: 'A Sanka trabalha com lanche prensado?',       a: 'Sim. Cada lanche sai direto da chapa — pão tostado e crocante por fora, queijo derretendo por dentro. É o estilo São Carlos de fazer lanche, agora em Rio Claro.' },
+  { q: 'O lanche é grande mesmo?',                    a: 'Sim. A carne padrão tem 150g, o recheio é generoso e o queijo cobre tudo. Não é lanche de vitrine — é lanche de respeito, que mata a fome de verdade.' },
+  { q: 'Posso pedir pelo WhatsApp?',                  a: 'Sim, é a forma principal. Sem app, sem cadastro. Você manda sua escolha e a gente confirma em segundos.' },
+  { q: 'A Sanka faz delivery em Rio Claro?',           a: 'Sim, entregamos em Rio Claro/SP. Peça pelo WhatsApp e acompanhe pelo link de rastreamento que a gente manda.' },
+  { q: 'O que é o Clube Sanka?',                      a: 'Programa de fidelidade gratuito. Você se cadastra e ganha o direito de girar a roleta de prêmios todo dia — descontos de 10% a 25%, bebida grátis, batata grátis ou frete grátis.' },
+  { q: 'Tem cupom para a primeira compra?',           a: `Sim! Use o cupom ${SANKA_BRAND.launchCoupon} para ${SANKA_BRAND.launchCouponLabel}. Mencione ao pedir pelo WhatsApp.` },
+  { q: 'Qual o horário de funcionamento?',            a: `${SANKA_BRAND.openingHours}. ${SANKA_BRAND.closedDay} é nosso dia de folga.` },
+  { q: 'A Sanka é estilo São Carlos?',                a: 'Exato. O estilo São Carlos é conhecido pelo lanche grande prensado. A Sanka trouxe esse estilo para Rio Claro com identidade própria.' },
+];
+
+function FAQ() {
+  const [open, setOpen] = useState(null);
+
+  return (
+    <section className="section" aria-labelledby="faq-title" id="faq">
+      <div className="wrap">
+        <div data-reveal style={{ marginBottom: 48 }}>
+          <div className="eyebrow">Dúvidas frequentes</div>
+          <h2 id="faq-title" className="section-title">
+            Perguntas<br /><em>respondidas.</em>
+          </h2>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 720 }}>
+          {FAQ_ITEMS.map((item, i) => (
+            <div
+              key={i}
+              style={{
+                background: open === i ? 'rgba(234,88,12,0.06)' : 'var(--surface-1,#141210)',
+                border: `1px solid ${open === i ? 'rgba(234,88,12,0.3)' : 'rgba(245,239,230,0.07)'}`,
+                borderRadius: 12, overflow: 'hidden',
+                transition: 'border-color 0.2s, background 0.2s',
+              }}
+              data-reveal data-delay={String(i % 4 + 1)}
+            >
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                style={{
+                  width: '100%', background: 'none', border: 'none',
+                  padding: '18px 20px', cursor: 'pointer',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16,
+                  textAlign: 'left',
+                }}
+                aria-expanded={open === i}
+              >
+                <span style={{ fontFamily: 'var(--f-h)', fontSize: 15, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.35 }}>
+                  {item.q}
+                </span>
+                <span style={{
+                  flexShrink: 0, width: 24, height: 24,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  borderRadius: '50%', background: open === i ? '#EA580C' : 'rgba(245,239,230,0.08)',
+                  color: open === i ? '#fff' : 'var(--ink-mute)',
+                  fontSize: 16, fontWeight: 700, transition: 'all 0.2s',
+                  transform: open === i ? 'rotate(45deg)' : 'none',
+                }}>+</span>
+              </button>
+              {open === i && (
+                <div style={{ padding: '0 20px 18px', color: 'var(--ink-mute)', fontSize: 14, lineHeight: 1.75 }}>
+                  {item.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 40 }} data-reveal>
+          <p style={{ color: 'var(--ink-mute)', fontSize: 14, marginBottom: 16 }}>
+            Ainda com dúvidas? Fala com a gente diretamente.
+          </p>
+          <a
+            href={waLink('Olá! Tenho uma dúvida sobre a Sanka Burgers.')}
+            className="btn btn-outline btn-sm"
+            target="_blank" rel="noopener noreferrer"
+          >
+            <IcoWA /> Perguntar no WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Aliases para compatibilidade com imports antigos ──────── */
 const Proof       = ProvaArtesanal;
 const FeaturedMenu = Destaques;
 
 export {
   Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia,
-  NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, LaunchCoupon, Footer,
+  NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, LaunchCoupon, FAQ, Footer,
   Proof, FeaturedMenu,
 };
 export { IcoWA, IcoPin, IcoClock, IcoPhone, IcoIG, IcoArrow };

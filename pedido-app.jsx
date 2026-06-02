@@ -11,7 +11,7 @@ const STEPS = [
   { id: 'na_chapa',      label: 'Na Chapa',          icon: '🔥', desc: 'A carne está na chapa. Cheiro bom aí?',      eta: 12 },
   { id: 'finalizando',   label: 'Finalizando',       icon: '🧀', desc: 'Queijo derretendo, montagem final.',          eta: 5  },
   { id: 'saiu_entrega',  label: 'Saiu para Entrega', icon: '🏍️', desc: 'A moto já saiu. Falta pouco!',               eta: 15 },
-  { id: 'entregue',      label: 'Entregue!',         icon: '🎉', desc: 'Chegou! Bom apetite. ⭐ Avalie no iFood.',   eta: 0  },
+  { id: 'entregue',      label: 'Entregue!',         icon: '🎉', desc: 'Chegou! Bom apetite. ⭐ Avalie a Sanka no Google!', eta: 0  },
 ];
 
 function getStepIndex(status) {
@@ -235,7 +235,7 @@ function OrderTracker({ initialOrder }) {
             BOM<br /><em>APETITE!</em>
           </h2>
           <p className="section-sub" style={{marginBottom:28}}>
-            Gostou? Avalie a Sanka no iFood e Google. Isso nos ajuda muito!
+            Gostou? Avalie a Sanka no Google — isso ajuda muita gente a descobrir a gente em Rio Claro!
           </p>
           <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
             <a href={`https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent('Olá! Quero fazer outro pedido. 🍔')}`} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
