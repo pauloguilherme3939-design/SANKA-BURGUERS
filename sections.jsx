@@ -200,7 +200,7 @@ function Nav() {
           </div>
 
           <div className="nav-right-group">
-            <a href={WA} className="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
+            <a href={WA} className="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer" onClick={() => window.SankaAnalytics?.waClick('nav')}>
               <IcoWA />
               <span className="nav-cta-label">PEDIR</span>
             </a>
@@ -259,6 +259,22 @@ function Hero() {
   const WA    = waLink('Olá! Quero fazer um pedido. 🍔');
   const WACL  = waLink('Olá! Quero entrar no Clube Sanka! 🏆');
 
+  const variant = SANKA_BRAND.heroVariant || 'A';
+  const heroContent = {
+    A: {
+      title:    <><span>O LANCHÃO PRENSADO</span><br /><span className="accent">QUE CHEGOU PESADO.</span></>,
+      sub:      <><span>Pão prensado na chapa, recheio generoso, queijo derretendo e aquele tamanho que </span><strong>mata a fome de verdade.</strong><span> A Sanka nasceu pra quem não quer lanche pequeno.</span></>,
+    },
+    B: {
+      title:    <><span>FOME DE RESPEITO?</span><br /><span className="accent">A SANKA RESOLVE.</span></>,
+      sub:      <><span>Lanchão prensado estilo São Carlos direto em Rio Claro. </span><strong>Mais recheio, mais queijo, mais lanche.</strong><span> Sem enrolação, sem lanchinho de vitrine.</span></>,
+    },
+    C: {
+      title:    <><span>RIO CLARO TEM</span><br /><span className="accent">UM NOVO LANCHÃO.</span></>,
+      sub:      <><span>Estilo São Carlos de prensado agora aqui. Pão tostado, queijo derretendo, carne de verdade. </span><strong>A Sanka chegou pesada.</strong></>,
+    },
+  }[variant] || {};
+
   useEffect(() => {
     const onScroll = () => {
       if (bgRef.current) {
@@ -291,25 +307,32 @@ function Hero() {
           Rio Claro/SP · Estilo São Carlos · Prensado na chapa
         </div>
 
-        <h1>
-          O LANCHÃO PRENSADO<br />
-          <span className="accent">QUE CHEGOU PESADO.</span>
-        </h1>
+        <h1>{heroContent.title}</h1>
 
-        <p className="hero-sub">
-          Pão prensado na chapa, recheio generoso,
-          queijo derretendo e aquele tamanho que <strong>mata a fome de verdade.</strong>
-          A Sanka nasceu pra quem não quer lanche pequeno.
-        </p>
+        <p className="hero-sub">{heroContent.sub}</p>
 
         <div className="hero-ctas">
-          <a href="cardapio.html" className="btn btn-outline btn-lg">
+          <a
+            href="cardapio.html"
+            className="btn btn-outline btn-lg"
+            onClick={() => window.SankaAnalytics?.viewCardapio('hero')}
+          >
             VER CARDÁPIO <IcoArrow />
           </a>
-          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+          <a
+            href={WA}
+            className="btn btn-primary btn-lg"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => window.SankaAnalytics?.waClick('hero')}
+          >
             <IcoWA /> PEDIR AGORA
           </a>
-          <a href="clube.html" className="btn btn-ghost btn-lg">
+          <a
+            href="clube.html"
+            className="btn btn-ghost btn-lg"
+            onClick={() => window.SankaAnalytics?.clubSignup('hero')}
+          >
             CLUBE SANKA →
           </a>
         </div>
@@ -636,7 +659,7 @@ function OfertaDia() {
 function HowItWorks() {
   const WA = waLink('Olá! Quero fazer um pedido. 🍔');
   return (
-    <section className="section how" id="como-funciona" aria-labelledby="how-title">
+    <section className="section how" id="como-funciona" aria-labelledby="how-title" data-ab-variant={SANKA_BRAND.heroVariant}>
       <div className="wrap">
         <div data-reveal>
           <div className="eyebrow">Como pedir</div>
@@ -661,11 +684,23 @@ function HowItWorks() {
         </div>
 
         <div className="how-cta" data-reveal>
-          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+          <a
+            href={WA}
+            className="btn btn-primary btn-lg"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => window.SankaAnalytics?.waClick('how_it_works')}
+          >
             <IcoWA /> FAZER MEU PEDIDO AGORA
           </a>
           {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl && (
-            <a href={SANKA_BRAND.ifoodUrl} className="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
+            <a
+              href={SANKA_BRAND.ifoodUrl}
+              className="btn btn-outline btn-lg"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => window.SankaAnalytics?.ifoodClick('how_it_works')}
+            >
               iFood →
             </a>
           )}
@@ -684,6 +719,7 @@ function LaunchCoupon() {
   const WA   = waLink(SANKA_BRAND.launchCouponWAMsg);
 
   function handleCopy() {
+    window.SankaAnalytics?.couponClick(code);
     try {
       navigator.clipboard.writeText(code).then(() => {
         setCopied(true);
@@ -723,7 +759,13 @@ function LaunchCoupon() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+            <a
+              href={WA}
+              className="btn btn-primary btn-lg"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => window.SankaAnalytics?.waClick('launch_coupon')}
+            >
               <IcoWA /> QUERO MEU CUPOM NO WHATSAPP
             </a>
             <a href="clube.html" className="btn btn-outline btn-lg">
@@ -778,10 +820,20 @@ function ClubeCTA() {
               Cada pedido vale um giro na roleta.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a href="clube.html" className="btn btn-primary btn-lg">
+              <a
+                href="clube.html"
+                className="btn btn-primary btn-lg"
+                onClick={() => window.SankaAnalytics?.clubSignup('clube_cta')}
+              >
                 ENTRAR NO CLUBE SANKA
               </a>
-              <a href={WA} className="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
+              <a
+                href={WA}
+                className="btn btn-outline btn-lg"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => window.SankaAnalytics?.waClick('clube_cta')}
+              >
                 <IcoWA /> Pelo WhatsApp
               </a>
             </div>
@@ -896,6 +948,26 @@ function Reviews() {
             </article>
           ))}
         </div>
+
+        {!SANKA_BRAND.isGoogleRatingActive && SANKA_BRAND.googleMapsUrl && (
+          <div data-reveal style={{ marginTop: 40, textAlign: 'center', padding: '28px 24px', background: 'rgba(234,88,12,0.06)', border: '1px solid rgba(234,88,12,0.18)', borderRadius: 16 }}>
+            <p style={{ fontFamily: 'var(--f-h)', fontSize: 18, color: 'var(--ink)', marginBottom: 8 }}>
+              Provou a Sanka?
+            </p>
+            <p style={{ color: 'var(--ink-mute)', fontSize: 14, marginBottom: 20 }}>
+              Sua avaliação ajuda outros moradores de Rio Claro a descobrir o lanchão. Leva 30 segundos.
+            </p>
+            <a
+              href={SANKA_BRAND.googleMapsUrl}
+              className="btn btn-outline btn-sm"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => window.SankaAnalytics?.seoCta('home', 'avaliar_google')}
+            >
+              ★ Avaliar no Google
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -1127,7 +1199,10 @@ function Footer() {
 
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} Sanka Burgers · Rio Claro / SP</p>
-          <p>Feito com fogo e blend exclusivo</p>
+          <p style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <a href="privacidade.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Privacidade</a>
+            <a href="termos-clube.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Termos do Clube</a>
+          </p>
         </div>
       </div>
     </footer>
@@ -1156,6 +1231,7 @@ function StickyWA() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Pedir agora pelo WhatsApp"
+        onClick={() => window.SankaAnalytics?.waClick('sticky')}
       >
         <IcoWA /> PEDIR AGORA
       </a>

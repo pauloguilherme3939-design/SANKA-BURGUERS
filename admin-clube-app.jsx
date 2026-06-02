@@ -866,6 +866,96 @@ function RouletteAdminTab() {
   );
 }
 
+/* ── Métricas de crescimento ──────────────────────────────────── */
+const METRIC_LABELS = {
+  wa_click:       'Cliques no WhatsApp',
+  ifood_click:    'Cliques no iFood',
+  view_cardapio:  'Visualizações do cardápio',
+  coupon_click:   'Cliques no cupom',
+  club_signup:    'Cadastros no Clube',
+  club_login:     'Logins no Clube',
+  reward_redeemed:'Recompensas resgatadas',
+  roulette_spin:  'Giros na roleta',
+  roulette_win:   'Prêmios ganhos (roleta)',
+  seo_cta_click:  'CTAs de SEO clicados',
+  add_to_cart:    'Adicionou ao carrinho',
+  begin_checkout: 'Iniciou checkout',
+  purchase:       'Pedidos enviados',
+  build_burger:   'Burgers montados',
+  claim_offer:    'Ofertas relâmpago aceitas',
+};
+
+function MetricsTab() {
+  const [counts, setCounts] = useState({});
+
+  useEffect(() => {
+    const load = () => {
+      try {
+        const raw = localStorage.getItem('sanka_analytics_events');
+        setCounts(raw ? JSON.parse(raw) : {});
+      } catch { setCounts({}); }
+    };
+    load();
+  }, []);
+
+  function handleClear() {
+    if (!confirm('Limpar todos os contadores de eventos?')) return;
+    try { localStorage.removeItem('sanka_analytics_events'); } catch {}
+    setCounts({});
+  }
+
+  const total = Object.values(counts).reduce((s, v) => s + v, 0);
+
+  const rows = Object.entries(METRIC_LABELS).map(([key, label]) => ({
+    key, label, count: counts[key] || 0,
+  })).concat(
+    Object.keys(counts).filter(k => !METRIC_LABELS[k]).map(k => ({ key: k, label: k, count: counts[k] || 0 }))
+  ).sort((a, b) => b.count - a.count);
+
+  return (
+    <div>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
+        <div>
+          <h2 style={{ fontFamily:T.display, fontSize:20, color:T.ink, letterSpacing:1 }}>MÉTRICAS</h2>
+          <p style={{ color:T.dim, fontSize:13, fontFamily:T.body, marginTop:4 }}>
+            Contadores por dispositivo (localStorage) · Total: {total} eventos
+          </p>
+        </div>
+        <button onClick={handleClear} style={{
+          background:'none', border:`1px solid ${T.border}`,
+          color:T.dim, fontFamily:T.body, fontSize:12,
+          padding:'8px 14px', borderRadius:8, cursor:'pointer',
+        }}>
+          Limpar contadores
+        </button>
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:12 }}>
+        {rows.filter(r => r.count > 0 || METRIC_LABELS[r.key]).map(r => (
+          <div key={r.key} style={{ ...cardStyle, position:'relative' }}>
+            <div style={{ fontFamily:T.display, fontSize:32, color: r.count > 0 ? T.fire : T.mute, letterSpacing:1 }}>
+              {r.count}
+            </div>
+            <div style={{ fontFamily:T.body, fontSize:12, color:T.dim, marginTop:4, lineHeight:1.4 }}>{r.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {total === 0 && (
+        <div style={{ textAlign:'center', padding:'60px 20px', color:T.mute, fontFamily:T.body, fontSize:14 }}>
+          Nenhum evento registrado ainda. Os contadores aumentam conforme os visitantes interagem com o site.
+        </div>
+      )}
+
+      <div style={{ marginTop:24, padding:'14px 16px', background:'rgba(234,88,12,0.06)', border:`1px solid rgba(234,88,12,0.15)`, borderRadius:10 }}>
+        <p style={{ fontFamily:T.body, fontSize:12, color:T.dim, lineHeight:1.6 }}>
+          <strong style={{ color:T.fire }}>Atenção:</strong> estes contadores são locais (localStorage do seu navegador). Para rastreamento real, configure o GA4 e Meta Pixel em <code style={{ color:T.ink }}>lib/brand.js → analyticsConfig</code>.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /* ── App ──────────────────────────────────────────────────────── */
 function AdminApp() {
   const [authed, setAuthed] = useState(false);
@@ -876,6 +966,7 @@ function AdminApp() {
     { id:'resgates', label:'Resgates',    icon:'🎁' },
     { id:'rewards',  label:'Recompensas', icon:'⚙️' },
     { id:'roleta',   label:'Roleta',      icon:'🎰' },
+    { id:'metricas', label:'Métricas',    icon:'📊' },
   ];
 
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
@@ -930,6 +1021,7 @@ function AdminApp() {
         {tab === 'resgates' && <RedemptionsTab />}
         {tab === 'rewards'  && <RewardsConfigTab />}
         {tab === 'roleta'   && <RouletteAdminTab />}
+        {tab === 'metricas' && <MetricsTab />}
       </div>
     </div>
   );

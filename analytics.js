@@ -1,33 +1,116 @@
-// analytics.js — GA4 + Meta Pixel event helpers
-// Carregado como <script> simples (sem Babel). Guarda silêncio se os IDs ainda não foram configurados.
+// analytics.js — GA4 + Meta Pixel + localStorage event tracking
+// Carregado como <script> simples. Silencioso se IDs não configurados.
 
 (function () {
+  var EVENTS_KEY = 'sanka_analytics_events';
+
   function ga(event, params) {
     if (typeof gtag === 'function') gtag('event', event, params || {});
   }
-
   function pixel(event, params) {
     if (typeof fbq === 'function') fbq('track', event, params || {});
   }
-
   function pixelCustom(event, params) {
     if (typeof fbq === 'function') fbq('trackCustom', event, params || {});
   }
 
+  function _countEvent(name) {
+    try {
+      var raw = localStorage.getItem(EVENTS_KEY);
+      var counts = raw ? JSON.parse(raw) : {};
+      counts[name] = (counts[name] || 0) + 1;
+      localStorage.setItem(EVENTS_KEY, JSON.stringify(counts));
+    } catch {}
+  }
+
   window.SankaAnalytics = {
 
-    // Disparado automaticamente pelos snippets GA4/Pixel no <head>
     pageView: function () {},
 
-    // Cardápio: usuário visualizou detalhes de um burger
+    // Rastreamento genérico — contador localStorage + GA4
+    trackEvent: function (name, payload) {
+      _countEvent(name);
+      ga('sanka_' + name, payload || {});
+    },
+
+    // Lê contadores para o painel admin
+    getEventCounts: function () {
+      try {
+        var raw = localStorage.getItem(EVENTS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch { return {}; }
+    },
+
+    clearEventCounts: function () {
+      try { localStorage.removeItem(EVENTS_KEY); } catch {}
+    },
+
+    // ── Eventos específicos ────────────────────────────────────
+
+    waClick: function (origin) {
+      _countEvent('wa_click');
+      ga('wa_click', { origin: origin || 'unknown' });
+    },
+
+    ifoodClick: function (origin) {
+      _countEvent('ifood_click');
+      ga('ifood_click', { origin: origin || 'unknown' });
+    },
+
+    viewCardapio: function (origin) {
+      _countEvent('view_cardapio');
+      ga('view_cardapio', { origin: origin || 'unknown' });
+    },
+
+    couponClick: function (coupon) {
+      _countEvent('coupon_click');
+      ga('coupon_click', { coupon_code: coupon || '' });
+    },
+
+    clubSignup: function (origin) {
+      _countEvent('club_signup');
+      ga('join_group', { group_id: 'clube_sanka' });
+      ga('generate_lead', { currency: 'BRL', value: 0 });
+      pixel('Lead', { content_name: 'Clube Sanka' });
+    },
+
+    clubLogin: function () {
+      _countEvent('club_login');
+      ga('login', { method: 'clube_sanka' });
+    },
+
+    rewardRedeemed: function (rewardId, points) {
+      _countEvent('reward_redeemed');
+      ga('reward_redeemed', { reward_id: rewardId || '', points_cost: points || 0 });
+    },
+
+    rouletteSpin: function () {
+      _countEvent('roulette_spin');
+      ga('roulette_spin', {});
+      pixelCustom('RouletteSpin', {});
+    },
+
+    rouletteWin: function (prizeId, prizeType) {
+      _countEvent('roulette_win');
+      ga('roulette_win', { prize_id: prizeId || '', prize_type: prizeType || '' });
+      pixelCustom('RouletteWin', { content_name: prizeId || '' });
+    },
+
+    seoCta: function (page, cta) {
+      _countEvent('seo_cta_click');
+      ga('seo_cta_click', { page: page || '', cta_label: cta || '' });
+    },
+
+    // ── Eventos originais ──────────────────────────────────────
+
     viewItem: function (item) {
       ga('view_item', {
         items: [{ item_id: item.code, item_name: item.name, price: item.price, currency: 'BRL' }],
       });
     },
 
-    // Cardápio: adicionou item ao carrinho
     addToCart: function (item) {
+      _countEvent('add_to_cart');
       ga('add_to_cart', {
         currency: 'BRL',
         value: item.price,
@@ -41,28 +124,28 @@
       });
     },
 
-    // Checkout: abriu o modal de checkout
     beginCheckout: function (subtotal) {
+      _countEvent('begin_checkout');
       ga('begin_checkout', { currency: 'BRL', value: subtotal });
       pixel('InitiateCheckout', { value: subtotal, currency: 'BRL' });
     },
 
-    // Checkout: clicou em "Enviar pedido pelo WhatsApp" — conversão principal
     purchase: function (total) {
+      _countEvent('purchase');
       var txId = 'SK-' + Date.now();
       ga('purchase', { transaction_id: txId, currency: 'BRL', value: total });
       pixel('Purchase', { value: total, currency: 'BRL' });
     },
 
-    // Clube: usuário entrou no Clube Sanka
     joinClub: function () {
+      _countEvent('club_signup');
       ga('join_group', { group_id: 'clube_sanka' });
       ga('generate_lead', { currency: 'BRL', value: 0 });
       pixel('Lead', { content_name: 'Clube Sanka' });
     },
 
-    // Monte seu Burger: usuário concluiu a montagem e clicou em "Adicionar ao pedido"
     buildBurger: function (totalPrice, summary) {
+      _countEvent('build_burger');
       ga('build_burger', {
         currency: 'BRL',
         value: totalPrice,
@@ -71,8 +154,8 @@
       pixelCustom('BuildBurger', { value: totalPrice, currency: 'BRL' });
     },
 
-    // Oferta relâmpago: usuário clicou em "Quero esse" na oferta
     claimOffer: function (item) {
+      _countEvent('claim_offer');
       ga('claim_offer', {
         currency: 'BRL',
         value: item.salePrice,
@@ -87,7 +170,6 @@
       });
     },
 
-    // Rastreamento: usuário acessou a página de status do pedido
     trackOrder: function (orderId) {
       ga('track_order', { order_id: orderId });
     },

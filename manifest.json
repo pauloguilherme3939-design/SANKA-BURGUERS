@@ -56,6 +56,13 @@
       "description": "Ir direto para o cardápio e pedir",
       "url": "/cardapio.html#cardapio",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Clube Sanka",
+      "short_name": "Clube",
+      "description": "Ver pontos, girar a roleta e resgatar prêmios",
+      "url": "/clube.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
