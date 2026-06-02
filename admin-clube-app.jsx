@@ -930,20 +930,21 @@ function MetricsTab() {
         </button>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:12 }}>
-        {rows.filter(r => r.count > 0 || METRIC_LABELS[r.key]).map(r => (
-          <div key={r.key} style={{ ...cardStyle, position:'relative' }}>
-            <div style={{ fontFamily:T.display, fontSize:32, color: r.count > 0 ? T.fire : T.mute, letterSpacing:1 }}>
-              {r.count}
-            </div>
-            <div style={{ fontFamily:T.body, fontSize:12, color:T.dim, marginTop:4, lineHeight:1.4 }}>{r.label}</div>
-          </div>
-        ))}
-      </div>
-
-      {total === 0 && (
+      {total === 0 ? (
         <div style={{ textAlign:'center', padding:'60px 20px', color:T.mute, fontFamily:T.body, fontSize:14 }}>
-          Nenhum evento registrado ainda. Os contadores aumentam conforme os visitantes interagem com o site.
+          Nenhum evento registrado ainda.<br />
+          <span style={{ fontSize:12 }}>Os contadores aumentam conforme os visitantes interagem com o site.</span>
+        </div>
+      ) : (
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px, 1fr))', gap:12 }}>
+          {rows.filter(r => r.count > 0).map(r => (
+            <div key={r.key} style={{ ...cardStyle, position:'relative' }}>
+              <div style={{ fontFamily:T.display, fontSize:32, color:T.fire, letterSpacing:1 }}>
+                {r.count}
+              </div>
+              <div style={{ fontFamily:T.body, fontSize:12, color:T.dim, marginTop:4, lineHeight:1.4 }}>{r.label}</div>
+            </div>
+          ))}
         </div>
       )}
 

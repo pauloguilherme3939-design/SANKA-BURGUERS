@@ -257,10 +257,8 @@ function Nav() {
 function Hero() {
   const bgRef = useRef(null);
   const WA    = waLink('Olá! Quero fazer um pedido. 🍔');
-  const WACL  = waLink('Olá! Quero entrar no Clube Sanka! 🏆');
 
-  const variant = SANKA_BRAND.heroVariant || 'A';
-  const heroContent = {
+  const _HERO_VARIANTS = {
     A: {
       title:    <><span>O LANCHÃO PRENSADO</span><br /><span className="accent">QUE CHEGOU PESADO.</span></>,
       sub:      <><span>Pão prensado na chapa, recheio generoso, queijo derretendo e aquele tamanho que </span><strong>mata a fome de verdade.</strong><span> A Sanka nasceu pra quem não quer lanche pequeno.</span></>,
@@ -273,7 +271,8 @@ function Hero() {
       title:    <><span>RIO CLARO TEM</span><br /><span className="accent">UM NOVO LANCHÃO.</span></>,
       sub:      <><span>Estilo São Carlos de prensado agora aqui. Pão tostado, queijo derretendo, carne de verdade. </span><strong>A Sanka chegou pesada.</strong></>,
     },
-  }[variant] || {};
+  };
+  const heroContent = _HERO_VARIANTS[SANKA_BRAND.heroVariant] || _HERO_VARIANTS.A;
 
   useEffect(() => {
     const onScroll = () => {
@@ -465,7 +464,11 @@ function Destaques() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 32 }} data-reveal>
-          <a href="cardapio.html" className="btn btn-primary btn-lg">
+          <a
+            href="cardapio.html"
+            className="btn btn-primary btn-lg"
+            onClick={() => window.SankaAnalytics?.viewCardapio('destaques')}
+          >
             Ver todos os 17 lanches <IcoArrow />
           </a>
         </div>
@@ -557,7 +560,13 @@ function MonteBanner() {
               Do seu jeito. Na hora. Sem limite de criatividade.
             </p>
           </div>
-          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+          <a
+            href={WA}
+            className="btn btn-primary btn-lg"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => window.SankaAnalytics?.waClick('monte_banner')}
+          >
             <IcoWA /> PEDIR AGORA
           </a>
         </div>
@@ -597,6 +606,7 @@ function OfertaDia() {
   function handlePedir() {
     const n = decrementOfertaRemaining();
     setRemaining(n);
+    window.SankaAnalytics?.waClick('oferta_relampago');
     const msg = `Olá! Quero aproveitar a oferta relâmpago! 🍔🔥\n\n*${burger.name}* por R$ ${salePrice} (25% off, só até 22h)`;
     window.open(waLink(msg), '_blank', 'noopener');
   }
@@ -659,7 +669,7 @@ function OfertaDia() {
 function HowItWorks() {
   const WA = waLink('Olá! Quero fazer um pedido. 🍔');
   return (
-    <section className="section how" id="como-funciona" aria-labelledby="how-title" data-ab-variant={SANKA_BRAND.heroVariant}>
+    <section className="section how" id="como-funciona" aria-labelledby="how-title">
       <div className="wrap">
         <div data-reveal>
           <div className="eyebrow">Como pedir</div>
@@ -1026,7 +1036,7 @@ function Location() {
             <div className="info-block">
               <div className="info-label"><IcoPhone /> WhatsApp</div>
               <div className="info-value">
-                <a href={waLink()} target="_blank" rel="noopener noreferrer">
+                <a href={waLink()} target="_blank" rel="noopener noreferrer" onClick={() => window.SankaAnalytics?.waClick('location_phone')}>
                   (16) 99313-8450
                 </a>
               </div>
@@ -1035,7 +1045,14 @@ function Location() {
               )}
             </div>
 
-            <a href={waLink('Olá! Quero pedir delivery. 🍔')} className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ alignSelf: 'flex-start' }}>
+            <a
+              href={waLink('Olá! Quero pedir delivery. 🍔')}
+              className="btn btn-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ alignSelf: 'flex-start' }}
+              onClick={() => window.SankaAnalytics?.waClick('location')}
+            >
               <IcoWA /> PEDIR DELIVERY
             </a>
           </div>
@@ -1123,7 +1140,9 @@ function FAQ() {
           <a
             href={waLink('Olá! Tenho uma dúvida sobre a Sanka Burgers.')}
             className="btn btn-outline btn-sm"
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => window.SankaAnalytics?.waClick('faq')}
           >
             <IcoWA /> Perguntar no WhatsApp
           </a>
@@ -1184,7 +1203,7 @@ function Footer() {
                 <IcoIG /> Instagram em breve
               </span>
             )}
-            <a href={waLink()} target="_blank" rel="noopener noreferrer">
+            <a href={waLink()} target="_blank" rel="noopener noreferrer" onClick={() => window.SankaAnalytics?.waClick('footer')}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <IcoWA /> (16) 99313-8450
               </span>

@@ -155,6 +155,7 @@ function ClubSignup({ onDone, onLoginClick }) {
       return;
     }
     if (result.error) { setSrvErr('Algo deu errado. Tente novamente.'); return; }
+    window.SankaAnalytics?.clubSignup('signup_form');
     onDone(result.member.id);
   }
 
@@ -264,6 +265,7 @@ function ClubLogin({ onDone, onSignupClick }) {
     const member = getMemberByPhone(ph);
     setLoading(false);
     if (!member) { setError('WhatsApp não encontrado. Crie sua conta.'); return; }
+    window.SankaAnalytics?.clubLogin();
     onDone(member.id);
   }
 
@@ -363,6 +365,8 @@ function RewardsCatalog({ member, onRefresh }) {
     setLoading(null);
     if (result.error === 'insufficient_points') { setErrMsg('Pontos insuficientes para esta recompensa.'); return; }
     if (result.error) { setErrMsg('Algo deu errado. Tente novamente.'); return; }
+    const rewardObj = getRewards().find(r => r.id === rewardId);
+    window.SankaAnalytics?.rewardRedeemed(rewardId, rewardObj?.points);
     setModal(result.redemption);
     onRefresh();
   }
@@ -488,6 +492,7 @@ function HistoryTab({ member }) {
   const typeLabel = {
     signup_bonus:  '🎁 Bônus de cadastro',
     spin_bonus:    '🎰 Roleta diária',
+    roulette_spin: '🎰 Roleta Sanka',
     admin_adjust:  '🔧 Ajuste admin',
     redeem:        '🎁 Resgate',
     order_earn:    '🍔 Pedido',
@@ -839,6 +844,8 @@ function RouletteTab({ member, onRefresh }) {
       return;
     }
 
+    window.SankaAnalytics?.rouletteSpin();
+
     const { prizeIndex } = outcome;
     const offset = 360 - (prizeIndex * SLICE + SLICE / 2) + (Math.random() - 0.5) * (SLICE * 0.65);
     const newRot = rot + 360 * 7 + offset;
@@ -848,7 +855,10 @@ function RouletteTab({ member, onRefresh }) {
     timerRef.current = setTimeout(() => {
       setResult(outcome);
       setPhase('result');
-      if (outcome.spin.resultType !== 'no_prize') setConfetti(true);
+      if (outcome.spin.resultType !== 'no_prize') {
+        setConfetti(true);
+        window.SankaAnalytics?.rouletteWin(outcome.spin.prizeId, outcome.spin.resultType);
+      }
       onRefresh();
     }, 4500);
   }
@@ -1060,10 +1070,10 @@ function ClubeApp() {
       {/* Footer */}
       <footer style={{
         borderTop:`1px solid rgba(245,239,230,0.05)`, padding:'16px 20px',
-        display:'flex', gap:20, justifyContent:'center', flexWrap:'wrap',
+        display:'flex', gap:16, justifyContent:'center', flexWrap:'wrap',
       }}>
-        {[['Cardápio','cardapio.html'],['Monte Seu Burger','monte.html'],['Oferta','oferta.html'],['Início','index.html']].map(([l,h]) => (
-          <a key={h} href={h} style={{ color:T.mute, fontFamily:T.body, fontSize:13, textDecoration:'none' }}>{l}</a>
+        {[['Cardápio','cardapio.html'],['Monte Seu Burger','monte.html'],['Oferta','oferta.html'],['Início','index.html'],['Privacidade','privacidade.html'],['Termos do Clube','termos-clube.html']].map(([l,h]) => (
+          <a key={h} href={h} style={{ color:T.mute, fontFamily:T.body, fontSize:12, textDecoration:'none' }}>{l}</a>
         ))}
       </footer>
     </div>
