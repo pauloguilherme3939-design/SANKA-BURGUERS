@@ -17,9 +17,21 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
@@ -29,7 +41,21 @@
       "short_name": "Cardápio",
       "description": "Ver o cardápio completo",
       "url": "/cardapio.html",
-      "icons": [{ "src": "/icons/icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Monte seu Burger",
+      "short_name": "Monte",
+      "description": "Montar um hambúrguer personalizado",
+      "url": "/monte.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Fazer Pedido",
+      "short_name": "Pedir",
+      "description": "Ir direto para o cardápio e pedir",
+      "url": "/cardapio.html#cardapio",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

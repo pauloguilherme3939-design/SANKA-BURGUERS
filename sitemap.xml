@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- TODO: SANKA — Atualizar domínio real antes de publicar -->
+<!-- TODO: SANKA — Confirmar domínio real antes de publicar -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
@@ -15,9 +15,23 @@
   </url>
 
   <url>
+    <loc>https://sankaburgers.com.br/monte.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://sankaburgers.com.br/oferta.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://sankaburgers.com.br/nossa-carne.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- /pedido/* tem noindex — não entra no sitemap -->
 
 </urlset>

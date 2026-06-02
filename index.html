@@ -151,6 +151,84 @@ tailwind.config = {
 }
 </script>
 
+<!-- ── Schema.org FAQPage JSON-LD ────────────────────────── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "A Sanka Burgers faz entrega?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sim, entregamos em Rio Claro/SP. O pedido é feito pelo WhatsApp e a entrega chega em até 35 minutos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quais formas de pagamento a Sanka aceita?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Aceitamos Pix, cartão de crédito e débito, e dinheiro."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual o horário de funcionamento?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Funcionamos de terça a domingo. Consulte os horários exatos no Google Meu Negócio ou pelo WhatsApp."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Como faço um pedido?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Você pode pedir pelo WhatsApp enviando mensagem diretamente, ou usar o site para montar seu pedido no cardápio e finalizar pelo WhatsApp."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "O hambúrguer da Sanka é congelado?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Não. O blend de acém, peito e costela é moído na casa todo dia. Não trabalhamos com hambúrguer congelado ou industrial."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- ── Schema.org Menu JSON-LD ───────────────────────────── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Menu",
+  "name": "Cardápio Sanka Burgers",
+  "url": "https://sankaburgers.com.br/cardapio.html",
+  "hasMenuSection": [
+    {
+      "@type": "MenuSection",
+      "name": "Clássicos",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "X Misto", "description": "Hambúrguer artesanal 120g, presunto, queijo prato, pão brioche.", "offers": { "@type": "Offer", "price": "18.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X Americano", "description": "Hambúrguer 150g, cheddar, ovo caipira, alface, tomate, maionese da casa.", "offers": { "@type": "Offer", "price": "24.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X Acebolado", "description": "Carne 150g, queijo prato, cebola caramelizada.", "offers": { "@type": "Offer", "price": "26.90", "priceCurrency": "BRL" } }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Assinaturas",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "X Provolone ao Mel", "description": "Provolone defumado, fio de mel silvestre, hambúrguer 150g.", "offers": { "@type": "Offer", "price": "28.90", "priceCurrency": "BRL" } }
+      ]
+    }
+  ]
+}
+</script>
+
 <!-- ── Fonts ──────────────────────────────────────────────── -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -168,7 +246,8 @@ if ('serviceWorker' in navigator) {
 </script>
 </head>
 <body>
-<div id="root"></div>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;background:#EA580C;color:#fff;padding:8px 16px;border-radius:4px;font-family:sans-serif;font-size:14px;font-weight:600">Pular para o conteúdo</a>
+<div id="root"><main id="main-content"></main></div>
 
 <!-- Analytics helpers (plain JS — sem Babel) -->
 <script src="analytics.js"></script>

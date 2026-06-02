@@ -56,8 +56,10 @@ tailwind.config = {
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div id="root"></div>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;background:#EA580C;color:#fff;padding:8px 16px;border-radius:4px;font-family:sans-serif;font-size:14px;font-weight:600">Pular para o conteúdo</a>
+<div id="root"><main id="main-content"></main></div>
 
+<script src="analytics.js"></script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 
