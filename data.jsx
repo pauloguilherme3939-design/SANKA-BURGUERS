@@ -13,7 +13,7 @@ export const SANKA_BURGERS = [
     name: "X Misto",
     cat: "classicos",
     code: "SB-001",
-    desc: "O começo de tudo. Hambúrguer artesanal 120g, presunto, queijo prato derretido e o pão sankinha selado na chapa.",
+    desc: "O início do cardápio e o favorito de quem não complica. Hambúrguer 120g prensado, presunto, queijo prato derretido e pão selado na chapa.",
     price: 18.9,
     tag: null,
     tags: "burger,cheese",
@@ -93,7 +93,7 @@ export const SANKA_BURGERS = [
     name: "X Hamburgão",
     cat: "carnes",
     code: "SB-009",
-    desc: "Duas carnes 150g empilhadas, duas fatias de cheddar, bacon crocante e molho barbecue defumado. Tamanho família.",
+    desc: "Duas carnes 150g empilhadas, cheddar duplo, bacon crocante e barbecue defumado. Lanche pra quem veio com fome de verdade.",
     price: 39.9,
     tag: "TOP 3",
     tags: "burger,double",
@@ -113,7 +113,7 @@ export const SANKA_BURGERS = [
     name: "X Frango Catupiry",
     cat: "frango",
     code: "SB-011",
-    desc: "Frango desfiado refogado, catupiry cremoso original derretendo por cima, alface e tomate fresco.",
+    desc: "Frango na chapa em pedaços, catupiry cremoso original derretendo por cima, alface e tomate fresco.",
     price: 28.9,
     tag: null,
     tags: "chicken,burger,cheese",
@@ -133,7 +133,7 @@ export const SANKA_BURGERS = [
     name: "X Azeitonado",
     cat: "carnes",
     code: "SB-013",
-    desc: "Carne 150g, queijo prato, azeitona preta picada, orégano e azeite extra virgem. Memória de pizza de domingo.",
+    desc: "Carne 150g, queijo prato, azeitona verde picada, orégano e azeite extra virgem. Aquele sabor que lembra pizza de domingo.",
     price: 27.9,
     tag: null,
     tags: "burger,olive",
@@ -153,7 +153,7 @@ export const SANKA_BURGERS = [
     name: "X Panceta",
     cat: "carnes",
     code: "SB-015",
-    desc: "Panceta crocante fatiada finíssima sobre carne 150g, cheddar inglês, rúcula e maionese defumada.",
+    desc: "Panceta bem preparada sobre carne 150g, queijo derretido, rúcula e maionese defumada. Lanche de respeito.",
     price: 34.9,
     tag: "ASSINATURA",
     tags: "burger,pancetta",
@@ -173,7 +173,7 @@ export const SANKA_BURGERS = [
     name: "X Bacon Azeitonado",
     cat: "carnes",
     code: "SB-017",
-    desc: "Combinação ousada. Bacon crocante, azeitona preta, mussarela derretida, orégano e maionese de ervas.",
+    desc: "Combinação que funciona. Bacon crocante, azeitona verde, queijo derretido, orégano e maionese de ervas.",
     price: 33.9,
     tag: null,
     tags: "burger,bacon,olive",
@@ -193,7 +193,7 @@ export const SANKA_EXTRAS = [
   { name: "Cream Cheese", price: 4.0, ico: "◑" },
   { name: "Mussarela", price: 4.0, ico: "▤" },
   { name: "Calabresa", price: 5.0, ico: "≣" },
-  { name: "Frango Desfiado", price: 6.0, ico: "▱" },
+  { name: "Frango na Chapa", price: 6.0, ico: "▱" },
   { name: "Pimenta Biquinho", price: 3.0, ico: "◆" },
   { name: "Jalapeño", price: 4.0, ico: "♢" },
   { name: "Picles", price: 3.0, ico: "⊜" },
@@ -202,7 +202,7 @@ export const SANKA_EXTRAS = [
   { name: "Molho da Casa Extra", price: 2.0, ico: "◌" },
   { name: "Barbecue Defumado", price: 3.0, ico: "◍" },
   { name: "Maionese Verde", price: 3.0, ico: "◎" },
-  { name: "Azeitona Preta", price: 3.0, ico: "●" },
+  { name: "Azeitona Verde", price: 3.0, ico: "●" },
 ];
 
 export const SANKA_DRINKS = [
@@ -332,9 +332,9 @@ export const SANKA_FEATURES = [
 ];
 
 export const SANKA_TESTIMONIALS = [
-  { quote: "Melhor hambúrguer da cidade. Surreal.", stars: 5, name: "Mariana S.", meta: "Pedido #4827 · Cliente recorrente" },
-  { quote: "A panceta deles é absurda. Voltei três vezes essa semana.", stars: 5, name: "Diego R.", meta: "Pedido #4901 · Cliente recorrente" },
-  { quote: "X Provolone ao Mel mudou minha vida. Só isso.", stars: 5, name: "Camila A.", meta: "Pedido #4756 · Primeira vez" },
+  { quote: "Melhor lanche prensado que comi em Rio Claro. O X Panceta chega pesado mesmo.", stars: 5, name: "Mariana S.", meta: "Cliente · Inauguração" },
+  { quote: "Pedi uma vez e virei viciado. Tamanho de verdade, queijo derretendo em tudo.", stars: 5, name: "Diego R.", meta: "Cliente · Inauguração" },
+  { quote: "X Provolone ao Mel é absurdo. Chega quente, prensado e bem recheado.", stars: 5, name: "Camila A.", meta: "Cliente · Inauguração" },
 ];
 
 // ============================== COMBOS ==============================

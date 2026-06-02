@@ -1,7 +1,7 @@
 // app.jsx — Sanka Burgers
 // Composição da home · Scroll reveal via IntersectionObserver
 
-import { Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia, NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, Footer } from './sections.jsx'
+import { Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia, NossaCarneTeaser, HowItWorks, Reviews, Location, LaunchCoupon, ClubeCTA, Footer } from './sections.jsx'
 
 const { useEffect } = React;
 
@@ -54,6 +54,7 @@ function App() {
         <HowItWorks />
         <Reviews />
         <Location />
+        <LaunchCoupon />
         <ClubeCTA />
       </main>
       <Footer />

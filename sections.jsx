@@ -4,6 +4,7 @@
 import { FoodPlaceholder } from './placeholders.jsx'
 import { SANKA_BURGERS } from './data.jsx'
 import { SANKA_CONFIG } from './lib/config.js'
+import { SANKA_BRAND } from './lib/brand.js'
 
 const { useState, useEffect, useRef } = React;
 
@@ -86,16 +87,16 @@ const FEATURED_BADGE  = {
 
 /* ── Reviews ─────────────────────────────────────────────────── */
 const REVIEWS = [
-  { text: "Melhor hambúrguer que já comi em Rio Claro. O X Panceta é absurdo de bom.", name: "Mariana S.", meta: "iFood · Cliente recorrente", stars: 5 },
-  { text: "Pedi uma vez e virei viciado. A carne é completamente diferente do fast-food.", name: "Diego R.", meta: "Google · 5 estrelas", stars: 5 },
-  { text: "X Provolone ao Mel mudou minha percepção de hambúrguer. Entrega rápida também.", name: "Camila A.", meta: "iFood · Primeira vez", stars: 5 },
+  { text: "Melhor lanche prensado que comi em Rio Claro. O X Panceta chega pesado mesmo.", name: "Mariana S.", meta: "Cliente · Inauguração", stars: 5 },
+  { text: "Pedi uma vez e virei viciado. Tamanho de verdade, queijo derretendo em tudo.", name: "Diego R.", meta: "Cliente · Inauguração", stars: 5 },
+  { text: "X Provolone ao Mel é absurdo. Chega quente, prensado e bem recheado.", name: "Camila A.", meta: "Cliente · Inauguração", stars: 5 },
 ];
 
 /* ── Como funciona ───────────────────────────────────────────── */
 const HOW_STEPS = [
-  { num: "01", title: "Escolha seu lanche", desc: "17 opções no cardápio — dos clássicos aos autorais. Tem sempre algo novo pra experimentar." },
+  { num: "01", title: "Escolha seu lanche", desc: "17 opções no cardápio — dos clássicos aos autorais. Lanchão prensado, bem recheado, grande de verdade." },
   { num: "02", title: "Peça pelo WhatsApp", desc: "Sem aplicativo, sem cadastro. Só manda a mensagem. Confirmamos o pedido em segundos." },
-  { num: "03", title: "Receba em 35 min", desc: "Saiu da chapa, foi pro entregador. Raio de 6 km coberto em até 35 minutos — garantido." },
+  { num: "03", title: "Receba rapidinho", desc: "Saiu da chapa, foi pro entregador. Entrega em Rio Claro/SP — acompanhe tudo pelo WhatsApp." },
 ];
 
 /* ── Oferta Relâmpago: helpers ───────────────────────────────── */
@@ -277,18 +278,17 @@ function Hero() {
       <div className="wrap hero-content">
         <div className="hero-eyebrow">
           <span className="dot" aria-hidden="true" />
-          Rio Claro / SP · Aberto agora · ★ 4.9 iFood
+          Estilo São Carlos · Prensado na chapa · Grande de verdade
         </div>
 
         <h1>
-          HAMBÚRGUER<br />
-          <span className="accent">DE VERDADE.</span>
+          O LANCHÃO PRENSADO<br />
+          <span className="accent">QUE CHEGOU PESADO.</span>
         </h1>
 
         <p className="hero-sub">
-          Blend artesanal de acém, peito e costela.
-          Moído todo dia. Pão da padaria local.
-          Sem industrial. <strong>Nunca.</strong>
+          Pão prensado na chapa, recheio generoso,
+          queijo derretendo e aquele tamanho que <strong>mata a fome de verdade.</strong>
         </p>
 
         <div className="hero-ctas">
@@ -303,18 +303,27 @@ function Hero() {
         </div>
 
         <div className="hero-proof" aria-label="Estatísticas">
+          {SANKA_BRAND.isGoogleRatingActive && (
+            <div className="hero-proof-item">
+              <span className="val">★ 4.9</span>
+              <span className="lbl">Google · iFood</span>
+            </div>
+          )}
           <div className="hero-proof-item">
-            <span className="val">★ 4.9</span>
-            <span className="lbl">iFood · Google</span>
+            <span className="val">17</span>
+            <span className="lbl">Opções no cardápio</span>
           </div>
-          <div className="hero-proof-item">
-            <span className="val">35 min</span>
-            <span className="lbl">Entrega média</span>
-          </div>
-          <div className="hero-proof-item">
-            <span className="val">+4 mil</span>
-            <span className="lbl">Pedidos/mês</span>
-          </div>
+          {SANKA_BRAND.isLaunched ? (
+            <div className="hero-proof-item">
+              <span className="val">+4 mil</span>
+              <span className="lbl">Pedidos/mês</span>
+            </div>
+          ) : (
+            <div className="hero-proof-item">
+              <span className="val">Em breve</span>
+              <span className="lbl">Inaugurando em Rio Claro</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -401,56 +410,60 @@ function Destaques() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   4. PROVA ARTESANAL (com contadores animados)
+   4. NÃO É LANCHE PEQUENO. É SANKA.
 ═══════════════════════════════════════════════════════════════ */
+const DIFERENCIAIS = [
+  {
+    icon: '🔥',
+    title: 'Prensado na chapa',
+    desc:  'Cada lanche vai direto pra chapa bem quente. O pão prensa, tosta e cria aquela casquinha que segura tudo junto.',
+  },
+  {
+    icon: '🧀',
+    title: 'Queijo derretendo',
+    desc:  'Generoso. Derretido. Cobrindo tudo. Não tem meio queijo nem queijo de enfeite aqui.',
+  },
+  {
+    icon: '🍔',
+    title: 'Grande de verdade',
+    desc:  'Não é lanchinho de vitrine. É lanche de respeito — aquele que mata a fome e você ainda lembra no dia seguinte.',
+  },
+  {
+    icon: '📍',
+    title: 'Estilo São Carlos',
+    desc:  'Referência regional de lanchão prensado. A Sanka trouxe esse estilo pra Rio Claro com identidade própria.',
+  },
+];
+
 function ProvaArtesanal() {
-  const [active, setActive] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setActive(true); io.disconnect(); } },
-      { threshold: 0.3 }
-    );
-    if (ref.current) io.observe(ref.current);
-    return () => io.disconnect();
-  }, []);
-
-  const grams = useCounter(200, active, 1200);
-  const pct   = useCounter(100, active, 1500);
-
   return (
-    <section className="prova" ref={ref} aria-labelledby="prova-title">
-      <h2 id="prova-title" className="sr-only">Por que a Sanka é diferente</h2>
-      <div className="prova-grid">
-
-        <div className="prova-item" data-reveal>
-          <div className="prova-num" aria-live="polite">{grams}<span className="prova-unit">g</span></div>
-          <h3>Carne moída no dia</h3>
-          <p>Blend exclusivo de acém, peito e costela. Compramos o corte inteiro e moemos na casa — todo dia, antes de abrir.</p>
+    <section className="prova" aria-labelledby="prova-title">
+      <div className="wrap">
+        <div style={{ textAlign: 'center', marginBottom: 48 }} data-reveal>
+          <div className="eyebrow">O que faz a diferença</div>
+          <h2 id="prova-title" className="section-title">
+            Não é lanche pequeno.<br /><em>É Sanka.</em>
+          </h2>
         </div>
 
-        <div className="prova-item prova-zero" data-reveal data-delay="2">
-          <div className="prova-num">0</div>
-          <h3>Hambúrguer industrial</h3>
-          <p className="prova-never-text">Nunca.</p>
-          <p>Nenhum dos nossos lanches leva hambúrguer de pacote. Essa é a única regra que não muda.</p>
+        <div className="prova-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
+          {DIFERENCIAIS.map((d, i) => (
+            <div key={d.title} className="prova-item" data-reveal data-delay={String(i + 1)}>
+              <div className="prova-num" style={{ fontSize: 40, lineHeight: 1, marginBottom: 12 }}>{d.icon}</div>
+              <h3>{d.title}</h3>
+              <p>{d.desc}</p>
+            </div>
+          ))}
         </div>
 
-        <div className="prova-item" data-reveal data-delay="4">
-          <div className="prova-num" aria-live="polite">{pct}<span className="prova-unit">%</span></div>
-          <h3>Acém + Peito + Costela</h3>
-          <p>Só cortes nobres, sem mistura industrial. O blend foi testado por meses até chegar no sabor e textura certos.</p>
+        <div style={{ textAlign: 'center', marginTop: 52 }} data-reveal>
+          <a href="nossa-carne.html" className="btn btn-outline btn-sm" style={{ gap: 8 }}>
+            Ver nossa carne
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
         </div>
-
-      </div>
-      <div style={{ textAlign: 'center', marginTop: 52 }} data-reveal>
-        <a href="nossa-carne.html" className="btn btn-outline btn-sm" style={{ gap: 8 }}>
-          Por que nossa carne é diferente
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-          </svg>
-        </a>
       </div>
     </section>
   );
@@ -657,9 +670,11 @@ function Reviews() {
           <h2 id="reviews-title" className="section-title">
             Não somos nós<br /><em>que falamos.</em>
           </h2>
-          <p className="section-sub" style={{ marginBottom: 0 }}>
-            Mais de 4.000 pedidos/mês. Avaliação 4.9 no iFood e Google.
-          </p>
+          {SANKA_BRAND.isGoogleRatingActive && (
+            <p className="section-sub" style={{ marginBottom: 0 }}>
+              Mais de 4.000 pedidos/mês. Avaliação 4.9 no Google e iFood.
+            </p>
+          )}
         </div>
 
         <div className="reviews-grid">
@@ -708,20 +723,28 @@ function Location() {
           </div>
 
           <div className="location-info" data-reveal data-delay="2">
-            <div className="info-block">
-              <div className="info-label"><IcoPin /> Endereço</div>
-              <div className="info-value">
-                Rua [TODO], nº [TODO]<br />
-                [Bairro] · Rio Claro/SP
+            {SANKA_BRAND.address ? (
+              <div className="info-block">
+                <div className="info-label"><IcoPin /> Endereço</div>
+                <div className="info-value">
+                  {SANKA_BRAND.address}<br />
+                  {SANKA_BRAND.serviceArea}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="info-block">
+                <div className="info-label"><IcoPin /> Localização</div>
+                <div className="info-value">{SANKA_BRAND.serviceArea}</div>
+                <p className="info-sub">Endereço completo em breve.</p>
+              </div>
+            )}
 
             <div className="info-block">
               <div className="info-label"><IcoClock /> Horário</div>
               <div className="hours-grid" role="table" aria-label="Horários de funcionamento">
                 <span className="hours-day">Ter — Dom</span>
-                <span className="hours-time">18:00 — 23:30</span>
-                <span className="hours-day">Segunda</span>
+                <span className="hours-time">18h — 23h30</span>
+                <span className="hours-day">{SANKA_BRAND.closedDay}</span>
                 <span className="hours-time hours-closed">Fechado</span>
               </div>
             </div>
@@ -733,7 +756,9 @@ function Location() {
                   (16) 99313-8450
                 </a>
               </div>
-              <p className="info-sub">Atendemos também pelo iFood e pedido presencial.</p>
+              {SANKA_BRAND.isIfoodActive && (
+                <p className="info-sub">Atendemos também pelo iFood.</p>
+              )}
             </div>
 
             <a href={waLink('Olá! Quero pedir delivery. 🍔')} className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ alignSelf: 'flex-start' }}>
@@ -750,26 +775,26 @@ function Location() {
    11. CLUBE SANKA — CTA
 ═══════════════════════════════════════════════════════════════ */
 function ClubeCTA() {
-  const WA = waLink('Quero saber mais sobre o Clube Sanka! 🏆');
+  const WA = waLink('Quero entrar no Clube Sanka! 🏆');
   return (
     <section className="clube-cta section" id="clube" aria-labelledby="clube-title">
       <div className="wrap">
         <div className="clube-cta-inner" data-reveal>
           <div className="clube-cta-text">
-            <div className="eyebrow">Programa de Fidelidade</div>
+            <div className="eyebrow">Vantagens de Lançamento</div>
             <h2 id="clube-title" className="section-title">
               CLUBE<br /><em>SANKA.</em>
             </h2>
             <p className="section-sub" style={{ marginBottom: 36 }}>
-              Pontuação a cada pedido. Resgates exclusivos.
-              Ofertas antecipadas para membros do clube.
+              Quanto mais você pede, mais vantagem você ganha.
+              Gire a roleta todo dia e ganhe descontos, brindes e frete grátis.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
-                <IcoWA /> ENTRAR NO CLUBE
+              <a href="clube.html" className="btn btn-primary btn-lg">
+                GIRAR A ROLETA
               </a>
-              <a href="admin-clube.html" className="btn btn-outline btn-lg">
-                Já sou membro
+              <a href={WA} className="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
+                <IcoWA /> Entrar no Clube
               </a>
             </div>
           </div>
@@ -799,8 +824,8 @@ function Footer() {
               <div className="nav-logo-name">SANKA<b>.</b></div>
             </a>
             <p className="footer-brand-desc">
-              Hambúrgueres artesanais em Rio Claro/SP.
-              Carne moída na hora, blend exclusivo, sem atalhos.
+              Lanchão prensado estilo São Carlos em {SANKA_BRAND.serviceArea}.
+              Prensado na chapa, bem recheado, grande de verdade.
             </p>
           </div>
 
@@ -810,21 +835,26 @@ function Footer() {
             <a href="nossa-carne.html">Nossa Carne</a>
             <a href="#como-funciona">Como Pedir</a>
             <a href="#localizacao">Localização</a>
+            {SANKA_BRAND.isClubActive && <a href="clube.html">Clube Sanka</a>}
           </div>
 
           <div className="footer-col">
-            <h5>Redes & Contato</h5>
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <IcoIG /> @sankaburgers
-              </span>
-            </a>
+            <h5>Contato</h5>
+            {SANKA_BRAND.isInstagramActive && SANKA_BRAND.instagramUrl && (
+              <a href={SANKA_BRAND.instagramUrl} target="_blank" rel="noopener noreferrer">
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <IcoIG /> @sankaburgers
+                </span>
+              </a>
+            )}
             <a href={waLink()} target="_blank" rel="noopener noreferrer">
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <IcoWA /> (16) 99313-8450
               </span>
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer">iFood</a>
+            {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl && (
+              <a href={SANKA_BRAND.ifoodUrl} target="_blank" rel="noopener noreferrer">iFood</a>
+            )}
           </div>
         </div>
 
@@ -837,13 +867,74 @@ function Footer() {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   13. CUPOM DE INAUGURAÇÃO
+═══════════════════════════════════════════════════════════════ */
+function LaunchCoupon() {
+  const [copied, setCopied] = useState(false);
+  const code = SANKA_BRAND.launchCoupon;
+  const WA   = waLink(SANKA_BRAND.launchCouponWAMsg);
+
+  function handleCopy() {
+    try {
+      navigator.clipboard.writeText(code).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      });
+    } catch {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  }
+
+  if (SANKA_BRAND.isLaunched) return null;
+
+  return (
+    <section className="section" aria-label="Cupom de inauguração" style={{ background: 'var(--surface-2, #1a1410)' }}>
+      <div className="wrap" style={{ textAlign: 'center' }}>
+        <div data-reveal>
+          <div className="eyebrow">Inauguração em breve</div>
+          <h2 className="section-title" style={{ marginBottom: 12 }}>
+            CHEGAMOS PESADOS<br /><em>COM DESCONTO.</em>
+          </h2>
+          <p className="section-sub" style={{ maxWidth: 480, margin: '0 auto 32px' }}>
+            Use o cupom abaixo no seu primeiro pedido e ganhe {SANKA_BRAND.launchCouponLabel}.
+          </p>
+
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 0, background: 'rgba(234,88,12,0.12)', border: '1.5px dashed var(--fire)', borderRadius: 12, overflow: 'hidden', marginBottom: 28 }}>
+            <span style={{ fontFamily: 'var(--f-h)', fontSize: 28, letterSpacing: '0.12em', color: 'var(--fire)', padding: '16px 24px' }}>
+              {code}
+            </span>
+            <button
+              onClick={handleCopy}
+              style={{ background: copied ? 'var(--fire)' : 'transparent', color: copied ? '#fff' : 'var(--fire)', border: 'none', borderLeft: '1.5px dashed var(--fire)', padding: '16px 20px', cursor: 'pointer', fontFamily: 'var(--f-m)', fontSize: 12, letterSpacing: '0.1em', transition: 'background 0.2s', whiteSpace: 'nowrap' }}
+              aria-label={copied ? 'Cupom copiado' : 'Copiar cupom'}
+            >
+              {copied ? 'COPIADO ✓' : 'COPIAR'}
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+              <IcoWA /> GARANTIR MEU CUPOM
+            </a>
+            <a href="clube.html" className="btn btn-outline btn-lg">
+              Ver mais vantagens
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Aliases para compatibilidade com imports antigos ──────── */
 const Proof       = ProvaArtesanal;
 const FeaturedMenu = Destaques;
 
 export {
   Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia,
-  NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, Footer,
+  NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, LaunchCoupon, Footer,
   Proof, FeaturedMenu,
 };
 export { IcoWA, IcoPin, IcoClock, IcoPhone, IcoIG, IcoArrow };
