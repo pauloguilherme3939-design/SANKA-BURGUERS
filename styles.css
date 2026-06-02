@@ -4,6 +4,35 @@
    Fonts: Anton (display) · Space Grotesk (body) · JetBrains Mono (details)
 ═══════════════════════════════════════════════════════════════ */
 
+/* ── Skip-to-content (acessibilidade) ───────────────────────── */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 9999;
+  background: #EA580C;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 /* ── Variáveis ───────────────────────────────────────────────── */
 :root {
   /* Fundos */

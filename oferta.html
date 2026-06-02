@@ -29,9 +29,18 @@ tailwind.config = {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+
+<!-- ── Service Worker ─────────────────────────────────────── -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
+</script>
 </head>
 <body>
-<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;background:#EA580C;color:#fff;padding:8px 16px;border-radius:4px;font-family:sans-serif;font-size:14px;font-weight:600">Pular para o conteúdo</a>
+<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
 <div id="root"><main id="main-content"></main></div>
 <script src="analytics.js"></script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
