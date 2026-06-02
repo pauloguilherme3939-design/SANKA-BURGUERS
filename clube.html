@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clube Sanka — Gire e Ganhe Todo Dia | Rio Claro/SP</title>
+<meta name="description" content="Gire a roleta todo dia e ganhe descontos, frete grátis, batata e bebida grátis no hambúrguer. Clube de fidelidade da Sanka Burgers em Rio Claro/SP. Gratuito, sem app." />
+<link rel="canonical" href="https://sankaburgers.com.br/clube.html" />
+<meta property="og:type"        content="website" />
+<meta property="og:title"       content="Clube Sanka — Gire e Ganhe Todo Dia" />
+<meta property="og:description" content="Roleta de prêmios diária: 10% OFF, 25% OFF, batata grátis, bebida grátis, frete grátis. Grátis, sem app. Sanka Burgers Rio Claro." />
+<meta property="og:url"         content="https://sankaburgers.com.br/clube.html" />
+<meta property="og:image"       content="https://sankaburgers.com.br/og/home.jpg" />
+<meta property="og:locale"      content="pt_BR" />
+<meta property="og:site_name"   content="Sanka Burgers" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#EA580C" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Clube Sanka" />
+<link rel="apple-touch-icon" href="/icons/icon.svg" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      fire:   { DEFAULT:'#EA580C', light:'#F97316', dark:'#C2410C' },
+      amber:  { DEFAULT:'#D97706', light:'#F59E0B' },
+      ink:    { DEFAULT:'#F8F4F0', mute:'#9CA3AF', dim:'#6B7280' },
+      carbon: { DEFAULT:'#0F0D0B', mid:'#1A1714', surface:'#242019' },
+    },
+    fontFamily: {
+      display: ['Anton','sans-serif'],
+      black:   ['"Archivo Black"','sans-serif'],
+      body:    ['"Space Grotesk"','sans-serif'],
+      mono:    ['"JetBrains Mono"','monospace'],
+    },
+  }},
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
+</script>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+<div id="root"><main id="main-content"></main></div>
+<script src="analytics.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="/dist/clube.js"></script>
+</body>
+</html>

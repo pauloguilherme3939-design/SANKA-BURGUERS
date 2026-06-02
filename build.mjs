@@ -25,6 +25,7 @@ const pages = [
   { entryPoints: ['src/oferta.jsx'],         outfile: 'dist/oferta.js'         },
   { entryPoints: ['src/pedido.jsx'],         outfile: 'dist/pedido.js'         },
   { entryPoints: ['src/admin-pedidos.jsx'],  outfile: 'dist/admin-pedidos.js'  },
+  { entryPoints: ['src/clube.jsx'],          outfile: 'dist/clube.js'          },
 ]
 
 /* ── Geração de WebP das imagens de burger ───────────────── */

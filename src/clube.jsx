@@ -1,0 +1,1 @@
+import '../clube-app.jsx'
