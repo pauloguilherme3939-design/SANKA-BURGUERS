@@ -4313,3 +4313,220 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .adm-pedido-items { margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
 .adm-pedido-item { font-size: 13px; color: var(--ink-dim); }
 .adm-pedido-total { font-family: var(--f-m); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.1em; }
+
+/* ═══════════════════════════════════════════════════════════════
+   v4 ADDITIONS — Hero coupon badge · btn-ghost · Clube benefits
+   LocalBrand · StickyWA · fcard WA button
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Botão ghost (hero 3º CTA) ───────────────────────────────── */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ink-dim);
+  font-family: var(--f-m);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  padding: 12px 20px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(245,239,230,0.10);
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { color: var(--ink); border-color: rgba(245,239,230,0.25); }
+
+/* ── Hero CTAs layout ────────────────────────────────────────── */
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 480px) {
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn { justify-content: center; }
+}
+
+/* ── Hero cupom badge ────────────────────────────────────────── */
+.hero-coupon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: rgba(234,88,12,0.10);
+  border: 1px dashed rgba(234,88,12,0.35);
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+}
+.hero-coupon-label {
+  font-family: var(--f-m);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+.hero-coupon-code {
+  font-family: var(--f-d);
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  color: var(--fire);
+}
+.hero-coupon-discount {
+  font-family: var(--f-m);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--fire-l);
+}
+
+/* ── fcard: botão WhatsApp ───────────────────────────────────── */
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.add-btn-wa {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+}
+
+/* ── Clube: grid de benefícios ───────────────────────────────── */
+.clube-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 0;
+}
+.clube-benefit-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 24px 20px;
+  transition: border-color 0.2s;
+}
+.clube-benefit-card:hover { border-color: rgba(234,88,12,0.25); }
+.clube-benefit-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.clube-benefit-title {
+  font-family: var(--f-d);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.clube-benefit-desc {
+  font-size: 14px;
+  color: var(--ink-dim);
+  line-height: 1.7;
+}
+
+/* ── LocalBrand section ──────────────────────────────────────── */
+.local-brand { border-top: 1px solid var(--line); }
+.local-brand-inner { max-width: 700px; }
+.local-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0;
+}
+.local-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: var(--pill);
+  padding: 6px 14px;
+  font-family: var(--f-m);
+  font-size: 12px;
+  color: var(--ink-dim);
+  letter-spacing: 0.05em;
+}
+
+/* ── Sticky WhatsApp CTA (mobile) ────────────────────────────── */
+.sticky-wa {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(10,10,10,0.96);
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 10px 16px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  /* Só aparece em mobile */
+}
+@media (min-width: 768px) {
+  .sticky-wa { display: none; }
+}
+.sticky-wa-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #16A34A;
+  color: #fff;
+  font-family: var(--f-m);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  padding: 14px 20px;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.sticky-wa-btn:hover { background: #15803D; }
+.sticky-wa-clube {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fire);
+  color: #fff;
+  font-family: var(--f-m);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 14px 18px;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  text-decoration: none;
+  white-space: nowrap;
+  border-left: 1px solid rgba(255,255,255,0.15);
+  transition: background 0.2s;
+}
+.sticky-wa-clube:hover { background: var(--fire-d); }
+
+/* ── Hero proof: 4th stat ────────────────────────────────────── */
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── fcard grid: 6 cards, 3 col em desktop ───────────────────── */
+@media (min-width: 900px) {
+  .featured-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

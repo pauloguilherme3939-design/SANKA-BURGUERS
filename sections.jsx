@@ -1,5 +1,5 @@
 // sections.jsx — Sanka Burgers
-// Home focada em conversão · Mobile-first · Etapa 3
+// Landing page de conversão · Mobile-first · v4
 
 import { FoodPlaceholder } from './placeholders.jsx'
 import { SANKA_BURGERS } from './data.jsx'
@@ -77,13 +77,23 @@ function waLink(msg) {
 }
 
 /* ── Destaques data ──────────────────────────────────────────── */
-const FEATURED_CODES  = ['SB-003', 'SB-004', 'SB-015'];
-const FEATURED_CENTER = 'SB-004';
+const FEATURED_CODES  = ['SB-009', 'SB-015', 'SB-004', 'SB-016', 'SB-003', 'SB-011'];
+const FEATURED_CENTER = 'SB-009';
 const FEATURED_BADGE  = {
-  'SB-003': { text: 'Clássico',    variant: 'badge-hot'  },
-  'SB-004': { text: 'Mais Pedido', variant: 'badge-hot'  },
-  'SB-015': { text: 'Assinatura',  variant: 'badge-gold' },
+  'SB-009': { text: '300g · 2 Carnes', variant: 'badge-hot'  },
+  'SB-015': { text: 'Assinatura',       variant: 'badge-gold' },
+  'SB-004': { text: 'Mais Pedido',      variant: 'badge-hot'  },
+  'SB-016': { text: 'Favorito',         variant: 'badge-hot'  },
+  'SB-003': { text: 'Clássico',         variant: 'badge-hot'  },
+  'SB-011': { text: 'Frango',           variant: 'badge-gold' },
 };
+
+/* ── Clube benefícios ────────────────────────────────────────── */
+const CLUBE_BENEFITS = [
+  { icon: '🎰', title: 'Gire a roleta', desc: 'Cada pedido vale um giro. Pode sair desconto de até 25%, porção grátis, bebida ou frete na casa.' },
+  { icon: '🔥', title: 'Streak de pedidos', desc: 'Pediu dias seguidos? Sobe de nível — de Iniciante a Lendário. Cada nível libera prêmios exclusivos.' },
+  { icon: '🏆', title: 'Campanhas especiais', desc: 'Membros participam de promoções que não aparecem no cardápio normal. Lançamentos, aniversários, ofertas surpresa.' },
+];
 
 /* ── Reviews ─────────────────────────────────────────────────── */
 const REVIEWS = [
@@ -96,7 +106,9 @@ const REVIEWS = [
 const HOW_STEPS = [
   { num: "01", title: "Escolha seu lanche", desc: "17 opções no cardápio — dos clássicos aos autorais. Lanchão prensado, bem recheado, grande de verdade." },
   { num: "02", title: "Peça pelo WhatsApp", desc: "Sem aplicativo, sem cadastro. Só manda a mensagem. Confirmamos o pedido em segundos." },
-  { num: "03", title: "Receba rapidinho", desc: "Saiu da chapa, foi pro entregador. Entrega em Rio Claro/SP — acompanhe tudo pelo WhatsApp." },
+  { num: "03", title: "Receba rapidinho", desc: SANKA_BRAND.isIfoodActive
+    ? "Saiu da chapa, foi pro entregador. Entrega em Rio Claro/SP pelo WhatsApp ou iFood."
+    : "Saiu da chapa, foi pro entregador. Entrega em Rio Claro/SP — acompanhe tudo pelo WhatsApp." },
 ];
 
 /* ── Oferta Relâmpago: helpers ───────────────────────────────── */
@@ -110,7 +122,6 @@ function getOfertaTargetTs(spH) {
   return t.getTime();
 }
 function _ofertaStore() {
-  const d = new Date().toISOString().slice(0, 10);
   try { return JSON.parse(localStorage.getItem('sk-oferta') || '{}'); } catch { return {}; }
 }
 function getOfertaRemaining() {
@@ -185,7 +196,7 @@ function Nav() {
             <a href="cardapio.html"   role="listitem">Cardápio</a>
             <a href="nossa-carne.html" role="listitem">Nossa Carne</a>
             <a href="#como-funciona"  role="listitem">Como Pedir</a>
-            <a href="#localizacao"    role="listitem">Localização</a>
+            <a href="#clube"          role="listitem">Clube Sanka</a>
           </div>
 
           <div className="nav-right-group">
@@ -206,14 +217,12 @@ function Nav() {
         </div>
       </nav>
 
-      {/* Overlay */}
       <div
         className={`nav-drawer-overlay${menuOpen ? ' is-open' : ''}`}
         onClick={close}
         aria-hidden="true"
       />
 
-      {/* Drawer lateral */}
       <aside
         id="nav-drawer"
         className={`nav-drawer${menuOpen ? ' is-open' : ''}`}
@@ -248,6 +257,7 @@ function Nav() {
 function Hero() {
   const bgRef = useRef(null);
   const WA    = waLink('Olá! Quero fazer um pedido. 🍔');
+  const WACL  = waLink('Olá! Quero entrar no Clube Sanka! 🏆');
 
   useEffect(() => {
     const onScroll = () => {
@@ -278,7 +288,7 @@ function Hero() {
       <div className="wrap hero-content">
         <div className="hero-eyebrow">
           <span className="dot" aria-hidden="true" />
-          Estilo São Carlos · Prensado na chapa · Grande de verdade
+          Rio Claro/SP · Estilo São Carlos · Prensado na chapa
         </div>
 
         <h1>
@@ -289,18 +299,28 @@ function Hero() {
         <p className="hero-sub">
           Pão prensado na chapa, recheio generoso,
           queijo derretendo e aquele tamanho que <strong>mata a fome de verdade.</strong>
+          A Sanka nasceu pra quem não quer lanche pequeno.
         </p>
 
         <div className="hero-ctas">
-          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
-            <IcoWA />
-            PEDIR AGORA
-          </a>
           <a href="cardapio.html" className="btn btn-outline btn-lg">
-            VER CARDÁPIO
-            <IcoArrow />
+            VER CARDÁPIO <IcoArrow />
+          </a>
+          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+            <IcoWA /> PEDIR AGORA
+          </a>
+          <a href="clube.html" className="btn btn-ghost btn-lg">
+            CLUBE SANKA →
           </a>
         </div>
+
+        {!SANKA_BRAND.isLaunched && (
+          <div className="hero-coupon-badge" aria-label="Cupom de lançamento SANKA10">
+            <span className="hero-coupon-label">Cupom de lançamento:</span>
+            <span className="hero-coupon-code">{SANKA_BRAND.launchCoupon}</span>
+            <span className="hero-coupon-discount">{SANKA_BRAND.launchCouponLabel}</span>
+          </div>
+        )}
 
         <div className="hero-proof" aria-label="Estatísticas">
           {SANKA_BRAND.isGoogleRatingActive && (
@@ -324,10 +344,13 @@ function Hero() {
               <span className="lbl">Inaugurando em Rio Claro</span>
             </div>
           )}
+          <div className="hero-proof-item">
+            <span className="val">150g–300g</span>
+            <span className="lbl">Carne por lanche</span>
+          </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div className="scroll-indicator" aria-hidden="true">
         <div className="scroll-dot" />
       </div>
@@ -336,7 +359,7 @@ function Hero() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   3. DESTAQUES
+   3. OS MAIS PESADOS — Destaques do cardápio
 ═══════════════════════════════════════════════════════════════ */
 function Destaques() {
   const items = FEATURED_CODES
@@ -348,9 +371,9 @@ function Destaques() {
       <div className="wrap">
         <div className="featured-head">
           <div>
-            <div className="eyebrow">Nossos Destaques</div>
+            <div className="eyebrow">Cardápio em destaque</div>
             <h2 id="dest-title" className="section-title">
-              Os que mais<br /><em>viciam.</em>
+              Os mais pesados<br /><em>da Sanka.</em>
             </h2>
           </div>
           <a href="cardapio.html" className="btn btn-outline" style={{ alignSelf: 'flex-end' }}>
@@ -362,12 +385,13 @@ function Destaques() {
           {items.map((burger, idx) => {
             const isCenter  = burger.code === FEATURED_CENTER;
             const badgeInfo = FEATURED_BADGE[burger.code];
+            const waMsg     = `Olá! Quero pedir o ${burger.name} (${burger.code}). 🍔`;
             return (
               <article
                 key={burger.code}
                 className={`fcard${isCenter ? ' is-featured' : ''}`}
                 data-reveal
-                data-delay={String(idx + 1)}
+                data-delay={String((idx % 3) + 1)}
               >
                 <div className="fcard-media">
                   <FoodPlaceholder
@@ -376,8 +400,8 @@ function Destaques() {
                     mood={idx + 1}
                     seed={100 + idx}
                     src={burger.src}
-                    eager
-                    priority
+                    eager={idx < 3}
+                    priority={idx < 3}
                   />
                   <div className="fcard-badges" aria-hidden="true">
                     {badgeInfo && <span className={`badge ${badgeInfo.variant}`}>{badgeInfo.text}</span>}
@@ -395,14 +419,32 @@ function Destaques() {
                       <span className="cur">R$</span>
                       {burger.price.toFixed(2).replace('.', ',')}
                     </div>
-                    <a href={`cardapio.html#${burger.code.toLowerCase()}`} className="add-btn" aria-label={`Ver ${burger.name} no cardápio`}>
-                      Pedir <IcoArrow />
-                    </a>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <a href={`cardapio.html#${burger.code.toLowerCase()}`} className="add-btn" aria-label={`Ver ${burger.name} no cardápio`}>
+                        Ver <IcoArrow />
+                      </a>
+                      <a
+                        href={waLink(waMsg)}
+                        className="add-btn add-btn-wa"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Pedir ${burger.name} pelo WhatsApp`}
+                        style={{ background: '#16A34A', color: '#fff', borderColor: '#16A34A' }}
+                      >
+                        <IcoWA />
+                      </a>
+                    </div>
                   </div>
                 </div>
               </article>
             );
           })}
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 32 }} data-reveal>
+          <a href="cardapio.html" className="btn btn-primary btn-lg">
+            Ver todos os 17 lanches <IcoArrow />
+          </a>
         </div>
       </div>
     </section>
@@ -444,6 +486,10 @@ function ProvaArtesanal() {
           <h2 id="prova-title" className="section-title">
             Não é lanche pequeno.<br /><em>É Sanka.</em>
           </h2>
+          <p className="section-sub" style={{ maxWidth: 520, margin: '12px auto 0' }}>
+            Tem lanche que só engana a fome. E tem lanche que chega pesado, quente, prensado e bem recheado.
+            A Sanka segue a pegada dos lanchões de São Carlos: grande, direto, sem miséria e feito pra matar fome de verdade.
+          </p>
         </div>
 
         <div className="prova-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
@@ -585,7 +631,169 @@ function OfertaDia() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   7. NOSSA CARNE — teaser banner
+   7. COMO PEDIR
+═══════════════════════════════════════════════════════════════ */
+function HowItWorks() {
+  const WA = waLink('Olá! Quero fazer um pedido. 🍔');
+  return (
+    <section className="section how" id="como-funciona" aria-labelledby="how-title">
+      <div className="wrap">
+        <div data-reveal>
+          <div className="eyebrow">Como pedir</div>
+          <h2 id="how-title" className="section-title">
+            Simples. Rápido.<br /><em>Sem complicação.</em>
+          </h2>
+          <p className="section-sub" style={{ maxWidth: 480, marginBottom: 0 }}>
+            Sem complicação. Você escolhe, manda o pedido e a Sanka prepara.
+          </p>
+        </div>
+
+        <div className="how-steps" role="list">
+          {HOW_STEPS.map((step, i) => (
+            <div key={step.num} className="how-step" role="listitem" data-reveal data-delay={String(i + 1)}>
+              <div className="how-num" aria-hidden="true">{step.num}</div>
+              <div className="how-body">
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="how-cta" data-reveal>
+          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+            <IcoWA /> FAZER MEU PEDIDO AGORA
+          </a>
+          {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl && (
+            <a href={SANKA_BRAND.ifoodUrl} className="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
+              iFood →
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   8. CUPOM DE INAUGURAÇÃO
+═══════════════════════════════════════════════════════════════ */
+function LaunchCoupon() {
+  const [copied, setCopied] = useState(false);
+  const code = SANKA_BRAND.launchCoupon;
+  const WA   = waLink(SANKA_BRAND.launchCouponWAMsg);
+
+  function handleCopy() {
+    try {
+      navigator.clipboard.writeText(code).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      });
+    } catch {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  }
+
+  if (SANKA_BRAND.isLaunched) return null;
+
+  return (
+    <section className="section" aria-label="Cupom de lançamento" style={{ background: 'var(--surface-2, #1a1410)' }}>
+      <div className="wrap" style={{ textAlign: 'center' }}>
+        <div data-reveal>
+          <div className="eyebrow">Cupom de primeira compra</div>
+          <h2 className="section-title" style={{ marginBottom: 12 }}>
+            GUARDE SEU CUPOM<br /><em>DE PRIMEIRA COMPRA.</em>
+          </h2>
+          <p className="section-sub" style={{ maxWidth: 480, margin: '0 auto 32px' }}>
+            Estamos preparando a chapa. Enquanto isso, garanta {SANKA_BRAND.launchCouponLabel} para experimentar a Sanka.
+          </p>
+
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 0, background: 'rgba(234,88,12,0.12)', border: '1.5px dashed var(--fire)', borderRadius: 12, overflow: 'hidden', marginBottom: 28 }}>
+            <span style={{ fontFamily: 'var(--f-h)', fontSize: 28, letterSpacing: '0.12em', color: 'var(--fire)', padding: '16px 24px' }}>
+              {code}
+            </span>
+            <button
+              onClick={handleCopy}
+              style={{ background: copied ? 'var(--fire)' : 'transparent', color: copied ? '#fff' : 'var(--fire)', border: 'none', borderLeft: '1.5px dashed var(--fire)', padding: '16px 20px', cursor: 'pointer', fontFamily: 'var(--f-m)', fontSize: 12, letterSpacing: '0.1em', transition: 'background 0.2s', whiteSpace: 'nowrap' }}
+              aria-label={copied ? 'Cupom copiado' : 'Copiar cupom'}
+            >
+              {copied ? 'COPIADO ✓' : 'COPIAR'}
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+              <IcoWA /> QUERO MEU CUPOM NO WHATSAPP
+            </a>
+            <a href="clube.html" className="btn btn-outline btn-lg">
+              Ver mais vantagens
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   9. CLUBE SANKA — CTA com benefícios
+═══════════════════════════════════════════════════════════════ */
+function ClubeCTA() {
+  const WA = waLink('Quero entrar no Clube Sanka! 🏆');
+  return (
+    <section className="clube-cta section" id="clube" aria-labelledby="clube-title">
+      <div className="wrap">
+        <div style={{ textAlign: 'center', marginBottom: 48 }} data-reveal>
+          <div className="eyebrow">Programa de fidelidade</div>
+          <h2 id="clube-title" className="section-title">
+            CLUBE<br /><em>SANKA.</em>
+          </h2>
+          <p className="section-sub" style={{ maxWidth: 480, margin: '12px auto 0' }}>
+            Quanto mais você pede, mais vantagem você ganha.
+            Gire a roleta todo dia e ganhe descontos, brindes e frete grátis.
+          </p>
+        </div>
+
+        <div className="clube-benefits-grid" data-reveal>
+          {CLUBE_BENEFITS.map((b, i) => (
+            <div key={b.title} className="clube-benefit-card" data-delay={String(i + 1)}>
+              <div className="clube-benefit-icon">{b.icon}</div>
+              <h3 className="clube-benefit-title">{b.title}</h3>
+              <p className="clube-benefit-desc">{b.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="clube-cta-inner" data-reveal style={{ marginTop: 48 }}>
+          <div className="clube-cta-badge" aria-hidden="true">
+            <div className="clube-badge-ring">
+              <span className="clube-badge-s">S</span>
+              <span className="clube-badge-label">CLUBE SANKA</span>
+            </div>
+          </div>
+          <div className="clube-cta-text">
+            <p className="section-sub" style={{ marginBottom: 24 }}>
+              Gratuito. Sem mensalidade. Sem ponto que expira.
+              Cada pedido vale um giro na roleta.
+            </p>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <a href="clube.html" className="btn btn-primary btn-lg">
+                ENTRAR NO CLUBE SANKA
+              </a>
+              <a href={WA} className="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
+                <IcoWA /> Pelo WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   10. NOSSA CARNE — teaser banner
 ═══════════════════════════════════════════════════════════════ */
 function NossaCarneTeaser() {
   const burger = SANKA_BURGERS.find(b => b.code === 'SB-015');
@@ -622,36 +830,30 @@ function NossaCarneTeaser() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   8. COMO FUNCIONA
+   11. FEITO PARA RIO CLARO SENTIR FOME — anchor local
 ═══════════════════════════════════════════════════════════════ */
-function HowItWorks() {
-  const WA = waLink('Olá! Quero fazer um pedido. 🍔');
+function LocalBrand() {
   return (
-    <section className="section how" id="como-funciona" aria-labelledby="how-title">
+    <section className="section local-brand" aria-labelledby="local-title">
       <div className="wrap">
-        <div data-reveal>
-          <div className="eyebrow">Como pedir</div>
-          <h2 id="how-title" className="section-title">
-            Simples. Rápido.<br /><em>Sem complicação.</em>
-          </h2>
-        </div>
-
-        <div className="how-steps" role="list">
-          {HOW_STEPS.map((step, i) => (
-            <div key={step.num} className="how-step" role="listitem" data-reveal data-delay={String(i + 1)}>
-              <div className="how-num" aria-hidden="true">{step.num}</div>
-              <div className="how-body">
-                <h3>{step.title}</h3>
-                <p>{step.desc}</p>
-              </div>
+        <div className="local-brand-inner" data-reveal>
+          <div>
+            <div className="eyebrow">Rio Claro · SP</div>
+            <h2 id="local-title" className="section-title">
+              Feito para Rio Claro<br /><em>sentir fome.</em>
+            </h2>
+            <p className="section-sub" style={{ maxWidth: 560, marginBottom: 32 }}>
+              A Sanka nasceu para trazer uma pegada diferente: lanche grande, prensado, direto ao ponto e com cara de interior.
+              Nada de lanche pequeno disfarçado de gourmet.
+            </p>
+            <div className="local-badges">
+              <span className="local-badge">📍 Rio Claro/SP</span>
+              <span className="local-badge">🔥 Estilo São Carlos</span>
+              <span className="local-badge">🍔 Grande de verdade</span>
+              <span className="local-badge">💬 Pede no WhatsApp</span>
+              {!SANKA_BRAND.isLaunched && <span className="local-badge">🎉 Cupom: SANKA10</span>}
             </div>
-          ))}
-        </div>
-
-        <div className="how-cta" data-reveal>
-          <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
-            <IcoWA /> FAZER MEU PEDIDO AGORA
-          </a>
+          </div>
         </div>
       </div>
     </section>
@@ -659,7 +861,7 @@ function HowItWorks() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   9. DEPOIMENTOS
+   12. DEPOIMENTOS
 ═══════════════════════════════════════════════════════════════ */
 function Reviews() {
   return (
@@ -700,7 +902,7 @@ function Reviews() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   10. LOCALIZAÇÃO & HORÁRIO
+   13. LOCALIZAÇÃO & HORÁRIO
 ═══════════════════════════════════════════════════════════════ */
 function Location() {
   return (
@@ -772,174 +974,18 @@ function Location() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   11. CLUBE SANKA — CTA
-═══════════════════════════════════════════════════════════════ */
-function ClubeCTA() {
-  const WA = waLink('Quero entrar no Clube Sanka! 🏆');
-  return (
-    <section className="clube-cta section" id="clube" aria-labelledby="clube-title">
-      <div className="wrap">
-        <div className="clube-cta-inner" data-reveal>
-          <div className="clube-cta-text">
-            <div className="eyebrow">Vantagens de Lançamento</div>
-            <h2 id="clube-title" className="section-title">
-              CLUBE<br /><em>SANKA.</em>
-            </h2>
-            <p className="section-sub" style={{ marginBottom: 36 }}>
-              Quanto mais você pede, mais vantagem você ganha.
-              Gire a roleta todo dia e ganhe descontos, brindes e frete grátis.
-            </p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a href="clube.html" className="btn btn-primary btn-lg">
-                GIRAR A ROLETA
-              </a>
-              <a href={WA} className="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
-                <IcoWA /> Entrar no Clube
-              </a>
-            </div>
-          </div>
-          <div className="clube-cta-badge" aria-hidden="true">
-            <div className="clube-badge-ring">
-              <span className="clube-badge-s">S</span>
-              <span className="clube-badge-label">CLUBE SANKA</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   12. FOOTER
-═══════════════════════════════════════════════════════════════ */
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="wrap">
-        <div className="footer-top">
-          <div className="footer-brand">
-            <a href="#" className="nav-logo" aria-label="Sanka Burgers — topo da página">
-              <div className="nav-logo-mark" aria-hidden="true">S</div>
-              <div className="nav-logo-name">SANKA<b>.</b></div>
-            </a>
-            <p className="footer-brand-desc">
-              Lanchão prensado estilo São Carlos em {SANKA_BRAND.serviceArea}.
-              Prensado na chapa, bem recheado, grande de verdade.
-            </p>
-          </div>
-
-          <div className="footer-col">
-            <h5>Navegação</h5>
-            <a href="cardapio.html">Cardápio</a>
-            <a href="nossa-carne.html">Nossa Carne</a>
-            <a href="#como-funciona">Como Pedir</a>
-            <a href="#localizacao">Localização</a>
-            {SANKA_BRAND.isClubActive && <a href="clube.html">Clube Sanka</a>}
-          </div>
-
-          <div className="footer-col">
-            <h5>Contato</h5>
-            {SANKA_BRAND.isInstagramActive && SANKA_BRAND.instagramUrl && (
-              <a href={SANKA_BRAND.instagramUrl} target="_blank" rel="noopener noreferrer">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                  <IcoIG /> @sankaburgers
-                </span>
-              </a>
-            )}
-            <a href={waLink()} target="_blank" rel="noopener noreferrer">
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <IcoWA /> (16) 99313-8450
-              </span>
-            </a>
-            {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl && (
-              <a href={SANKA_BRAND.ifoodUrl} target="_blank" rel="noopener noreferrer">iFood</a>
-            )}
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} Sanka Burgers · Rio Claro / SP</p>
-          <p>Feito com fogo e blend exclusivo</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   13. CUPOM DE INAUGURAÇÃO
-═══════════════════════════════════════════════════════════════ */
-function LaunchCoupon() {
-  const [copied, setCopied] = useState(false);
-  const code = SANKA_BRAND.launchCoupon;
-  const WA   = waLink(SANKA_BRAND.launchCouponWAMsg);
-
-  function handleCopy() {
-    try {
-      navigator.clipboard.writeText(code).then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2500);
-      });
-    } catch {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    }
-  }
-
-  if (SANKA_BRAND.isLaunched) return null;
-
-  return (
-    <section className="section" aria-label="Cupom de inauguração" style={{ background: 'var(--surface-2, #1a1410)' }}>
-      <div className="wrap" style={{ textAlign: 'center' }}>
-        <div data-reveal>
-          <div className="eyebrow">Inauguração em breve</div>
-          <h2 className="section-title" style={{ marginBottom: 12 }}>
-            CHEGAMOS PESADOS<br /><em>COM DESCONTO.</em>
-          </h2>
-          <p className="section-sub" style={{ maxWidth: 480, margin: '0 auto 32px' }}>
-            Use o cupom abaixo no seu primeiro pedido e ganhe {SANKA_BRAND.launchCouponLabel}.
-          </p>
-
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 0, background: 'rgba(234,88,12,0.12)', border: '1.5px dashed var(--fire)', borderRadius: 12, overflow: 'hidden', marginBottom: 28 }}>
-            <span style={{ fontFamily: 'var(--f-h)', fontSize: 28, letterSpacing: '0.12em', color: 'var(--fire)', padding: '16px 24px' }}>
-              {code}
-            </span>
-            <button
-              onClick={handleCopy}
-              style={{ background: copied ? 'var(--fire)' : 'transparent', color: copied ? '#fff' : 'var(--fire)', border: 'none', borderLeft: '1.5px dashed var(--fire)', padding: '16px 20px', cursor: 'pointer', fontFamily: 'var(--f-m)', fontSize: 12, letterSpacing: '0.1em', transition: 'background 0.2s', whiteSpace: 'nowrap' }}
-              aria-label={copied ? 'Cupom copiado' : 'Copiar cupom'}
-            >
-              {copied ? 'COPIADO ✓' : 'COPIAR'}
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <a href={WA} className="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
-              <IcoWA /> GARANTIR MEU CUPOM
-            </a>
-            <a href="clube.html" className="btn btn-outline btn-lg">
-              Ver mais vantagens
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
    14. FAQ — SEO local + conversão
 ═══════════════════════════════════════════════════════════════ */
 const FAQ_ITEMS = [
-  { q: 'A Sanka trabalha com lanche prensado?',       a: 'Sim. Cada lanche sai direto da chapa — pão tostado e crocante por fora, queijo derretendo por dentro. É o estilo São Carlos de fazer lanche, agora em Rio Claro.' },
-  { q: 'O lanche é grande mesmo?',                    a: 'Sim. A carne padrão tem 150g, o recheio é generoso e o queijo cobre tudo. Não é lanche de vitrine — é lanche de respeito, que mata a fome de verdade.' },
-  { q: 'Posso pedir pelo WhatsApp?',                  a: 'Sim, é a forma principal. Sem app, sem cadastro. Você manda sua escolha e a gente confirma em segundos.' },
-  { q: 'A Sanka faz delivery em Rio Claro?',           a: 'Sim, entregamos em Rio Claro/SP. Peça pelo WhatsApp e acompanhe pelo link de rastreamento que a gente manda.' },
-  { q: 'O que é o Clube Sanka?',                      a: 'Programa de fidelidade gratuito. Você se cadastra e ganha o direito de girar a roleta de prêmios todo dia — descontos de 10% a 25%, bebida grátis, batata grátis ou frete grátis.' },
-  { q: 'Tem cupom para a primeira compra?',           a: `Sim! Use o cupom ${SANKA_BRAND.launchCoupon} para ${SANKA_BRAND.launchCouponLabel}. Mencione ao pedir pelo WhatsApp.` },
-  { q: 'Qual o horário de funcionamento?',            a: `${SANKA_BRAND.openingHours}. ${SANKA_BRAND.closedDay} é nosso dia de folga.` },
-  { q: 'A Sanka é estilo São Carlos?',                a: 'Exato. O estilo São Carlos é conhecido pelo lanche grande prensado. A Sanka trouxe esse estilo para Rio Claro com identidade própria.' },
+  { q: 'A Sanka Burgers fica em Rio Claro?',       a: 'Sim. A Sanka Burgers é uma hamburgueria de lanchão prensado em Rio Claro/SP, funcionando de terça a domingo das 18h às 23h30. Fazemos delivery em Rio Claro pelo WhatsApp.' },
+  { q: 'O lanche é prensado?',                     a: 'Sim. Cada lanche sai direto da chapa — pão tostado e crocante por fora, queijo derretendo por dentro. É o estilo São Carlos de fazer lanche, agora em Rio Claro.' },
+  { q: 'O lanche é grande mesmo?',                 a: 'Sim. A carne padrão tem 150g, o X Hamburgão tem 300g (duas carnes). O recheio é generoso e o queijo cobre tudo. Não é lanche de vitrine — é lanche de respeito.' },
+  { q: 'Como funciona o Clube Sanka?',             a: 'Você se cadastra gratuitamente e gira a roleta de prêmios a cada pedido. Pode ganhar desconto de até 25%, porção grátis, bebida ou frete na casa. Quanto mais pedidos seguidos, maior o streak e melhores os prêmios.' },
+  { q: 'Tem cupom para a primeira compra?',        a: `Sim! Use o cupom ${SANKA_BRAND.launchCoupon} para ${SANKA_BRAND.launchCouponLabel}. Mencione ao pedir pelo WhatsApp.` },
+  { q: 'Posso pedir pelo WhatsApp?',               a: 'Sim, é a forma principal. Sem app, sem cadastro. Você manda sua escolha e a gente confirma em segundos.' },
+  { q: 'A Sanka tem iFood?',                       a: SANKA_BRAND.isIfoodActive ? 'Sim, você pode nos encontrar no iFood.' : 'Em breve! Por enquanto o pedido é feito pelo WhatsApp — direto com a Sanka, sem taxa de plataforma.' },
+  { q: 'O que é lanche estilo São Carlos?',        a: 'É o lanche grande e prensado na chapa que é tradição na cidade de São Carlos/SP e região. O pão vai inteiro pra chapa quente, fica crocante por fora e o queijo derrete por dentro. A Sanka trouxe esse estilo para Rio Claro.' },
+  { q: 'Qual o horário de funcionamento?',         a: `${SANKA_BRAND.openingHours}. ${SANKA_BRAND.closedDay} é nosso dia de folga.` },
 ];
 
 function FAQ() {
@@ -1015,13 +1061,119 @@ function FAQ() {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   15. FOOTER
+═══════════════════════════════════════════════════════════════ */
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="wrap">
+        <div className="footer-top">
+          <div className="footer-brand">
+            <a href="#" className="nav-logo" aria-label="Sanka Burgers — topo da página">
+              <div className="nav-logo-mark" aria-hidden="true">S</div>
+              <div className="nav-logo-name">SANKA<b>.</b></div>
+            </a>
+            <p className="footer-brand-desc">
+              Lanchão prensado estilo São Carlos em {SANKA_BRAND.serviceArea}.
+              Prensado na chapa, bem recheado, grande de verdade.
+            </p>
+          </div>
+
+          <div className="footer-col">
+            <h5>Navegação</h5>
+            <a href="cardapio.html">Cardápio</a>
+            <a href="nossa-carne.html">Nossa Carne</a>
+            <a href="#como-funciona">Como Pedir</a>
+            <a href="#localizacao">Localização</a>
+            {SANKA_BRAND.isClubActive && <a href="clube.html">Clube Sanka</a>}
+          </div>
+
+          <div className="footer-col">
+            <h5>Páginas locais</h5>
+            <a href="melhor-hamburgueria-rio-claro.html">Hamburgueria Rio Claro</a>
+            <a href="delivery-hamburgueria-rio-claro.html">Delivery Rio Claro</a>
+            <a href="lanche-prensado-rio-claro.html">Lanche Prensado</a>
+            <a href="hamburguer-grande-rio-claro.html">Hambúrguer Grande</a>
+            <a href="clube-sanka.html">Clube Sanka</a>
+          </div>
+
+          <div className="footer-col">
+            <h5>Contato</h5>
+            {SANKA_BRAND.isInstagramActive && SANKA_BRAND.instagramUrl && (
+              <a href={SANKA_BRAND.instagramUrl} target="_blank" rel="noopener noreferrer">
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <IcoIG /> @sankaburgers
+                </span>
+              </a>
+            )}
+            {!SANKA_BRAND.isInstagramActive && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--ink-mute)', fontSize: 13, opacity: 0.5 }}>
+                <IcoIG /> Instagram em breve
+              </span>
+            )}
+            <a href={waLink()} target="_blank" rel="noopener noreferrer">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <IcoWA /> (16) 99313-8450
+              </span>
+            </a>
+            {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl ? (
+              <a href={SANKA_BRAND.ifoodUrl} target="_blank" rel="noopener noreferrer">iFood</a>
+            ) : (
+              <span style={{ color: 'var(--ink-mute)', fontSize: 13, opacity: 0.5 }}>Em breve no iFood</span>
+            )}
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} Sanka Burgers · Rio Claro / SP</p>
+          <p>Feito com fogo e blend exclusivo</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   16. STICKY WhatsApp — mobile CTA fixo
+═══════════════════════════════════════════════════════════════ */
+function StickyWA() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const h = () => setVisible(window.scrollY > 320);
+    window.addEventListener('scroll', h, { passive: true });
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="sticky-wa" role="complementary" aria-label="Acesso rápido">
+      <a
+        href={waLink('Olá! Quero fazer um pedido. 🍔')}
+        className="sticky-wa-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Pedir agora pelo WhatsApp"
+      >
+        <IcoWA /> PEDIR AGORA
+      </a>
+      <a href="clube.html" className="sticky-wa-clube" aria-label="Entrar no Clube Sanka">
+        Clube →
+      </a>
+    </div>
+  );
+}
+
 /* ── Aliases para compatibilidade com imports antigos ──────── */
 const Proof       = ProvaArtesanal;
 const FeaturedMenu = Destaques;
 
 export {
   Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia,
-  NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, LaunchCoupon, FAQ, Footer,
+  NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, LaunchCoupon,
+  FAQ, Footer, LocalBrand, StickyWA,
   Proof, FeaturedMenu,
 };
 export { IcoWA, IcoPin, IcoClock, IcoPhone, IcoIG, IcoArrow };

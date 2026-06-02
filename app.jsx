@@ -1,7 +1,11 @@
 // app.jsx — Sanka Burgers
-// Composição da home · Scroll reveal via IntersectionObserver
+// Composição da home · v4 · Scroll reveal via IntersectionObserver
 
-import { Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia, NossaCarneTeaser, HowItWorks, Reviews, Location, LaunchCoupon, ClubeCTA, FAQ, Footer } from './sections.jsx'
+import {
+  Nav, Hero, Destaques, ProvaArtesanal, HowItWorks,
+  LaunchCoupon, ClubeCTA, NossaCarneTeaser, LocalBrand,
+  OfertaDia, MonteBanner, Reviews, Location, FAQ, Footer, StickyWA
+} from './sections.jsx'
 
 const { useEffect } = React;
 
@@ -37,6 +41,19 @@ function useScrollReveal() {
 
 /* ──────────────────────────────────────────────────────────────
    App
+   Hierarquia:
+   1. Hero forte
+   2. Cardápio em destaque (Os mais pesados)
+   3. Não é lanche pequeno. É Sanka.
+   4. Como pedir
+   5. Cupom de lançamento
+   6. Clube Sanka
+   7. Oferta relâmpago (quando ativa — 19h–22h)
+   8. Nossa carne / Feito para Rio Claro sentir fome
+   9. Depoimentos + Localização
+   10. FAQ
+   11. Rodapé
+   12. Sticky WhatsApp mobile
 ────────────────────────────────────────────────────────────── */
 function App() {
   useScrollReveal();
@@ -48,17 +65,18 @@ function App() {
         <Hero />
         <Destaques />
         <ProvaArtesanal />
-        <MonteBanner />
-        <OfertaDia />
-        <NossaCarneTeaser />
         <HowItWorks />
-        <Reviews />
-        <Location />
         <LaunchCoupon />
         <ClubeCTA />
+        <OfertaDia />
+        <NossaCarneTeaser />
+        <LocalBrand />
+        <Reviews />
+        <Location />
         <FAQ />
       </main>
       <Footer />
+      <StickyWA />
     </>
   );
 }
