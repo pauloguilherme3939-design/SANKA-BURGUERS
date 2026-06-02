@@ -83,6 +83,14 @@ function OfertaApp() {
     const n = decrementRemaining(); setRemaining(n);
     const msg = `Olá! Quero aproveitar a oferta relâmpago! 🍔🔥\n\n*${burger.name}* por R$ ${salePrice} (25% off — só até 22h)`;
     window.open(`https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    if (window.SankaAnalytics) {
+      SankaAnalytics.claimOffer({
+        code: burger.code,
+        name: burger.name,
+        originalPrice: Number(origPrice.replace(',', '.')),
+        salePrice: Number(salePrice.replace(',', '.')),
+      });
+    }
   }
 
   return (

@@ -63,6 +63,12 @@ function moodSvg(m, seed) {
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
 
+// Deriva o path do WebP a partir de qualquer src PNG/JPG
+function webpSrc(src) {
+  if (!src) return null;
+  return src.replace(/\.(png|jpg|jpeg)$/i, ".webp");
+}
+
 export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src, eager, priority }) {
   const idx = typeof mood === "number" ? mood % FOOD_MOODS.length : moodIndex((label || "") + (sub || ""));
   const m = FOOD_MOODS[idx];
@@ -70,16 +76,10 @@ export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src, eag
   const url = moodSvg(m, moodSeed);
 
   const [loaded, setLoaded] = React.useState(false);
-  const [realFailed, setRealFailed] = React.useState(false);
+  const [srcFailed, setSrcFailed] = React.useState(false);
 
-  const imgSeed = seed != null ? seed : moodSeed;
-  const tagPath = (tags || prompt || "").trim();
-  // Usa imagem real se disponível; cai para loremflickr só se não houver src
-  const imgUrl = src && !realFailed
-    ? src
-    : tagPath
-      ? `https://loremflickr.com/640/512/${encodeURIComponent(tagPath)}?lock=${imgSeed}`
-      : null;
+  const hasReal = !!src && !srcFailed;
+  const webp    = hasReal ? webpSrc(src) : null;
 
   return (
     <div className="ph">
@@ -91,23 +91,21 @@ export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src, eag
           backgroundPosition: "center",
         }}
       />
-      {imgUrl && (
-        <img
-          className={`ph-img${loaded ? " loaded" : ""}`}
-          src={imgUrl}
-          alt={label || ""}
-          loading={eager ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "auto"}
-          onLoad={() => setLoaded(true)}
-          onError={(e) => {
-            if (src && !realFailed) {
-              setRealFailed(true);
-            } else {
-              e.currentTarget.style.display = "none";
-            }
-          }}
-        />
-      )}
+      {hasReal ? (
+        // Imagem real: <picture> com WebP + fallback PNG/JPG
+        <picture>
+          {webp && <source srcSet={webp} type="image/webp" />}
+          <img
+            className={`ph-img${loaded ? " loaded" : ""}`}
+            src={src}
+            alt={label || ""}
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
+            onLoad={() => setLoaded(true)}
+            onError={() => setSrcFailed(true)}
+          />
+        </picture>
+      ) : null}
       <div className="ph-grain" />
       {(label || sub) && (
         <div className="ph-tag">

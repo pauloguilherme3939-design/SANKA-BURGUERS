@@ -158,18 +158,44 @@ function CheckoutModal() {
     return e;
   }
 
-  function handleSubmit() {
+  function makeLocalId() {
+    return Math.random().toString(36).slice(2, 8).toUpperCase();
+  }
+
+  async function handleSubmit() {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
 
-    const msg = buildWAMessage({ items, form, subtotal, discount, deliveryFee, total });
-    const url  = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+    // Gera ID de rastreamento antes de abrir WA (sem async — evita popup blocker)
+    const orderId   = makeLocalId();
+    const trackUrl  = `${window.location.origin}/pedido.html?id=${orderId}`;
+    const msgWithId = buildWAMessage({ items, form, subtotal, discount, deliveryFee, total })
+      + `\n\n📍 Rastreie seu pedido: ${trackUrl}`;
+    const waUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(msgWithId)}`;
 
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // Abre WA imediatamente (deve ser síncrono para não ser bloqueado)
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+
+    // Copia link de rastreamento para o clipboard
+    navigator.clipboard?.writeText(trackUrl).catch(() => {});
+
+    // Cria o pedido na API em background
+    fetch('/api/pedido', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id:    orderId,
+        name:  form.name,
+        phone: form.phone,
+        items: items.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+        total,
+      }),
+    }).catch(() => {}); // falha silenciosa — rastreamento é best-effort
+
     if (window.SankaAnalytics) SankaAnalytics.purchase(total);
     clearCart();
     closeCheckout();
-    showToast('Pedido enviado! Aguarde a confirmação pelo WhatsApp. 🍔');
+    showToast(`Pedido enviado! 🍔 Link de rastreamento copiado.`);
   }
 
   if (!checkoutOpen) return null;

@@ -23,8 +23,10 @@ export default function handler(req, res) {
 
   /* ── POST /api/pedido — criar pedido ── */
   if (req.method === 'POST') {
-    const body  = req.body || {};
-    const id    = makeId();
+    const body = req.body || {};
+    // Aceita ID vindo do cliente (gerado antes de abrir WA) ou gera um novo
+    const rawId = String(body.id || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+    const id    = rawId || makeId();
     const now   = new Date().toISOString();
     const order = {
       id,

@@ -43,6 +43,63 @@ function validatePayload({ name, whatsapp, birthday }) {
   return errors;
 }
 
+/* ── Pedido tracking (in-memory, espelha api/pedido.js) ─────── */
+const orders = new Map();
+const STATUSES = ['recebido','preparando','na_chapa','finalizando','saiu_entrega','entregue'];
+function makeOrderId() { return Math.random().toString(36).slice(2, 8).toUpperCase(); }
+
+app.post('/api/pedido', (req, res) => {
+  const body  = req.body || {};
+  const rawId = String(body.id || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+  const id    = rawId || makeOrderId();
+  const now   = new Date().toISOString();
+  const order = {
+    id,
+    items:     Array.isArray(body.items) ? body.items : [],
+    name:      String(body.name || 'Cliente').slice(0, 80),
+    phone:     String(body.phone || '').slice(0, 20),
+    total:     Number(body.total) || 0,
+    status:    'recebido',
+    createdAt: now,
+    updatedAt: now,
+    history:   [{ status: 'recebido', ts: now }],
+  };
+  orders.set(id, order);
+  res.status(201).json({ id, order });
+});
+
+app.get('/api/pedido', (req, res) => {
+  if (req.query.list) {
+    if (req.headers.authorization !== `Bearer ${ADMIN_PW}`)
+      return res.status(401).json({ error: 'Não autorizado' });
+    const today  = new Date().toISOString().slice(0, 10);
+    const result = Array.from(orders.values())
+      .filter(o => o.createdAt.startsWith(today))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return res.json(result);
+  }
+  const id = String(req.query.id || '').toUpperCase().trim();
+  if (!id) return res.status(400).json({ error: 'id obrigatório' });
+  const order = orders.get(id);
+  if (!order) return res.status(404).json({ error: 'Pedido não encontrado. Verifique o código.' });
+  res.json(order);
+});
+
+app.patch('/api/pedido', (req, res) => {
+  if (req.headers.authorization !== `Bearer ${ADMIN_PW}`)
+    return res.status(401).json({ error: 'Não autorizado' });
+  const id = String(req.query.id || '').toUpperCase().trim();
+  const order = orders.get(id);
+  if (!order) return res.status(404).json({ error: 'Pedido não encontrado' });
+  const { status } = req.body || {};
+  if (!STATUSES.includes(status)) return res.status(400).json({ error: 'Status inválido', valid: STATUSES });
+  const now       = new Date().toISOString();
+  order.status    = status;
+  order.updatedAt = now;
+  order.history.push({ status, ts: now });
+  res.json(order);
+});
+
 /* ── POST /api/clube — inscrição ─────────────────────────────── */
 app.post('/api/clube', (req, res) => {
   const { name, whatsapp, birthday } = req.body || {};

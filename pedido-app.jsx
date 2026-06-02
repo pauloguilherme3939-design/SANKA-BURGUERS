@@ -259,7 +259,12 @@ function PedidoApp() {
     if (id) {
       fetch(`/api/pedido?id=${encodeURIComponent(id.toUpperCase())}`)
         .then(r => r.ok ? r.json() : null)
-        .then(data => { if (data) setOrder(data); })
+        .then(data => {
+          if (data) {
+            setOrder(data);
+            if (window.SankaAnalytics) SankaAnalytics.trackOrder(data.id);
+          }
+        })
         .catch(() => {});
     }
   }, []);
