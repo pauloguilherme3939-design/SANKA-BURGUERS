@@ -1,75 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- TODO: SANKA — Confirmar domínio real antes de publicar -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://sankaburgers.com.br/</loc>
+    <loc>https://sankaburguers.vercel.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/cardapio.html</loc>
+    <loc>https://sankaburguers.vercel.app/cardapio.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/monte.html</loc>
+    <loc>https://sankaburguers.vercel.app/monte.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/oferta.html</loc>
+    <loc>https://sankaburguers.vercel.app/oferta.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/nossa-carne.html</loc>
+    <loc>https://sankaburguers.vercel.app/nossa-carne.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/clube.html</loc>
+    <loc>https://sankaburguers.vercel.app/clube.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/melhor-hamburgueria-rio-claro.html</loc>
+    <loc>https://sankaburguers.vercel.app/melhor-hamburgueria-rio-claro.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/delivery-hamburgueria-rio-claro.html</loc>
+    <loc>https://sankaburguers.vercel.app/delivery-hamburgueria-rio-claro.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/hamburgueria-artesanal-rio-claro.html</loc>
+    <loc>https://sankaburguers.vercel.app/hamburgueria-artesanal-rio-claro.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/lanche-prensado-rio-claro.html</loc>
+    <loc>https://sankaburguers.vercel.app/lanche-prensado-rio-claro.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/hamburguer-grande-rio-claro.html</loc>
+    <loc>https://sankaburguers.vercel.app/hamburguer-grande-rio-claro.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://sankaburgers.com.br/clube-sanka.html</loc>
+    <loc>https://sankaburguers.vercel.app/clube-sanka.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

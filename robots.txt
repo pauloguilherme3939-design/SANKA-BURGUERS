@@ -5,5 +5,4 @@ Disallow: /admin-pedidos.html
 Disallow: /api/
 Disallow: /data/
 
-# TODO: SANKA — Atualizar domínio real antes de publicar
-Sitemap: https://sankaburgers.com.br/sitemap.xml
+Sitemap: https://sankaburguers.vercel.app/sitemap.xml
