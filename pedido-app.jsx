@@ -54,6 +54,7 @@ function Confetti() {
 /* ── ETA counter ─────────────────────────────────────────────── */
 function useEta(minutes) {
   const [secs, setSecs] = useState(minutes * 60);
+  useEffect(() => setSecs(minutes * 60), [minutes]);
   useEffect(() => {
     if (secs <= 0) return;
     const iv = setInterval(() => setSecs(s => Math.max(0, s - 1)), 1000);
@@ -65,10 +66,12 @@ function useEta(minutes) {
 }
 
 /* ── SearchForm ──────────────────────────────────────────────── */
-function SearchForm({ onFound }) {
+function SearchForm({ onFound, initialError = '' }) {
   const [val, setVal] = useState('');
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState(initialError);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => setErr(initialError), [initialError]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -91,22 +94,22 @@ function SearchForm({ onFound }) {
         ONDE ESTÁ<br /><em>SEU PEDIDO?</em>
       </h1>
       <p className="section-sub" style={{marginBottom:32}}>
-        Digite o código de 6 letras que enviamos no WhatsApp.
+        Digite o código completo que enviamos no WhatsApp.
       </p>
       <form onSubmit={handleSubmit} className="pedido-search-form" aria-label="Buscar pedido">
         <input
           className="pedido-search-input"
           type="text"
           inputMode="text"
-          maxLength={6}
-          placeholder="ABC123"
+          maxLength={28}
+          placeholder="SK-AAAAMMDD-..."
           value={val}
-          onChange={e => setVal(e.target.value.toUpperCase())}
+          onChange={e => setVal(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ''))}
           aria-label="Código do pedido"
           autoFocus
           autoComplete="off"
         />
-        <button className="btn btn-primary btn-lg" type="submit" disabled={loading || val.length < 4}>
+        <button className="btn btn-primary btn-lg" type="submit" disabled={loading || val.length < 20}>
           {loading ? 'Buscando...' : 'VER STATUS →'}
         </button>
       </form>
@@ -133,6 +136,8 @@ function OrderTracker({ initialOrder }) {
   const [order,   setOrder]   = useState(initialOrder);
   const [prevStatus, setPrev] = useState(null);
   const [celebrate, setCelebrate] = useState(initialOrder.status === 'entregue');
+  const [syncError, setSyncError] = useState('');
+  const [copyStatus, setCopyStatus] = useState('');
   const pollRef = useRef(null);
 
   const currentIdx = getStepIndex(order.status);
@@ -145,14 +150,17 @@ function OrderTracker({ initialOrder }) {
     async function poll() {
       try {
         const r = await fetch(`/api/pedido?id=${encodeURIComponent(order.id)}`);
-        if (!r.ok) return;
+        if (!r.ok) throw new Error('Não foi possível atualizar o rastreamento agora.');
         const fresh = await r.json();
+        setSyncError('');
         if (fresh.status !== order.status) {
           setPrev(order.status);
           setOrder(fresh);
           if (fresh.status === 'entregue') setCelebrate(true);
         }
-      } catch {}
+      } catch (error) {
+        setSyncError(error?.message || 'Falha de conexão ao atualizar o rastreamento.');
+      }
     }
     pollRef.current = setInterval(poll, 30000);
     return () => clearInterval(pollRef.current);
@@ -160,8 +168,14 @@ function OrderTracker({ initialOrder }) {
 
   const trackUrl = `${window.location.origin}/pedido.html?id=${order.id}`;
 
-  function copyLink() {
-    navigator.clipboard.writeText(trackUrl).catch(() => {});
+  async function copyLink() {
+    try {
+      if (!navigator.clipboard) throw new Error('Clipboard indisponível.');
+      await navigator.clipboard.writeText(trackUrl);
+      setCopyStatus('Link copiado.');
+    } catch {
+      setCopyStatus('Não foi possível copiar automaticamente. Selecione o link acima.');
+    }
   }
 
   return (
@@ -215,6 +229,8 @@ function OrderTracker({ initialOrder }) {
         })}
       </div>
 
+      {syncError && <p className="pedido-search-err" role="status">{syncError}</p>}
+
       {/* Compartilhar */}
       <div className="pedido-share" data-reveal>
         <p style={{fontFamily:'var(--f-m)',fontSize:11,color:'var(--ink-mute)',letterSpacing:'0.12em',textTransform:'uppercase',marginBottom:10}}>
@@ -227,6 +243,7 @@ function OrderTracker({ initialOrder }) {
             Copiar
           </button>
         </div>
+        {copyStatus && <p style={{ marginTop:8, color:'var(--ink-mute)', fontSize:12 }}>{copyStatus}</p>}
       </div>
 
       {order.status === 'entregue' && (
@@ -253,19 +270,26 @@ function OrderTracker({ initialOrder }) {
 /* ── App ─────────────────────────────────────────────────────── */
 function PedidoApp() {
   const [order, setOrder] = useState(null);
+  const [initialError, setInitialError] = useState('');
 
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('id');
     if (id) {
+      setInitialError('');
       fetch(`/api/pedido?id=${encodeURIComponent(id.toUpperCase())}`)
-        .then(r => r.ok ? r.json() : null)
-        .then(data => {
-          if (data) {
-            setOrder(data);
-            if (window.SankaAnalytics) SankaAnalytics.trackOrder(data.id);
+        .then(async r => {
+          if (!r.ok) {
+            let message = 'Pedido não encontrado. Verifique o código.';
+            try { message = (await r.json()).error || message; } catch {}
+            throw new Error(message);
           }
+          return r.json();
         })
-        .catch(() => {});
+        .then(data => {
+          setOrder(data);
+          if (window.SankaAnalytics) window.SankaAnalytics.trackOrder(data.id);
+        })
+        .catch(error => setInitialError(error?.message || 'Não foi possível consultar o pedido.'));
     }
   }, []);
 
@@ -296,7 +320,7 @@ function PedidoApp() {
       <main className="pedido-main section">
         <div className="wrap" style={{maxWidth:640}}>
           {!order
-            ? <SearchForm onFound={setOrder} />
+            ? <SearchForm onFound={setOrder} initialError={initialError} />
             : <OrderTracker initialOrder={order} />
           }
         </div>

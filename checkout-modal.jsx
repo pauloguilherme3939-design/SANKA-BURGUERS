@@ -1,6 +1,7 @@
 // checkout-modal.jsx — Sanka Burgers · Formulário de fechamento do pedido
 
 import { SANKA_CONFIG } from './lib/config.js'
+import { completeCheckout } from './lib/order-submit.mjs'
 import { useCartContext } from './cart.jsx'
 
 const { useState, useEffect } = React;
@@ -24,41 +25,43 @@ function maskCep(raw) {
 }
 
 /* ── Monta mensagem WA ─────────────────────────────────────── */
-function buildWAMessage({ items, form, subtotal, discount, deliveryFee, total }) {
-  const ln = (s) => s;
+function buildWAMessage(order) {
+  const { customer, fulfillment, payment, coupon, items, pricing } = order;
   const lines = [
     '*🍔 PEDIDO SANKA BURGERS*',
     '',
-    `*Cliente:* ${form.name}`,
-    `*Telefone:* ${form.phone}`,
+    `*Pedido:* #${order.id}`,
+    `*Cliente:* ${customer.name}`,
+    `*Telefone:* ${customer.phone}`,
     '---',
   ];
 
   items.forEach(item => {
-    lines.push(`${item.qty}× ${item.name} — ${brl(item.price * item.qty)}`);
-    if (item.obs) lines.push(`  _Obs: ${item.obs}_`);
+    lines.push(`${item.quantity}× ${item.name} — ${brl(item.lineTotal)}`);
+    if (item.note) lines.push(`  _Obs: ${item.note}_`);
   });
 
   lines.push('---');
-  lines.push(`Subtotal: ${brl(subtotal)}`);
-  if (discount > 0) lines.push(`Desconto (${form.coupon}): -${brl(discount)}`);
+  lines.push(`Subtotal: ${brl(pricing.subtotal)}`);
+  if (pricing.discount > 0) lines.push(`Desconto (${coupon?.code}): -${brl(pricing.discount)}`);
 
-  const entregaLabel = form.delivery === 'delivery'
-    ? (deliveryFee === 0 ? 'Entrega: Grátis 🎉' : `Entrega: ${brl(deliveryFee)}`)
+  const entregaLabel = fulfillment.type === 'delivery'
+    ? (pricing.deliveryFee === 0 ? 'Entrega: Grátis 🎉' : `Entrega: ${brl(pricing.deliveryFee)}`)
     : 'Entrega: Retirada no local';
   lines.push(entregaLabel);
 
-  lines.push(`*TOTAL: ${brl(total)}*`);
+  lines.push(`*TOTAL: ${brl(pricing.total)}*`);
 
-  const pagLabel = form.payment === 'pix'  ? 'Pix'
-    : form.payment === 'card' ? 'Cartão na entrega'
-    : `Dinheiro${form.change ? ` (troco: ${form.change})` : ''}`;
+  const pagLabel = payment.method === 'pix'  ? 'Pix'
+    : payment.method === 'card' ? 'Cartão na entrega'
+    : `Dinheiro${payment.change ? ` (troco: ${payment.change})` : ''}`;
   lines.push(`Pagamento: ${pagLabel}`);
 
-  if (form.delivery === 'delivery') {
+  if (fulfillment.type === 'delivery') {
+    const address = fulfillment.address;
     lines.push('');
-    lines.push(`*Endereço:* ${form.street}, ${form.number}${form.complement ? ` — ${form.complement}` : ''}`);
-    lines.push(`${form.neighborhood} · CEP ${form.cep}`);
+    lines.push(`*Endereço:* ${address.street}, ${address.number}${address.complement ? ` — ${address.complement}` : ''}`);
+    lines.push(`${address.neighborhood} · CEP ${address.cep}`);
   }
 
   return lines.join('\n');
@@ -80,10 +83,17 @@ function CheckoutModal() {
   const [errors,       setErrors]       = useState({});
   const [couponState,  setCouponState]  = useState(null); // { valid, discount, label }
   const [cepLoading,   setCepLoading]   = useState(false);
+  const [submitting,   setSubmitting]   = useState(false);
+  const [submitError,  setSubmitError]  = useState('');
 
   // Resetar form ao fechar
   useEffect(() => {
-    if (!checkoutOpen) { setForm(INITIAL_FORM); setErrors({}); setCouponState(null); }
+    if (!checkoutOpen) {
+      setForm(INITIAL_FORM);
+      setErrors({});
+      setCouponState(null);
+      setSubmitError('');
+    }
   }, [checkoutOpen]);
 
   // Disparar begin_checkout ao abrir (subtotal capturado no momento da abertura)
@@ -94,14 +104,15 @@ function CheckoutModal() {
   // Fechar com Escape
   useEffect(() => {
     if (!checkoutOpen) return;
-    const onKey = (e) => { if (e.key === 'Escape') closeCheckout(); };
+    const onKey = (e) => { if (e.key === 'Escape' && !submitting) closeCheckout(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [checkoutOpen]);
+  }, [checkoutOpen, submitting]);
 
   function field(key, val) {
     setForm(f => ({ ...f, [key]: val }));
     if (errors[key]) setErrors(e => ({ ...e, [key]: null }));
+    if (submitError) setSubmitError('');
   }
 
   // ViaCEP
@@ -111,15 +122,21 @@ function CheckoutModal() {
     setCepLoading(true);
     try {
       const r = await fetch(`https://viacep.com.br/ws/${c}/json/`);
+      if (!r.ok) throw new Error('Consulta de CEP indisponível.');
       const d = await r.json();
-      if (!d.erro) {
-        setForm(f => ({
-          ...f,
-          street:       d.logradouro || f.street,
-          neighborhood: d.bairro     || f.neighborhood,
-        }));
-      }
-    } catch {}
+      if (d.erro) throw new Error('CEP não encontrado.');
+      setForm(f => ({
+        ...f,
+        street:       d.logradouro || f.street,
+        neighborhood: d.bairro     || f.neighborhood,
+      }));
+      setErrors(current => ({ ...current, cep: null }));
+    } catch (error) {
+      setErrors(current => ({
+        ...current,
+        cep: `${error?.message || 'Não foi possível consultar o CEP.'} Preencha o endereço manualmente.`,
+      }));
+    }
     finally { setCepLoading(false); }
   }
 
@@ -158,44 +175,67 @@ function CheckoutModal() {
     return e;
   }
 
-  function makeLocalId() {
-    return Math.random().toString(36).slice(2, 8).toUpperCase();
-  }
-
   async function handleSubmit() {
+    if (submitting) return;
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
 
-    // Gera ID de rastreamento antes de abrir WA (sem async — evita popup blocker)
-    const orderId   = makeLocalId();
-    const trackUrl  = `${window.location.origin}/pedido.html?id=${orderId}`;
-    const msgWithId = buildWAMessage({ items, form, subtotal, discount, deliveryFee, total })
-      + `\n\n📍 Rastreie seu pedido: ${trackUrl}`;
-    const waUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(msgWithId)}`;
+    // Reserva a aba durante o clique. Ela só recebe o WhatsApp após persistência confirmada.
+    const whatsappWindow = window.open('', '_blank');
+    if (whatsappWindow) whatsappWindow.opener = null;
 
-    // Abre WA imediatamente (deve ser síncrono para não ser bloqueado)
-    window.open(waUrl, '_blank', 'noopener,noreferrer');
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      await completeCheckout({
+        payload: {
+          customer: {
+            name: form.name,
+            phone: form.phone,
+          },
+          items: items.map(item => ({
+            id: item.id,
+            qty: item.qty,
+            note: item.obs || '',
+          })),
+          fulfillment: {
+            type: form.delivery,
+            address: form.delivery === 'delivery' ? {
+              cep: form.cep,
+              street: form.street,
+              number: form.number,
+              complement: form.complement,
+              neighborhood: form.neighborhood,
+            } : null,
+          },
+          payment: {
+            method: form.payment,
+            change: form.change,
+          },
+          couponCode: form.coupon,
+        },
+        onConfirmed: async persistedOrder => {
+          const trackUrl = `${window.location.origin}/pedido.html?id=${encodeURIComponent(persistedOrder.id)}`;
+          const message = `${buildWAMessage(persistedOrder)}\n\n📍 Rastreie seu pedido: ${trackUrl}`;
+          const waUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
 
-    // Copia link de rastreamento para o clipboard
-    navigator.clipboard?.writeText(trackUrl).catch(() => {});
+          if (window.SankaAnalytics) window.SankaAnalytics.purchase(persistedOrder.pricing.total);
+          clearCart();
+          closeCheckout();
+          showToast(`Pedido #${persistedOrder.id} salvo. Abrindo o WhatsApp.`);
 
-    // Cria o pedido na API em background
-    fetch('/api/pedido', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id:    orderId,
-        name:  form.name,
-        phone: form.phone,
-        items: items.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
-        total,
-      }),
-    }).catch(() => {}); // falha silenciosa — rastreamento é best-effort
-
-    if (window.SankaAnalytics) SankaAnalytics.purchase(total);
-    clearCart();
-    closeCheckout();
-    showToast(`Pedido enviado! 🍔 Link de rastreamento copiado.`);
+          if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.location.replace(waUrl);
+          else window.location.assign(waUrl);
+        },
+      });
+    } catch (error) {
+      if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+      const message = error?.message || 'Não foi possível salvar o pedido. Seu carrinho foi mantido.';
+      setSubmitError(message);
+      showToast(message, 'error');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!checkoutOpen) return null;
@@ -212,13 +252,13 @@ function CheckoutModal() {
 
   return (
     <div className="co-overlay" role="dialog" aria-modal="true" aria-label="Finalizar pedido">
-      <div className="co-backdrop" onClick={closeCheckout} aria-hidden="true" />
+      <div className="co-backdrop" onClick={submitting ? undefined : closeCheckout} aria-hidden="true" />
 
       <div className="co-panel">
 
         {/* Header */}
         <div className="co-head">
-          <button className="co-back" onClick={closeCheckout} aria-label="Voltar">
+          <button className="co-back" onClick={closeCheckout} aria-label="Voltar" disabled={submitting}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="m15 18-6-6 6-6"/>
             </svg>
@@ -403,14 +443,16 @@ function CheckoutModal() {
                 </div>
               </div>
 
-              <button className="btn btn-primary btn-lg co-submit" onClick={handleSubmit}>
-                Enviar Pedido pelo WhatsApp
+              {submitError && <p className="co-error" role="alert" style={{ marginBottom: 12 }}>{submitError}</p>}
+
+              <button className="btn btn-primary btn-lg co-submit" onClick={handleSubmit} disabled={submitting || items.length === 0}>
+                {submitting ? 'Salvando pedido...' : 'Salvar e abrir WhatsApp'}
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
               </button>
               <p className="co-submit-note">
-                O WhatsApp da loja abre com o pedido pronto. A equipe confirma em instantes.
+                Primeiro salvamos o pedido; depois o WhatsApp abre com o código de rastreio.
               </p>
             </div>
           </div>

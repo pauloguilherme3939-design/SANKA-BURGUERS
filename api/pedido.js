@@ -1,98 +1,69 @@
-// api/pedido.js — Order tracking API · Sanka Burgers
-// Vercel serverless function
-// Storage: in-memory Map (persists while function stays warm)
-// For production with high volume, replace with Vercel Blob or a DB.
+'use strict';
 
-const orders = new Map();
+const { createOrderService, OrderError } = require('../lib/orders.js');
+const { createDefaultOrderStore, StorageError } = require('../lib/order-store.js');
 
-const STATUSES = ['recebido', 'preparando', 'na_chapa', 'finalizando', 'saiu_entrega', 'entregue'];
+let defaultService;
 
-function makeId() {
-  return Math.random().toString(36).slice(2, 8).toUpperCase();
+function getDefaultService() {
+  if (!defaultService) defaultService = createOrderService({ store: createDefaultOrderStore() });
+  return defaultService;
 }
 
-function cors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+function createOrderHandler({ service, adminPassword } = {}) {
+  return async function orderHandler(req, res) {
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Allow', 'GET, POST, PATCH, OPTIONS');
+
+    if (req.method === 'OPTIONS') return res.status(204).end();
+
+    try {
+      const orderService = service || getDefaultService();
+
+      if (req.method === 'GET' && req.query?.list !== undefined) {
+        const password = adminPassword ?? process.env.ADMIN_PASSWORD;
+        if (!password) return res.status(503).json({ error: 'ADMIN_PASSWORD não configurado.' });
+        if ((req.headers.authorization || '') !== `Bearer ${password}`) {
+          return res.status(401).json({ error: 'Não autorizado.' });
+        }
+        const orders = await orderService.list(req.query.day);
+        return res.json(orders);
+      }
+
+      if (req.method === 'GET') {
+        const order = await orderService.getPublic(req.query?.id);
+        return res.json(order);
+      }
+
+      if (req.method === 'POST') {
+        const order = await orderService.create(req.body);
+        return res.status(201).json({ id: order.id, order });
+      }
+
+      if (req.method === 'PATCH') {
+        const password = adminPassword ?? process.env.ADMIN_PASSWORD;
+        if (!password) return res.status(503).json({ error: 'ADMIN_PASSWORD não configurado.' });
+        if ((req.headers.authorization || '') !== `Bearer ${password}`) {
+          return res.status(401).json({ error: 'Não autorizado.' });
+        }
+        const order = await orderService.updateStatus(req.query?.id, req.body?.status);
+        return res.json(order);
+      }
+
+      return res.status(405).json({ error: 'Método não permitido.' });
+    } catch (error) {
+      if (error instanceof OrderError) {
+        return res.status(error.status).json({ error: error.message, code: error.code, fields: error.fields });
+      }
+      if (error instanceof StorageError) {
+        console.error(`[pedido] Falha de persistência: ${error.message}`);
+        return res.status(503).json({ error: 'Não foi possível persistir o pedido. Tente novamente.' });
+      }
+      console.error(`[pedido] Erro inesperado: ${error?.message || 'erro desconhecido'}`);
+      return res.status(500).json({ error: 'Erro interno ao processar o pedido.' });
+    }
+  };
 }
 
-export default function handler(req, res) {
-  cors(res);
-  if (req.method === 'OPTIONS') return res.status(200).end();
-
-  /* ── POST /api/pedido — criar pedido ── */
-  if (req.method === 'POST') {
-    const body = req.body || {};
-    // Aceita ID vindo do cliente (gerado antes de abrir WA) ou gera um novo
-    const rawId = String(body.id || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
-    const id    = rawId || makeId();
-    const now   = new Date().toISOString();
-    const order = {
-      id,
-      items:     Array.isArray(body.items) ? body.items : [],
-      name:      String(body.name || 'Cliente').slice(0, 80),
-      phone:     String(body.phone || '').slice(0, 20),
-      total:     Number(body.total) || 0,
-      status:    'recebido',
-      createdAt: now,
-      updatedAt: now,
-      history:   [{ status: 'recebido', ts: now }],
-    };
-    orders.set(id, order);
-    return res.status(201).json({ id, order });
-  }
-
-  /* ── GET /api/pedido?id=ABC123 — ler pedido ── */
-  if (req.method === 'GET') {
-    const id = String(req.query.id || '').toUpperCase().trim();
-    if (!id) return res.status(400).json({ error: 'id obrigatório' });
-    const order = orders.get(id);
-    if (!order) return res.status(404).json({ error: 'Pedido não encontrado. Verifique o código.' });
-    return res.json(order);
-  }
-
-  /* ── PATCH /api/pedido?id=ABC123 — atualizar status (admin) ── */
-  if (req.method === 'PATCH') {
-    const adminPwd = process.env.ADMIN_PASSWORD;
-    if (!adminPwd) {
-      return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado' });
-    }
-    const auth     = req.headers.authorization || '';
-    if (auth !== `Bearer ${adminPwd}`) {
-      return res.status(401).json({ error: 'Não autorizado' });
-    }
-    const id = String(req.query.id || '').toUpperCase().trim();
-    if (!id) return res.status(400).json({ error: 'id obrigatório' });
-    const order = orders.get(id);
-    if (!order) return res.status(404).json({ error: 'Pedido não encontrado' });
-    const { status } = req.body || {};
-    if (!STATUSES.includes(status)) {
-      return res.status(400).json({ error: 'Status inválido', valid: STATUSES });
-    }
-    const now        = new Date().toISOString();
-    order.status     = status;
-    order.updatedAt  = now;
-    order.history.push({ status, ts: now });
-    return res.json(order);
-  }
-
-  /* ── GET /api/pedido?list=1 — listar pedidos do dia (admin) ── */
-  if (req.method === 'GET' && req.query.list) {
-    const adminPwd = process.env.ADMIN_PASSWORD;
-    if (!adminPwd) {
-      return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado' });
-    }
-    const auth     = req.headers.authorization || '';
-    if (auth !== `Bearer ${adminPwd}`) {
-      return res.status(401).json({ error: 'Não autorizado' });
-    }
-    const today  = new Date().toISOString().slice(0, 10);
-    const result = Array.from(orders.values())
-      .filter(o => o.createdAt.startsWith(today))
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    return res.json(result);
-  }
-
-  return res.status(405).json({ error: 'Método não permitido' });
-}
+module.exports = createOrderHandler();
+module.exports.createOrderHandler = createOrderHandler;

@@ -1,6 +1,6 @@
 // admin-pedidos-app.jsx — Painel de pedidos · Sanka Burgers
 
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect } = React;
 
 const STATUSES = ['recebido','preparando','na_chapa','finalizando','saiu_entrega','entregue'];
 const STATUS_LABELS = {
@@ -25,16 +25,40 @@ function nextStatus(current) {
   return i < STATUSES.length - 1 ? STATUSES[i + 1] : null;
 }
 
+function brl(value) {
+  return Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+async function responseError(response, fallback) {
+  try {
+    const data = await response.json();
+    return data.error || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 /* ── Login ───────────────────────────────────────────────────── */
 function Login({ onAuth }) {
   const [pwd, setPwd] = useState('');
   const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
-    fetch('/api/pedido?list=1', { headers: { Authorization: `Bearer ${pwd}` } })
-      .then(r => { if (r.ok) onAuth(pwd); else setErr('Senha incorreta.'); })
-      .catch(() => setErr('Erro de conexão.'));
+    setLoading(true);
+    setErr('');
+    try {
+      const response = await fetch('/api/pedido?list=1', {
+        headers: { Authorization: `Bearer ${pwd}` },
+      });
+      if (!response.ok) throw new Error(await responseError(response, 'Não foi possível entrar.'));
+      onAuth(pwd);
+    } catch (error) {
+      setErr(error?.message || 'Erro de conexão.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -52,8 +76,8 @@ function Login({ onAuth }) {
           onChange={e => setPwd(e.target.value)}
           autoFocus
         />
-        <button className="btn btn-primary btn-lg" type="submit" style={{ justifyContent:'center' }}>
-          ENTRAR
+        <button className="btn btn-primary btn-lg" type="submit" disabled={loading || !pwd} style={{ justifyContent:'center' }}>
+          {loading ? 'ENTRANDO...' : 'ENTRAR'}
         </button>
         {err && <p style={{ color:'var(--fire-l)', fontFamily:'var(--f-m)', fontSize:12, textAlign:'center' }}>{err}</p>}
       </form>
@@ -62,21 +86,30 @@ function Login({ onAuth }) {
 }
 
 /* ── Order card ──────────────────────────────────────────────── */
-function OrderCard({ order, token, onUpdate }) {
+function OrderCard({ order, token, onUpdate, onUnauthorized }) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const next = nextStatus(order.status);
 
   async function advance() {
     if (!next) return;
     setLoading(true);
+    setError('');
     try {
       const r = await fetch(`/api/pedido?id=${order.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status: next }),
       });
-      if (r.ok) { const d = await r.json(); onUpdate(d); }
-    } catch {}
+      if (r.status === 401) {
+        onUnauthorized();
+        return;
+      }
+      if (!r.ok) throw new Error(await responseError(r, 'Não foi possível atualizar o pedido.'));
+      onUpdate(await r.json());
+    } catch (requestError) {
+      setError(requestError?.message || 'Erro de conexão ao atualizar o pedido.');
+    }
     finally { setLoading(false); }
   }
 
@@ -93,14 +126,29 @@ function OrderCard({ order, token, onUpdate }) {
           {STATUS_LABELS[order.status]}
         </span>
       </div>
-      {order.items?.length > 0 && (
-        <div className="adm-pedido-items">
-          {order.items.map((it, i) => <div key={i} className="adm-pedido-item">{it}</div>)}
+      {order.customer?.name && (
+        <div style={{ marginBottom:10, color:'var(--ink)', fontFamily:'var(--f-b)', fontSize:14 }}>
+          {order.customer.name} · {order.fulfillment?.type === 'delivery' ? 'Entrega' : 'Retirada'}
         </div>
       )}
-      {order.total > 0 && (
-        <div className="adm-pedido-total">Total: R$ {order.total.toFixed(2).replace('.', ',')}</div>
+      {order.items?.length > 0 && (
+        <div className="adm-pedido-items">
+          {order.items.map((item, i) => (
+            <div key={item.id || i} className="adm-pedido-item">
+              {typeof item === 'string' ? item : (
+                <>
+                  <strong>{item.quantity}×</strong> {item.name} — {brl(item.lineTotal)}
+                  {item.note && <div style={{ color:'var(--ink-mute)', fontSize:11, marginTop:3 }}>Obs.: {item.note}</div>}
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       )}
+      {order.pricing && (
+        <div className="adm-pedido-total">Total: {brl(order.pricing.total)}</div>
+      )}
+      {error && <p className="pedido-search-err" role="alert">{error}</p>}
       {next && (
         <button className="btn btn-primary" style={{ width:'100%', justifyContent:'center', marginTop:12 }} onClick={advance} disabled={loading}>
           {loading ? 'Atualizando...' : `→ ${STATUS_LABELS[next]}`}
@@ -112,19 +160,25 @@ function OrderCard({ order, token, onUpdate }) {
 }
 
 /* ── Dashboard ───────────────────────────────────────────────── */
-function Dashboard({ token }) {
+function Dashboard({ token, onUnauthorized }) {
   const [orders,  setOrders]  = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newId,   setNewId]   = useState('');
-  const [newItem, setNewItem] = useState('');
-  const [creating, setCreating] = useState(false);
-  const [items,   setItems]   = useState([]);
+  const [loadError, setLoadError] = useState('');
 
   async function fetchOrders() {
+    setLoading(true);
+    setLoadError('');
     try {
       const r = await fetch('/api/pedido?list=1', { headers: { Authorization: `Bearer ${token}` } });
-      if (r.ok) { const d = await r.json(); setOrders(d); }
-    } catch {}
+      if (r.status === 401) {
+        onUnauthorized();
+        return;
+      }
+      if (!r.ok) throw new Error(await responseError(r, 'Não foi possível carregar os pedidos.'));
+      setOrders(await r.json());
+    } catch (error) {
+      setLoadError(error?.message || 'Erro de conexão ao carregar pedidos.');
+    }
     finally { setLoading(false); }
   }
 
@@ -133,24 +187,6 @@ function Dashboard({ token }) {
     const iv = setInterval(fetchOrders, 30000);
     return () => clearInterval(iv);
   }, []);
-
-  async function createOrder() {
-    setCreating(true);
-    try {
-      const r = await fetch('/api/pedido', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, name: 'Cliente WA', total: 0 }),
-      });
-      if (r.ok) {
-        const d = await r.json();
-        setNewId(d.id);
-        setItems([]);
-        fetchOrders();
-      }
-    } catch {}
-    finally { setCreating(false); }
-  }
 
   function handleUpdate(updated) {
     setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
@@ -176,56 +212,17 @@ function Dashboard({ token }) {
       <main style={{ padding:'32px 0 100px' }}>
         <div className="wrap" style={{ maxWidth:760 }}>
 
-          {/* Criar novo pedido */}
-          <div className="adm-create-order">
-            <div style={{ fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginBottom:12 }}>
-              Novo Pedido
-            </div>
-            <div style={{ display:'flex', gap:8, marginBottom:8 }}>
-              <input
-                className="pedido-search-input"
-                style={{ flex:1, padding:'10px 14px', fontSize:14 }}
-                placeholder="Ex: X Hamburgão + Batata"
-                value={newItem}
-                onChange={e => setNewItem(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && newItem.trim()) { setItems(p => [...p, newItem.trim()]); setNewItem(''); } }}
-              />
-              <button className="btn btn-outline btn-sm" onClick={() => { if (newItem.trim()) { setItems(p => [...p, newItem.trim()]); setNewItem(''); } }}>+</button>
-            </div>
-            {items.length > 0 && (
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:10 }}>
-                {items.map((it, i) => (
-                  <span key={i} style={{ background:'rgba(234,88,12,0.12)', border:'1px solid rgba(234,88,12,0.3)', color:'var(--fire-l)', padding:'3px 10px', borderRadius:'var(--pill)', fontFamily:'var(--f-m)', fontSize:11 }}>
-                    {it} <button style={{ background:'none', border:'none', color:'inherit', cursor:'pointer', marginLeft:4 }} onClick={() => setItems(p => p.filter((_,j)=>j!==i))}>×</button>
-                  </span>
-                ))}
-              </div>
-            )}
-            <div style={{ display:'flex', gap:10, alignItems:'center' }}>
-              <button className="btn btn-primary" onClick={createOrder} disabled={creating || items.length === 0} style={{ justifyContent:'center' }}>
-                {creating ? 'Criando...' : 'CRIAR PEDIDO'}
-              </button>
-              {newId && (
-                <span style={{ fontFamily:'var(--f-m)', fontSize:12, color:'#4ade80', letterSpacing:'0.1em' }}>
-                  ✓ Código: <strong>{newId}</strong>
-                  <button className="btn btn-outline btn-sm" style={{ marginLeft:8 }} onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/pedido.html?id=${newId}`).catch(()=>{}); }}>
-                    Copiar link
-                  </button>
-                </span>
-              )}
-            </div>
-          </div>
-
           {/* Pedidos ativos */}
           <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:40 }}>
             Ativos ({active.length})
           </div>
           {loading && <p style={{ color:'var(--ink-mute)', fontFamily:'var(--f-m)', fontSize:12 }}>Carregando...</p>}
+          {loadError && <p className="pedido-search-err" role="alert">{loadError}</p>}
           {!loading && active.length === 0 && (
             <p style={{ color:'var(--ink-mute)', fontFamily:'var(--f-m)', fontSize:12 }}>Nenhum pedido ativo.</p>
           )}
           <div className="adm-pedidos-grid">
-            {active.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} />)}
+            {active.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
           </div>
 
           {/* Entregues */}
@@ -235,7 +232,7 @@ function Dashboard({ token }) {
                 Entregues ({done.length})
               </div>
               <div className="adm-pedidos-grid">
-                {done.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} />)}
+                {done.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
               </div>
             </>
           )}
@@ -254,7 +251,14 @@ function AdminPedidosApp() {
     setToken(pwd);
   }
 
-  return token ? <Dashboard token={token} /> : <Login onAuth={handleAuth} />;
+  function handleUnauthorized() {
+    sessionStorage.removeItem('sk-admin-pwd');
+    setToken('');
+  }
+
+  return token
+    ? <Dashboard token={token} onUnauthorized={handleUnauthorized} />
+    : <Login onAuth={handleAuth} />;
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<AdminPedidosApp />);
