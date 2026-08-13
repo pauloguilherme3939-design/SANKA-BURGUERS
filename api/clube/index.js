@@ -6,7 +6,6 @@
 const { put, list, del } = require('@vercel/blob');
 
 const BLOB_KEY  = 'sanka-clube/members.json';
-const ADMIN_PW  = process.env.ADMIN_PASSWORD || 'sanka2024';
 
 /* ── Helpers de persistência ─────────────────────────────── */
 async function readMembers() {

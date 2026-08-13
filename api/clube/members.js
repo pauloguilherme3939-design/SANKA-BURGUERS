@@ -5,7 +5,7 @@
 const { list } = require('@vercel/blob');
 
 const BLOB_KEY = 'sanka-clube/members.json';
-const ADMIN_PW = process.env.ADMIN_PASSWORD || 'sanka2024';
+const ADMIN_PW = process.env.ADMIN_PASSWORD;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,6 +13,9 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET')
     return res.status(405).json({ error: 'Método não permitido.' });
+
+  if (!ADMIN_PW)
+    return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado.' });
 
   if (req.query.password !== ADMIN_PW)
     return res.status(401).json({ error: 'Senha incorreta.' });

@@ -54,7 +54,10 @@ export default function handler(req, res) {
 
   /* ── PATCH /api/pedido?id=ABC123 — atualizar status (admin) ── */
   if (req.method === 'PATCH') {
-    const adminPwd = process.env.ADMIN_PASSWORD || 'sanka2024';
+    const adminPwd = process.env.ADMIN_PASSWORD;
+    if (!adminPwd) {
+      return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado' });
+    }
     const auth     = req.headers.authorization || '';
     if (auth !== `Bearer ${adminPwd}`) {
       return res.status(401).json({ error: 'Não autorizado' });
@@ -76,7 +79,10 @@ export default function handler(req, res) {
 
   /* ── GET /api/pedido?list=1 — listar pedidos do dia (admin) ── */
   if (req.method === 'GET' && req.query.list) {
-    const adminPwd = process.env.ADMIN_PASSWORD || 'sanka2024';
+    const adminPwd = process.env.ADMIN_PASSWORD;
+    if (!adminPwd) {
+      return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado' });
+    }
     const auth     = req.headers.authorization || '';
     if (auth !== `Bearer ${adminPwd}`) {
       return res.status(401).json({ error: 'Não autorizado' });

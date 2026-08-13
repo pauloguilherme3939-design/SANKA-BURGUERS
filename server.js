@@ -8,11 +8,11 @@ const path    = require('path');
 const app      = express();
 const PORT     = process.env.PORT || 3000;
 const DATA     = path.join(__dirname, 'data', 'clube.json');
-const ADMIN_PW = process.env.ADMIN_PASSWORD || (() => {
-  console.warn('\n  ⚠️  ADMIN_PASSWORD não definido em .env — usando senha padrão insegura.');
-  console.warn('     Defina ADMIN_PASSWORD=<senha-forte> antes de publicar.\n');
-  return 'sanka2024';
-})();
+const ADMIN_PW = process.env.ADMIN_PASSWORD;
+
+if (!ADMIN_PW) {
+  console.warn('\n  ADMIN_PASSWORD nao definido - rotas administrativas desativadas.\n');
+}
 
 app.use(express.json());
 app.use(express.static(__dirname));
@@ -70,6 +70,8 @@ app.post('/api/pedido', (req, res) => {
 
 app.get('/api/pedido', (req, res) => {
   if (req.query.list) {
+    if (!ADMIN_PW)
+      return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado' });
     if (req.headers.authorization !== `Bearer ${ADMIN_PW}`)
       return res.status(401).json({ error: 'Não autorizado' });
     const today  = new Date().toISOString().slice(0, 10);
@@ -86,6 +88,8 @@ app.get('/api/pedido', (req, res) => {
 });
 
 app.patch('/api/pedido', (req, res) => {
+  if (!ADMIN_PW)
+    return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado' });
   if (req.headers.authorization !== `Bearer ${ADMIN_PW}`)
     return res.status(401).json({ error: 'Não autorizado' });
   const id = String(req.query.id || '').toUpperCase().trim();
@@ -127,6 +131,8 @@ app.post('/api/clube', (req, res) => {
 
 /* ── GET /api/clube/members — admin ──────────────────────────── */
 app.get('/api/clube/members', (req, res) => {
+  if (!ADMIN_PW)
+    return res.status(503).json({ error: 'ADMIN_PASSWORD nao configurado.' });
   if (req.query.password !== ADMIN_PW)
     return res.status(401).json({ error: 'Senha incorreta.' });
 

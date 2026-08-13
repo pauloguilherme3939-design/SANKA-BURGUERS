@@ -1,7 +1,6 @@
 node_modules/
-.env
-.env.local
-.env*.local
+.env*
+!.env.example
 data/
 .vercel
 Thumbs.db
@@ -9,4 +8,3 @@ Thumbs.db
 dist/
 *.zip
 screenshots/
-
