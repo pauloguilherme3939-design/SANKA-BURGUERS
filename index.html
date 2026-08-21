@@ -47,97 +47,20 @@
   "@context": "https://schema.org",
   "@type": "Restaurant",
   "name": "Sanka Burgers",
-  "description": "Lanchão prensado estilo São Carlos em Rio Claro/SP. Pão prensado na chapa, recheio generoso, grande de verdade.",
+  "description": "Hamburgueria em fase de pré-inauguração em Rio Claro/SP.",
   "url": "https://sankaburguers.vercel.app",
   "logo": "https://sankaburguers.vercel.app/icons/icon-512.png",
   "image": "https://sankaburguers.vercel.app/og/home.jpg",
-  "servesCuisine": "Hambúrguer Artesanal Americano",
-  "priceRange": "$$",
-  "currenciesAccepted": "BRL",
-  "paymentAccepted": "Pix, Cartão de Crédito, Dinheiro",
+  "servesCuisine": ["Hambúrguer", "Lanche prensado"],
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "TODO: SANKA — Endereço completo",
     "addressLocality": "Rio Claro",
     "addressRegion": "SP",
-    "postalCode": "TODO: SANKA — CEP",
     "addressCountry": "BR"
   },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": "-22.4106",
-    "longitude": "-47.5598"
-  },
   "telephone": "+5516993138450",
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-      "opens": "18:00",
-      "closes": "23:30"
-    }
-  ],
   "menu": "https://sankaburguers.vercel.app/cardapio.html",
-  "hasDeliveryMethod": "http://schema.org/DeliveryMethod/DeliverAtAddress",
-  "servesCuisine": ["Hamburger", "Lanche Prensado"],
   "sameAs": []
-}
-</script>
-
-<!-- ── Google Analytics 4 ─────────────────────────────────── -->
-<!-- TODO: SANKA — Substituir G-XXXXXXXXXX pelo Measurement ID real (Google Analytics → Admin → Data Streams) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XXXXXXXXXX', { send_page_view: true });
-</script>
-
-<!-- ── Meta Pixel ─────────────────────────────────────────── -->
-<!-- TODO: SANKA — Substituir XXXXXXXXXXXXXXXXXX pelo Pixel ID real (Meta Business → Events Manager) -->
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','XXXXXXXXXXXXXXXXXX');
-fbq('track','PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXXXX&ev=PageView&noscript=1"/></noscript>
-
-<!-- ── Tailwind Play CDN ──────────────────────────────────── -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        fire:   { DEFAULT: '#EA580C', light: '#F97316', dark: '#C2410C' },
-        amber:  { DEFAULT: '#D97706', light: '#F59E0B' },
-        ink:    { DEFAULT: '#F8F4F0', mute: '#9CA3AF', dim: '#6B7280' },
-        carbon: { DEFAULT: '#0F0D0B', mid: '#1A1714', surface: '#242019' },
-      },
-      fontFamily: {
-        display: ['Anton', 'sans-serif'],
-        black:   ['"Archivo Black"', 'sans-serif'],
-        body:    ['"Space Grotesk"', 'sans-serif'],
-        mono:    ['"JetBrains Mono"', 'monospace'],
-      },
-    },
-  },
-  plugins: [
-    function({ addUtilities }) {
-      addUtilities({
-        '.grain': {
-          position: 'relative',
-          isolation: 'isolate',
-        },
-      })
-    }
-  ],
 }
 </script>
 
@@ -150,47 +73,17 @@ tailwind.config = {
     {
       "@type": "Question",
       "name": "A Sanka Burgers fica em Rio Claro?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sim! A Sanka Burgers é uma hamburgueria localizada em Rio Claro/SP. Atendemos pelo WhatsApp e fazemos delivery na cidade." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim. A Sanka Burgers está em fase de pré-inauguração em Rio Claro/SP." }
     },
     {
       "@type": "Question",
-      "name": "A Sanka trabalha com lanche prensado?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sim. Cada lanche é prensado na chapa — o pão tosta por fora e fica crocante enquanto o queijo derrete por dentro. É o estilo São Carlos de fazer lanche, agora em Rio Claro." }
+      "name": "Quais lanches estarão no lançamento?",
+      "acceptedAnswer": { "@type": "Answer", "text": "O cardápio de lançamento tem 14 lanches, quatro porções e refrigerantes." }
     },
     {
       "@type": "Question",
       "name": "Posso pedir pelo WhatsApp?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sim, é a forma principal de pedido. Sem app, sem cadastro. Você abre o WhatsApp, manda sua escolha e a gente confirma em segundos." }
-    },
-    {
-      "@type": "Question",
-      "name": "A Sanka tem delivery em Rio Claro?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sim, fazemos delivery em Rio Claro/SP. O pedido é feito pelo WhatsApp e entregamos no seu endereço." }
-    },
-    {
-      "@type": "Question",
-      "name": "O lanche da Sanka é grande mesmo?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sim. O padrão Sanka é lanche grande, sem miséria. A carne pesa 150g (alguns têm duas), o recheio é generoso e o queijo cobre tudo. É o estilo São Carlos — lanche grande prensado, não lanche de vitrine." }
-    },
-    {
-      "@type": "Question",
-      "name": "O que é o Clube Sanka?",
-      "acceptedAnswer": { "@type": "Answer", "text": "O Clube Sanka é o programa de fidelidade da hamburgueria. Você se cadastra gratuitamente e ganha o direito de girar a roleta de prêmios todo dia — descontos de 10% a 25%, bebida grátis, batata grátis ou frete grátis." }
-    },
-    {
-      "@type": "Question",
-      "name": "Tem cupom de desconto para a primeira compra?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Sim! Estamos em fase de inauguração e oferecemos o cupom SANKA10 para 10% off no primeiro pedido. Mencione o cupom ao pedir pelo WhatsApp." }
-    },
-    {
-      "@type": "Question",
-      "name": "A Sanka é estilo São Carlos?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Exato. O estilo São Carlos de hamburguer é conhecido pelo lanche prensado, tamanho generoso e pão tostado na chapa. A Sanka trouxe esse estilo para Rio Claro com identidade própria." }
-    },
-    {
-      "@type": "Question",
-      "name": "Qual o horário de funcionamento da Sanka?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Funcionamos de terça a domingo, das 18h às 23h30. Segunda-feira é nosso dia de folga." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Sim. Monte o pedido no site e finalize pelo WhatsApp. A Sanka confirma disponibilidade, entrega e demais detalhes diretamente com você." }
     }
   ]
 }
@@ -206,18 +99,38 @@ tailwind.config = {
   "hasMenuSection": [
     {
       "@type": "MenuSection",
-      "name": "Clássicos",
+      "name": "Burgers Artesanais",
       "hasMenuItem": [
-        { "@type": "MenuItem", "name": "X Misto", "description": "Hambúrguer artesanal 120g, presunto, queijo prato, pão brioche.", "offers": { "@type": "Offer", "price": "18.90", "priceCurrency": "BRL" } },
-        { "@type": "MenuItem", "name": "X Americano", "description": "Hambúrguer 150g, cheddar, ovo caipira, alface, tomate, maionese da casa.", "offers": { "@type": "Offer", "price": "24.90", "priceCurrency": "BRL" } },
-        { "@type": "MenuItem", "name": "X Acebolado", "description": "Carne 150g, queijo prato, cebola caramelizada.", "offers": { "@type": "Offer", "price": "26.90", "priceCurrency": "BRL" } }
+        { "@type": "MenuItem", "name": "X-Americano", "offers": { "@type": "Offer", "price": "37.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Acebolado", "offers": { "@type": "Offer", "price": "40.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Promel", "offers": { "@type": "Offer", "price": "44.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Biquinho", "offers": { "@type": "Offer", "price": "40.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Azeitonado", "offers": { "@type": "Offer", "price": "37.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Smash", "offers": { "@type": "Offer", "price": "26.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Basic", "offers": { "@type": "Offer", "price": "18.90", "priceCurrency": "BRL" } }
       ]
     },
     {
       "@type": "MenuSection",
-      "name": "Assinaturas",
+      "name": "Além dos Burgers",
       "hasMenuItem": [
-        { "@type": "MenuItem", "name": "X Provolone ao Mel", "description": "Provolone defumado, fio de mel silvestre, hambúrguer 150g.", "offers": { "@type": "Offer", "price": "28.90", "priceCurrency": "BRL" } }
+        { "@type": "MenuItem", "name": "X-Panceta", "offers": { "@type": "Offer", "price": "32.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "X-Lombo", "offers": { "@type": "Offer", "price": "32.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Sanka Dog", "offers": { "@type": "Offer", "price": "21.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Frango com Catupiri", "offers": { "@type": "Offer", "price": "31.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Misto Quente", "offers": { "@type": "Offer", "price": "21.90", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Prensadinho", "offers": { "@type": "Offer", "price": "14.00", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Bauru de Carne", "offers": { "@type": "Offer", "price": "34.99", "priceCurrency": "BRL" } }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Porções",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "Fritas 500 g", "offers": { "@type": "Offer", "price": "30.00", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Fritas Sanka 500 g", "offers": { "@type": "Offer", "price": "40.00", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Mandioca 500 g", "offers": { "@type": "Offer", "price": "45.00", "priceCurrency": "BRL" } },
+        { "@type": "MenuItem", "name": "Salgados Sortidos — 25 unidades", "offers": { "@type": "Offer", "price": "35.00", "priceCurrency": "BRL" } }
       ]
     }
   ]
@@ -250,6 +163,6 @@ if ('serviceWorker' in navigator) {
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 
-<script src="/dist/home.js"></script>
+<script src="/dist/home.js?v=20260821-launch"></script>
 </body>
 </html>

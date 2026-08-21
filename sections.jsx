@@ -77,15 +77,15 @@ function waLink(msg) {
 }
 
 /* ── Destaques data ──────────────────────────────────────────── */
-const FEATURED_CODES  = ['SB-009', 'SB-015', 'SB-004', 'SB-016', 'SB-003', 'SB-011'];
-const FEATURED_CENTER = 'SB-009';
+const FEATURED_CODES  = ['SK-L03', 'SK-L02', 'SK-L08', 'SK-L01', 'SK-L04', 'SK-L14'];
+const FEATURED_CENTER = 'SK-L03';
 const FEATURED_BADGE  = {
-  'SB-009': { text: '300g · 2 Carnes', variant: 'badge-hot'  },
-  'SB-015': { text: 'Assinatura',       variant: 'badge-gold' },
-  'SB-004': { text: 'Mais Pedido',      variant: 'badge-hot'  },
-  'SB-016': { text: 'Favorito',         variant: 'badge-hot'  },
-  'SB-003': { text: 'Clássico',         variant: 'badge-hot'  },
-  'SB-011': { text: 'Frango',           variant: 'badge-gold' },
+  'SK-L03': { text: '300 g · Provolone e mel', variant: 'badge-gold' },
+  'SK-L02': { text: '300 g · Bacon',           variant: 'badge-hot'  },
+  'SK-L08': { text: '300 g · Panceta',         variant: 'badge-hot'  },
+  'SK-L01': { text: '300 g',                   variant: 'badge-hot'  },
+  'SK-L04': { text: '300 g · Biquinho',        variant: 'badge-gold' },
+  'SK-L14': { text: 'Patinho acebolado',       variant: 'badge-hot'  },
 };
 
 /* ── Clube benefícios ────────────────────────────────────────── */
@@ -104,11 +104,9 @@ const REVIEWS = [
 
 /* ── Como funciona ───────────────────────────────────────────── */
 const HOW_STEPS = [
-  { num: "01", title: "Escolha seu lanche", desc: "17 opções no cardápio — dos clássicos aos autorais. Lanchão prensado, bem recheado, grande de verdade." },
-  { num: "02", title: "Peça pelo WhatsApp", desc: "Sem aplicativo, sem cadastro. Só manda a mensagem. Confirmamos o pedido em segundos." },
-  { num: "03", title: "Receba rapidinho", desc: SANKA_BRAND.isIfoodActive
-    ? "Saiu da chapa, foi pro entregador. Entrega em Rio Claro/SP pelo WhatsApp ou iFood."
-    : "Saiu da chapa, foi pro entregador. Entrega em Rio Claro/SP — acompanhe tudo pelo WhatsApp." },
+  { num: "01", title: "Escolha seu lanche", desc: "São 14 lanches no cardápio de lançamento, além de porções e refrigerantes." },
+  { num: "02", title: "Envie pelo WhatsApp", desc: "Monte o pedido no site. Depois que ele for salvo, o WhatsApp abre com todos os itens e o código de rastreio." },
+  { num: "03", title: "Confirme com a Sanka", desc: "Nossa equipe confirma disponibilidade, taxa de entrega e detalhes diretamente pelo WhatsApp." },
 ];
 
 /* ── Oferta Relâmpago: helpers ───────────────────────────────── */
@@ -194,9 +192,9 @@ function Nav() {
 
           <div className="nav-links" role="list">
             <a href="cardapio.html"   role="listitem">Cardápio</a>
-            <a href="nossa-carne.html" role="listitem">Nossa Carne</a>
+            {SANKA_BRAND.isMeatStoryActive && <a href="nossa-carne.html" role="listitem">Nossa Carne</a>}
             <a href="#como-funciona"  role="listitem">Como Pedir</a>
-            <a href="#clube"          role="listitem">Clube Sanka</a>
+            {SANKA_BRAND.isClubActive && <a href="#clube" role="listitem">Clube Sanka</a>}
           </div>
 
           <div className="nav-right-group">
@@ -236,10 +234,10 @@ function Nav() {
         </div>
         <nav className="nav-drawer-links" aria-label="Links do menu">
           <a href="cardapio.html"    onClick={close}>Cardápio</a>
-          <a href="nossa-carne.html" onClick={close}>Nossa Carne</a>
+          {SANKA_BRAND.isMeatStoryActive && <a href="nossa-carne.html" onClick={close}>Nossa Carne</a>}
           <a href="#como-funciona"   onClick={close}>Como Pedir</a>
           <a href="#localizacao"     onClick={close}>Localização</a>
-          <a href="#clube"           onClick={close}>Clube Sanka</a>
+          {SANKA_BRAND.isClubActive && <a href="#clube" onClick={close}>Clube Sanka</a>}
         </nav>
         <div style={{ padding: '0 24px 32px' }}>
           <a href={WA} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} target="_blank" rel="noopener noreferrer">
@@ -327,16 +325,18 @@ function Hero() {
           >
             <IcoWA /> PEDIR AGORA
           </a>
-          <a
-            href="clube.html"
-            className="btn btn-ghost btn-lg"
-            onClick={() => window.SankaAnalytics?.clubSignup('hero')}
-          >
-            CLUBE SANKA →
-          </a>
+          {SANKA_BRAND.isClubActive && (
+            <a
+              href="clube.html"
+              className="btn btn-ghost btn-lg"
+              onClick={() => window.SankaAnalytics?.clubSignup('hero')}
+            >
+              CLUBE SANKA →
+            </a>
+          )}
         </div>
 
-        {!SANKA_BRAND.isLaunched && (
+        {SANKA_BRAND.isLaunchCouponActive && (
           <div className="hero-coupon-badge" aria-label="Cupom de lançamento SANKA10">
             <span className="hero-coupon-label">Cupom de lançamento:</span>
             <span className="hero-coupon-code">{SANKA_BRAND.launchCoupon}</span>
@@ -352,8 +352,8 @@ function Hero() {
             </div>
           )}
           <div className="hero-proof-item">
-            <span className="val">17</span>
-            <span className="lbl">Opções no cardápio</span>
+            <span className="val">14</span>
+            <span className="lbl">Lanches no lançamento</span>
           </div>
           {SANKA_BRAND.isLaunched ? (
             <div className="hero-proof-item">
@@ -367,7 +367,7 @@ function Hero() {
             </div>
           )}
           <div className="hero-proof-item">
-            <span className="val">150g–300g</span>
+            <span className="val">100 g–300 g</span>
             <span className="lbl">Carne por lanche</span>
           </div>
         </div>
@@ -469,7 +469,7 @@ function Destaques() {
             className="btn btn-primary btn-lg"
             onClick={() => window.SankaAnalytics?.viewCardapio('destaques')}
           >
-            Ver todos os 17 lanches <IcoArrow />
+            Ver todos os 14 lanches <IcoArrow />
           </a>
         </div>
       </div>
@@ -528,14 +528,16 @@ function ProvaArtesanal() {
           ))}
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: 52 }} data-reveal>
-          <a href="nossa-carne.html" className="btn btn-outline btn-sm" style={{ gap: 8 }}>
-            Ver nossa carne
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
-          </a>
-        </div>
+        {SANKA_BRAND.isMeatStoryActive && (
+          <div style={{ textAlign: 'center', marginTop: 52 }} data-reveal>
+            <a href="nossa-carne.html" className="btn btn-outline btn-sm" style={{ gap: 8 }}>
+              Ver nossa carne
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -858,7 +860,7 @@ function ClubeCTA() {
    10. NOSSA CARNE — teaser banner
 ═══════════════════════════════════════════════════════════════ */
 function NossaCarneTeaser() {
-  const burger = SANKA_BURGERS.find(b => b.code === 'SB-015');
+  const burger = SANKA_BURGERS.find(b => b.code === 'SK-L08');
   return (
     <section className="carne-teaser" aria-label="Nossa carne">
       <div className="wrap">
@@ -913,7 +915,7 @@ function LocalBrand() {
               <span className="local-badge">🔥 Estilo São Carlos</span>
               <span className="local-badge">🍔 Grande de verdade</span>
               <span className="local-badge">💬 Pede no WhatsApp</span>
-              {!SANKA_BRAND.isLaunched && <span className="local-badge">🎉 Cupom: SANKA10</span>}
+              {SANKA_BRAND.isLaunchCouponActive && <span className="local-badge">🎉 Cupom: {SANKA_BRAND.launchCoupon}</span>}
             </div>
           </div>
         </div>
@@ -1025,12 +1027,11 @@ function Location() {
 
             <div className="info-block">
               <div className="info-label"><IcoClock /> Horário</div>
-              <div className="hours-grid" role="table" aria-label="Horários de funcionamento">
-                <span className="hours-day">Ter — Dom</span>
-                <span className="hours-time">18h — 23h30</span>
-                <span className="hours-day">{SANKA_BRAND.closedDay}</span>
-                <span className="hours-time hours-closed">Fechado</span>
-              </div>
+              {SANKA_BRAND.openingHours ? (
+                <div className="info-value">{SANKA_BRAND.openingHours}</div>
+              ) : (
+                <p className="info-sub">Horários de funcionamento serão confirmados antes da inauguração.</p>
+              )}
             </div>
 
             <div className="info-block">
@@ -1066,15 +1067,14 @@ function Location() {
    14. FAQ — SEO local + conversão
 ═══════════════════════════════════════════════════════════════ */
 const FAQ_ITEMS = [
-  { q: 'A Sanka Burgers fica em Rio Claro?',       a: 'Sim. A Sanka Burgers é uma hamburgueria de lanchão prensado em Rio Claro/SP, funcionando de terça a domingo das 18h às 23h30. Fazemos delivery em Rio Claro pelo WhatsApp.' },
-  { q: 'O lanche é prensado?',                     a: 'Sim. Cada lanche sai direto da chapa — pão tostado e crocante por fora, queijo derretendo por dentro. É o estilo São Carlos de fazer lanche, agora em Rio Claro.' },
-  { q: 'O lanche é grande mesmo?',                 a: 'Sim. A carne padrão tem 150g, o X Hamburgão tem 300g (duas carnes). O recheio é generoso e o queijo cobre tudo. Não é lanche de vitrine — é lanche de respeito.' },
-  { q: 'Como funciona o Clube Sanka?',             a: 'Você se cadastra gratuitamente e gira a roleta de prêmios a cada pedido. Pode ganhar desconto de até 25%, porção grátis, bebida ou frete na casa. Quanto mais pedidos seguidos, maior o streak e melhores os prêmios.' },
-  { q: 'Tem cupom para a primeira compra?',        a: `Sim! Use o cupom ${SANKA_BRAND.launchCoupon} para ${SANKA_BRAND.launchCouponLabel}. Mencione ao pedir pelo WhatsApp.` },
-  { q: 'Posso pedir pelo WhatsApp?',               a: 'Sim, é a forma principal. Sem app, sem cadastro. Você manda sua escolha e a gente confirma em segundos.' },
-  { q: 'A Sanka tem iFood?',                       a: SANKA_BRAND.isIfoodActive ? 'Sim, você pode nos encontrar no iFood.' : 'Em breve! Por enquanto o pedido é feito pelo WhatsApp — direto com a Sanka, sem taxa de plataforma.' },
-  { q: 'O que é lanche estilo São Carlos?',        a: 'É o lanche grande e prensado na chapa que é tradição na cidade de São Carlos/SP e região. O pão vai inteiro pra chapa quente, fica crocante por fora e o queijo derrete por dentro. A Sanka trouxe esse estilo para Rio Claro.' },
-  { q: 'Qual o horário de funcionamento?',         a: `${SANKA_BRAND.openingHours}. ${SANKA_BRAND.closedDay} é nosso dia de folga.` },
+  { q: 'A Sanka Burgers fica em Rio Claro?', a: 'Sim. A Sanka Burgers está em fase de pré-inauguração em Rio Claro/SP.' },
+  { q: 'Quais lanches estarão no lançamento?', a: 'O cardápio de lançamento tem 14 lanches, quatro porções e refrigerantes. Todos estão listados na página de cardápio.' },
+  { q: 'Qual é o tamanho dos hambúrgueres?', a: 'Os hambúrgueres artesanais informados no cardápio variam de 100 g a 300 g. O X-Lombo e o Frango com Catupiri levam 250 g das respectivas carnes.' },
+  { q: 'Posso pedir pelo WhatsApp?', a: 'Sim. Monte o pedido no site e finalize pelo WhatsApp. A Sanka confirma disponibilidade, entrega e demais detalhes diretamente com você.' },
+  { q: 'A Sanka tem iFood?', a: SANKA_BRAND.isIfoodActive ? 'Sim, você pode nos encontrar no iFood.' : 'Ainda não está ativo. No primeiro momento, o contato principal será pelo WhatsApp.' },
+  ...(SANKA_BRAND.isClubActive ? [{ q: 'Como funciona o Clube Sanka?', a: 'As regras e os prêmios vigentes ficam disponíveis dentro da área do Clube Sanka.' }] : []),
+  ...(SANKA_BRAND.isLaunchCouponActive ? [{ q: 'Tem cupom para a primeira compra?', a: `Use o cupom ${SANKA_BRAND.launchCoupon}: ${SANKA_BRAND.launchCouponLabel}.` }] : []),
+  { q: 'Qual o horário de funcionamento?', a: SANKA_BRAND.openingHours || 'Os horários serão divulgados antes da inauguração.' },
 ];
 
 function FAQ() {
@@ -1174,20 +1174,22 @@ function Footer() {
           <div className="footer-col">
             <h5>Navegação</h5>
             <a href="cardapio.html">Cardápio</a>
-            <a href="nossa-carne.html">Nossa Carne</a>
+            {SANKA_BRAND.isMeatStoryActive && <a href="nossa-carne.html">Nossa Carne</a>}
             <a href="#como-funciona">Como Pedir</a>
             <a href="#localizacao">Localização</a>
             {SANKA_BRAND.isClubActive && <a href="clube.html">Clube Sanka</a>}
           </div>
 
-          <div className="footer-col">
-            <h5>Páginas locais</h5>
-            <a href="melhor-hamburgueria-rio-claro.html">Hamburgueria Rio Claro</a>
-            <a href="delivery-hamburgueria-rio-claro.html">Delivery Rio Claro</a>
-            <a href="lanche-prensado-rio-claro.html">Lanche Prensado</a>
-            <a href="hamburguer-grande-rio-claro.html">Hambúrguer Grande</a>
-            <a href="clube-sanka.html">Clube Sanka</a>
-          </div>
+          {SANKA_BRAND.isLocalSeoPagesActive && (
+            <div className="footer-col">
+              <h5>Páginas locais</h5>
+              <a href="melhor-hamburgueria-rio-claro.html">Hamburgueria Rio Claro</a>
+              <a href="delivery-hamburgueria-rio-claro.html">Delivery Rio Claro</a>
+              <a href="lanche-prensado-rio-claro.html">Lanche Prensado</a>
+              <a href="hamburguer-grande-rio-claro.html">Hambúrguer Grande</a>
+              {SANKA_BRAND.isClubActive && <a href="clube-sanka.html">Clube Sanka</a>}
+            </div>
+          )}
 
           <div className="footer-col">
             <h5>Contato</h5>
@@ -1220,7 +1222,7 @@ function Footer() {
           <p>© {new Date().getFullYear()} Sanka Burgers · Rio Claro / SP</p>
           <p style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
             <a href="privacidade.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Privacidade</a>
-            <a href="termos-clube.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Termos do Clube</a>
+            {SANKA_BRAND.isClubActive && <a href="termos-clube.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Termos do Clube</a>}
           </p>
         </div>
       </div>
@@ -1254,9 +1256,11 @@ function StickyWA() {
       >
         <IcoWA /> PEDIR AGORA
       </a>
-      <a href="clube.html" className="sticky-wa-clube" aria-label="Entrar no Clube Sanka">
-        Clube →
-      </a>
+      {SANKA_BRAND.isClubActive && (
+        <a href="clube.html" className="sticky-wa-clube" aria-label="Entrar no Clube Sanka">
+          Clube →
+        </a>
+      )}
     </div>
   );
 }

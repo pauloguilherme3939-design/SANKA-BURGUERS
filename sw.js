@@ -1,30 +1,22 @@
 // sw.js — Service Worker Sanka Burgers
 // Estratégia:
-//   assets estáticos → stale-while-revalidate (serve cache imediato, revalida em fundo)
+//   HTML, CSS e JS → network-first (evita cardápio e preços antigos)
 //   imagens /assets/* → cache-first (raramente mudam)
 //   /api/* e POST → network-only (nunca cachear)
 
-const CACHE_STATIC = 'sanka-static-v3';
-const CACHE_IMAGES = 'sanka-images-v3';
+const CACHE_STATIC = 'sanka-static-v4-launch-20260821';
+const CACHE_IMAGES = 'sanka-images-v4-launch-20260821';
 
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/cardapio.html',
-  '/nossa-carne.html',
-  '/monte.html',
-  '/oferta.html',
   '/styles.css',
-  '/manifest.json',
+  '/site.webmanifest',
   '/analytics.js',
   '/dist/home.js',
   '/dist/cardapio.js',
-  '/dist/nossa-carne.js',
-  '/dist/monte.js',
-  '/dist/oferta.js',
   '/dist/pedido.js',
-  '/dist/admin.js',
-  '/dist/admin-pedidos.js',
 ];
 
 /* ── Install: pré-cache dos assets estáticos ───────────── */
@@ -65,7 +57,14 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Tudo mais: stale-while-revalidate
+  // Páginas e arquivos que mudam no lançamento: sempre tentar a rede primeiro.
+  const isPage = request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html');
+  const isMutableAsset = url.pathname.endsWith('.js') || url.pathname.endsWith('.css');
+  if (isPage || isMutableAsset) {
+    e.respondWith(networkFirst(request, CACHE_STATIC));
+    return;
+  }
+
   e.respondWith(staleWhileRevalidate(request, CACHE_STATIC));
 });
 
@@ -80,6 +79,17 @@ async function staleWhileRevalidate(request, cacheName) {
   }).catch(() => null);
 
   return cached || await networkPromise || offlineFallback(request);
+}
+
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) await cache.put(request, response.clone());
+    return response;
+  } catch {
+    return await cache.match(request) || offlineFallback(request);
+  }
 }
 
 async function cacheFirst(request, cacheName) {

@@ -22,18 +22,13 @@ test('catálogo validado no servidor permanece igual aos itens compráveis da te
   const visibleItems = [
     ...data.SANKA_BURGERS.map(item => ({ id: item.code, name: item.name, price: item.price })),
     ...data.SANKA_SIDES.map(item => ({ id: item.code, name: item.name, price: item.price })),
-    ...data.SANKA_DRINKS.slice(0, 9).map((item, index) => ({
-      id: `DR-${String(index + 1).padStart(2, '0')}`,
-      name: item.name,
-      price: item.price,
-    })),
-    ...data.SANKA_DESSERTS.map((item, index) => ({
-      id: `DS-${String(index + 1).padStart(2, '0')}`,
+    ...data.SANKA_DRINKS.filter(item => !item.purchaseDisabled).map(item => ({
+      id: item.code,
       name: item.name,
       price: item.price,
     })),
   ];
 
-  assert.equal(serverCatalog.pricingStatus, 'placeholder');
+  assert.equal(serverCatalog.pricingStatus, 'informed_launch_menu');
   assert.deepEqual(serverCatalog.items, visibleItems);
 });

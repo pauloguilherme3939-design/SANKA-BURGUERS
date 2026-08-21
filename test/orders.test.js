@@ -18,7 +18,7 @@ function validPayload(overrides = {}) {
     total: 0.01,
     discount: 999,
     customer: { name: 'Cliente Teste', phone: '(19) 99999-0000' },
-    items: [{ id: 'SB-001', qty: 2, note: 'Sem cebola', price: 0.01 }],
+    items: [{ id: 'SK-L01', qty: 2, note: 'Sem cebola', price: 0.01 }],
     fulfillment: { type: 'pickup', address: null },
     payment: { method: 'pix', change: '' },
     couponCode: '',
@@ -39,14 +39,15 @@ test('persiste pedido, recalcula valores no servidor e sobrevive a nova instânc
 
   const created = await service.create(validPayload());
   assert.equal(created.id, ORDER_ID);
-  assert.equal(created.items[0].name, 'X Misto');
-  assert.equal(created.items[0].unitPrice, 18.9);
-  assert.equal(created.pricing.total, 37.8);
-  assert.equal(created.pricingStatus, 'placeholder');
+  assert.equal(created.items[0].name, 'X-Americano');
+  assert.equal(created.items[0].unitPrice, 37.9);
+  assert.equal(created.pricing.total, 75.8);
+  assert.equal(created.pricingStatus, 'informed_launch_menu');
 
   const restarted = createOrderService({ store: new FileOrderStore({ rootDir }) });
   const tracked = await restarted.getPublic(ORDER_ID);
   assert.equal(tracked.status, 'recebido');
+  assert.equal(tracked.fulfillmentType, 'pickup');
   assert.equal('customer' in tracked, false);
   assert.equal('items' in tracked, false);
   assert.equal('pricing' in tracked, false);
@@ -82,6 +83,40 @@ test('persiste avanços sequenciais e rejeita salto de status', async t => {
   const listed = await restarted.list('2026-08-13');
   assert.equal(listed[0].status, 'preparando');
   assert.deepEqual(listed[0].history.map(entry => entry.status), ['recebido', 'preparando']);
+});
+
+test('delivery mantém a taxa e o total final pendentes até a confirmação no WhatsApp', async () => {
+  let persisted;
+  const service = createOrderService({
+    store: {
+      async create(order) { persisted = order; },
+      async get() { return null; },
+      async list() { return []; },
+      async appendStatus() {},
+    },
+    now: () => CREATED_AT,
+    idFactory: () => ORDER_ID,
+  });
+
+  const created = await service.create(validPayload({
+    items: [{ id: 'SK-L01', qty: 1 }],
+    fulfillment: {
+      type: 'delivery',
+      address: {
+        cep: '13500000',
+        street: 'Rua Teste',
+        number: '10',
+        complement: '',
+        neighborhood: 'Centro',
+      },
+    },
+  }));
+
+  assert.equal(created.pricing.deliveryFee, null);
+  assert.equal(created.pricing.total, 37.9);
+  assert.equal(created.pricing.totalIsFinal, false);
+  assert.equal(created.pricing.pendingReason, 'delivery_fee');
+  assert.equal(persisted.id, ORDER_ID);
 });
 
 test('rejeita produto desconhecido e propaga falha de persistência', async () => {

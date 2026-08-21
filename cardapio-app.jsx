@@ -1,11 +1,12 @@
 // cardapio-app.jsx — Sanka Burgers · Página de Cardápio
 // Arquitetura de menu psicológica: entry / hero / premium
 
-import { SANKA_CATS, SANKA_BURGERS, SANKA_SIDES, SANKA_DRINKS, SANKA_DESSERTS } from './data.jsx'
+import { SANKA_CATS, SANKA_BURGERS, SANKA_SIDES, SANKA_DRINKS } from './data.jsx'
 import { FoodPlaceholder } from './placeholders.jsx'
 import { CartProvider, useCartContext } from './cart.jsx'
 import { CheckoutModal } from './checkout-modal.jsx'
 import { SANKA_CONFIG } from './lib/config.js'
+import { SANKA_BRAND } from './lib/brand.js'
 
 const { useState, useEffect, useMemo } = React;
 
@@ -16,49 +17,40 @@ const { useState, useEffect, useMemo } = React;
    Ordem de exibição: hero → premium → entry
 ────────────────────────────────────────────────────────────── */
 const TIER = {
-  'SB-001': 'entry',    // X Misto           R$18,90
-  'SB-002': 'entry',    // Hot Dog           R$16,50
-  'SB-003': 'hero',     // X Americano       R$24,90  FAVORITO
-  'SB-004': 'hero',     // X Provolone ao Mel R$28,90 ASSINATURA
-  'SB-005': 'hero',     // X Acebolado       R$26,90
-  'SB-006': 'hero',     // X Provolone       R$27,90
-  'SB-007': 'premium',  // X Biquinho        R$29,90
-  'SB-008': 'hero',     // X Egg             R$25,90
-  'SB-009': 'premium',  // X Hamburgão       R$39,90  TOP 3
-  'SB-010': 'hero',     // X Frango          R$26,90
-  'SB-011': 'hero',     // X Frango Catupiry R$28,90
-  'SB-012': 'hero',     // X Calabresa       R$27,90
-  'SB-013': 'hero',     // X Azeitonado      R$27,90
-  'SB-014': 'hero',     // X Brócolis Cat.   R$28,90  NOVO
-  'SB-015': 'premium',  // X Panceta         R$34,90  ASSINATURA
-  'SB-016': 'hero',     // X Bacon           R$31,90  FAVORITO
-  'SB-017': 'hero',     // X Bacon Azeitona  R$33,90
+  'SK-L01': 'hero',
+  'SK-L02': 'premium',
+  'SK-L03': 'premium',
+  'SK-L04': 'premium',
+  'SK-L05': 'hero',
+  'SK-L06': 'hero',
+  'SK-L07': 'entry',
+  'SK-L08': 'hero',
+  'SK-L09': 'hero',
+  'SK-L10': 'entry',
+  'SK-L11': 'hero',
+  'SK-L12': 'entry',
+  'SK-L13': 'entry',
+  'SK-L14': 'hero',
 };
 
 const SIDE_TIER = {
-  'PR-01': 'entry',     // Batata Simples    R$18,90
-  'PR-02': 'hero',      // Batata Ch & Bacon R$32,90  FAVORITO
-  'PR-03': 'premium',   // Batata Especial   R$42,90
-  'PR-04': 'hero',      // Batata Rústica    R$28,90
-  'PR-05': 'hero',      // Onion Rings       R$24,90
-  'PR-06': 'hero',      // Polenta Frita     R$26,90  NOVO
+  'SK-P01': 'entry',
+  'SK-P02': 'hero',
+  'SK-P03': 'premium',
+  'SK-P04': 'hero',
 };
 
 const TIER_SORT = { hero: 0, premium: 1, entry: 2 };
 
 const FILTER_CATS = [
-  { id: 'todos',      label: 'Tudo'          },
-  { id: 'classicos',  label: 'Clássicos'     },
-  { id: 'queijos',    label: 'Queijos & Mel' },
-  { id: 'carnes',     label: 'Carnes'        },
-  { id: 'frango',     label: 'Frango'        },
-  { id: 'vegetal',    label: 'Vegetal'       },
-  { id: 'porcoes',    label: 'Porções'       },
-  { id: 'bebidas',    label: 'Bebidas'       },
-  { id: 'sobremesas', label: 'Sobremesas'    },
+  { id: 'todos',      label: 'Tudo'                },
+  { id: 'artesanais', label: 'Burgers Artesanais'  },
+  { id: 'alem',       label: 'Além dos Burgers'    },
+  { id: 'porcoes',    label: 'Porções'             },
+  { id: 'bebidas',    label: 'Bebidas'             },
 ];
 
-const BURGER_CATS = ['classicos', 'queijos', 'carnes', 'frango', 'vegetal'];
+const BURGER_CATS = ['artesanais', 'alem'];
 
 /* ── Scroll Reveal ─────────────────────────────────────────────
    Roda após cada render para capturar novos [data-reveal] ao
@@ -109,8 +101,9 @@ function CardapioNav() {
         {/* Título da página (desktop) */}
         <span className="nav-page-title" aria-hidden="true">Cardápio</span>
 
-        {/* Link Nossa Carne (apenas desktop) */}
-        <a href="nossa-carne.html" className="nav-carne-link" aria-label="Nossa Carne — saiba mais sobre nosso blend">Nossa Carne</a>
+        {SANKA_BRAND.isMeatStoryActive && (
+          <a href="nossa-carne.html" className="nav-carne-link" aria-label="Nossa Carne — saiba mais sobre nosso blend">Nossa Carne</a>
+        )}
 
         {/* Direita: ícone do carrinho + CTA */}
         <div className="nav-right">
@@ -167,6 +160,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
   const [justAdded, setJustAdded] = useState(false);
 
   function handleAdd() {
+    if (item.purchaseDisabled) return;
     onAdd(item);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1100);
@@ -189,6 +183,10 @@ function MenuCard({ item, tier, onAdd, delay }) {
 
   const hasGradient = !!item.bg && !item.src;
   const imgTags = item.tags || (item.name || '').toLowerCase().replace(/\s+/g, ',');
+  const displayedPrice = item.priceMax
+    ? `${brl(item.price)} a ${brl(item.priceMax)}`
+    : brl(item.price);
+  const consultUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(`Olá! Quero confirmar os sabores e o valor de ${item.name}.`)}`;
 
   return (
     <article className={cls} id={item.code ? item.code.toLowerCase() : undefined} data-reveal data-delay={delay}>
@@ -222,12 +220,24 @@ function MenuCard({ item, tier, onAdd, delay }) {
         </div>
 
         <div className="menu-card-foot">
-          <span className="menu-card-price">{brl(item.price)}</span>
-          <button
-            className={`btn-add${justAdded ? ' is-added' : ''}`}
-            onClick={handleAdd}
-            aria-label={`Adicionar ${item.name} ao pedido`}
-          >
+          <span className="menu-card-price">{displayedPrice}</span>
+          {item.purchaseDisabled ? (
+            <a
+              className="btn-add"
+              href={consultUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Consultar ${item.name} pelo WhatsApp`}
+              onClick={() => window.SankaAnalytics?.waClick('menu_consulta')}
+            >
+              Consultar
+            </a>
+          ) : (
+            <button
+              className={`btn-add${justAdded ? ' is-added' : ''}`}
+              onClick={handleAdd}
+              aria-label={`Adicionar ${item.name} ao pedido`}
+            >
             {justAdded ? (
               <>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -243,7 +253,8 @@ function MenuCard({ item, tier, onAdd, delay }) {
                 Adicionar
               </>
             )}
-          </button>
+            </button>
+          )}
         </div>
       </div>
 
@@ -303,27 +314,15 @@ function CardapioPage() {
     []
   );
 
-  // Bebidas: primeiro 9 itens, tier por preço
+  // Bebidas informadas no cardápio de lançamento.
   const drinks = useMemo(() =>
-    SANKA_DRINKS.slice(0, 9).map((d, i) => ({
+    SANKA_DRINKS.map((d) => ({
       ...d,
-      id: `DR-${String(i + 1).padStart(2, '0')}`,
+      id: d.code,
       type: 'drink',
       cat: 'bebidas',
       tier: d.price <= 10 ? 'entry' : d.price >= 20 ? 'premium' : 'hero',
     })).sort((a, b) => (TIER_SORT[a.tier] ?? 1) - (TIER_SORT[b.tier] ?? 1)),
-    []
-  );
-
-  const desserts = useMemo(() =>
-    SANKA_DESSERTS.map((d, i) => ({
-      ...d,
-      id: `DS-${String(i + 1).padStart(2, '0')}`,
-      type: 'dessert',
-      cat: 'sobremesas',
-      tags: 'dessert,milkshake,chocolate,sweet',
-      tier: d.price < 22 ? 'hero' : 'premium',
-    })),
     []
   );
 
@@ -342,13 +341,12 @@ function CardapioPage() {
   const isBurger   = BURGER_CATS.includes(filter);
   const showSides  = isAll || filter === 'porcoes';
   const showDrinks = isAll || filter === 'bebidas';
-  const showDesert = isAll || filter === 'sobremesas';
 
   const visibleGroups = isBurger
     ? burgerGroups.filter(g => g.id === filter)
     : isAll ? burgerGroups : [];
 
-  const hasContent = visibleGroups.length > 0 || showSides || showDrinks || showDesert;
+  const hasContent = visibleGroups.length > 0 || showSides || showDrinks;
 
   function handleFilter(catId) {
     setFilter(catId);
@@ -378,7 +376,7 @@ function CardapioPage() {
                 <span className="accent">Cardápio</span>
               </h1>
               <p className="cardapio-sub">
-                Tudo feito na hora. Carne moída no dia, pão da padaria local, molhos da casa.
+                Cardápio de lançamento da Sanka Burgers. Escolha seus itens e finalize pelo WhatsApp.
               </p>
             </div>
           )}
@@ -425,18 +423,6 @@ function CardapioPage() {
             </section>
           )}
 
-          {/* Sobremesas */}
-          {showDesert && (
-            <section className="menu-section" id="sec-sobremesas">
-              <SectionHead title="Sobremesas" count={desserts.length} />
-              <div className="menu-grid">
-                {desserts.map((item, idx) => (
-                  <MenuCard key={item.id} item={item} tier={item.tier} onAdd={handleAdd} delay={String((idx % 3) + 1)} />
-                ))}
-              </div>
-            </section>
-          )}
-
           {/* Estado vazio */}
           {!hasContent && <EmptyState />}
 
@@ -450,7 +436,7 @@ function CardapioPage() {
             <div className="nav-logo-mark" aria-hidden="true">S</div>
             <div className="nav-logo-name">SANKA<b>.</b></div>
           </a>
-          <p>© 2024 Sanka Burgers · Rio Claro/SP</p>
+          <p>© 2026 Sanka Burgers · Rio Claro/SP</p>
           <a
             href={WA}
             className="btn btn-outline"

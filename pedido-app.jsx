@@ -6,12 +6,12 @@ const { useState, useEffect, useRef } = React;
 
 /* ── Status config ───────────────────────────────────────────── */
 const STEPS = [
-  { id: 'recebido',      label: 'Pedido Recebido',  icon: '✅', desc: 'Recebemos seu pedido!',                       eta: 2  },
-  { id: 'preparando',    label: 'Preparando',        icon: '👨‍🍳', desc: 'Estamos montando seu lanche.',               eta: 8  },
-  { id: 'na_chapa',      label: 'Na Chapa',          icon: '🔥', desc: 'A carne está na chapa. Cheiro bom aí?',      eta: 12 },
-  { id: 'finalizando',   label: 'Finalizando',       icon: '🧀', desc: 'Queijo derretendo, montagem final.',          eta: 5  },
-  { id: 'saiu_entrega',  label: 'Saiu para Entrega', icon: '🏍️', desc: 'A moto já saiu. Falta pouco!',               eta: 15 },
-  { id: 'entregue',      label: 'Entregue!',         icon: '🎉', desc: 'Chegou! Bom apetite. ⭐ Avalie a Sanka no Google!', eta: 0  },
+  { id: 'recebido',      label: 'Pedido Recebido',  icon: '✅', desc: 'Recebemos seu pedido.' },
+  { id: 'preparando',    label: 'Preparando',        icon: '👨‍🍳', desc: 'Estamos preparando seu pedido.' },
+  { id: 'na_chapa',      label: 'Na Chapa',          icon: '🔥', desc: 'Seu pedido está na chapa.' },
+  { id: 'finalizando',   label: 'Finalizando',       icon: '🧀', desc: 'Estamos finalizando seu pedido.' },
+  { id: 'saiu_entrega',  label: 'Pronto',            icon: '✅', desc: 'Seu pedido está pronto.' },
+  { id: 'entregue',      label: 'Concluído!',        icon: '🎉', desc: 'Pedido concluído. Bom apetite!' },
 ];
 
 function getStepIndex(status) {
@@ -49,20 +49,6 @@ function Confetti() {
       ))}
     </div>
   );
-}
-
-/* ── ETA counter ─────────────────────────────────────────────── */
-function useEta(minutes) {
-  const [secs, setSecs] = useState(minutes * 60);
-  useEffect(() => setSecs(minutes * 60), [minutes]);
-  useEffect(() => {
-    if (secs <= 0) return;
-    const iv = setInterval(() => setSecs(s => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(iv);
-  }, []);
-  const m = Math.floor(secs / 60), s = secs % 60;
-  const pad = n => String(n).padStart(2, '0');
-  return `${pad(m)}:${pad(s)}`;
 }
 
 /* ── SearchForm ──────────────────────────────────────────────── */
@@ -141,9 +127,15 @@ function OrderTracker({ initialOrder }) {
   const pollRef = useRef(null);
 
   const currentIdx = getStepIndex(order.status);
-  const currentStep = STEPS[currentIdx] || STEPS[0];
-  const etaMinutes  = STEPS.slice(currentIdx + 1).reduce((s, st) => s + st.eta, 0);
-  const eta = useEta(etaMinutes);
+  const baseStep = STEPS[currentIdx] || STEPS[0];
+  const isDelivery = order.fulfillmentType === 'delivery';
+  const currentStep = baseStep.id === 'saiu_entrega'
+    ? {
+        ...baseStep,
+        label: isDelivery ? 'Saiu para Entrega' : 'Pronto para Retirada',
+        desc: isDelivery ? 'Seu pedido saiu para entrega.' : 'Seu pedido está pronto para retirada.',
+      }
+    : baseStep;
 
   useEffect(() => {
     if (order.status === 'entregue') return;
@@ -189,17 +181,19 @@ function OrderTracker({ initialOrder }) {
           {currentStep.label}
         </h1>
         <p className="section-sub">{currentStep.desc}</p>
-        {order.status !== 'entregue' && etaMinutes > 0 && (
-          <div className="pedido-eta" aria-live="polite">
-            <span className="pedido-eta-label">ETA</span>
-            <span className="pedido-eta-time">{eta}</span>
-          </div>
-        )}
       </div>
 
       {/* Timeline */}
       <div className="pedido-timeline" role="list" aria-label="Progresso do pedido">
-        {STEPS.map((step, i) => {
+        {STEPS.map((rawStep, i) => {
+          const step = rawStep.id === 'saiu_entrega'
+            ? {
+                ...rawStep,
+                label: isDelivery ? 'Saiu para Entrega' : 'Pronto para Retirada',
+                desc: isDelivery ? 'Seu pedido saiu para entrega.' : 'Seu pedido está pronto para retirada.',
+                icon: isDelivery ? '🏍️' : '✅',
+              }
+            : rawStep;
           const state = i < currentIdx ? 'done' : i === currentIdx ? 'active' : 'pending';
           return (
             <div key={step.id} className={`pedido-step pedido-step--${state}`} role="listitem" data-reveal data-delay={String(i + 1)}>

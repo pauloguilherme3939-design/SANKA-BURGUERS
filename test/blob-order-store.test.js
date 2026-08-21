@@ -48,7 +48,7 @@ test('Vercel Blob guarda dados cifrados e recompõe pedido e eventos', async () 
 
   await service.create({
     customer: { name: 'Pessoa Privada', phone: '19999990000' },
-    items: [{ id: 'PR-01', qty: 1 }],
+    items: [{ id: 'SK-P01', qty: 1 }],
     fulfillment: { type: 'pickup' },
     payment: { method: 'pix' },
   });

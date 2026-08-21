@@ -13,66 +13,6 @@
     <priority>0.9</priority>
   </url>
 
-  <url>
-    <loc>https://sankaburguers.vercel.app/monte.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/oferta.html</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/nossa-carne.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/clube.html</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/melhor-hamburgueria-rio-claro.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/delivery-hamburgueria-rio-claro.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/hamburgueria-artesanal-rio-claro.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/lanche-prensado-rio-claro.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/hamburguer-grande-rio-claro.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://sankaburguers.vercel.app/clube-sanka.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
   <!-- /pedido/* e /admin* têm noindex — não entram no sitemap -->
 
 </urlset>

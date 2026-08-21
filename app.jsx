@@ -6,6 +6,7 @@ import {
   LaunchCoupon, ClubeCTA, NossaCarneTeaser, LocalBrand,
   OfertaDia, MonteBanner, Reviews, Location, FAQ, Footer, StickyWA
 } from './sections.jsx'
+import { SANKA_BRAND } from './lib/brand.js'
 
 const { useEffect } = React;
 
@@ -66,12 +67,12 @@ function App() {
         <Destaques />
         <ProvaArtesanal />
         <HowItWorks />
-        <LaunchCoupon />
-        <ClubeCTA />
-        <OfertaDia />
-        <NossaCarneTeaser />
+        {SANKA_BRAND.isLaunchCouponActive && <LaunchCoupon />}
+        {SANKA_BRAND.isClubActive && <ClubeCTA />}
+        {SANKA_BRAND.isFlashOfferActive && <OfertaDia />}
+        {SANKA_BRAND.isMeatStoryActive && <NossaCarneTeaser />}
         <LocalBrand />
-        <Reviews />
+        {SANKA_BRAND.isReviewsActive && <Reviews />}
         <Location />
         <FAQ />
       </main>

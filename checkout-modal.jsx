@@ -24,6 +24,18 @@ function maskCep(raw) {
   return d.length > 5 ? `${d.slice(0,5)}-${d.slice(5)}` : d;
 }
 
+function FormField({ id, label, required, error, children }) {
+  return (
+    <div className="co-field">
+      <label className="co-label" htmlFor={id}>
+        {label}{required && <span aria-hidden="true"> *</span>}
+      </label>
+      {children}
+      {error && <span className="co-error" role="alert">{error}</span>}
+    </div>
+  );
+}
+
 /* ── Monta mensagem WA ─────────────────────────────────────── */
 function buildWAMessage(order) {
   const { customer, fulfillment, payment, coupon, items, pricing } = order;
@@ -46,11 +58,18 @@ function buildWAMessage(order) {
   if (pricing.discount > 0) lines.push(`Desconto (${coupon?.code}): -${brl(pricing.discount)}`);
 
   const entregaLabel = fulfillment.type === 'delivery'
-    ? (pricing.deliveryFee === 0 ? 'Entrega: Grátis 🎉' : `Entrega: ${brl(pricing.deliveryFee)}`)
+    ? (pricing.deliveryFee === null
+        ? 'Entrega: taxa a confirmar no WhatsApp'
+        : pricing.deliveryFee === 0
+          ? 'Entrega: Grátis'
+          : `Entrega: ${brl(pricing.deliveryFee)}`)
     : 'Entrega: Retirada no local';
   lines.push(entregaLabel);
 
-  lines.push(`*TOTAL: ${brl(pricing.total)}*`);
+  lines.push(pricing.totalIsFinal
+    ? `*TOTAL: ${brl(pricing.total)}*`
+    : `*SUBTOTAL DOS ITENS: ${brl(pricing.total)}*`);
+  if (!pricing.totalIsFinal) lines.push('_O total final depende da confirmação da taxa de entrega._');
 
   const pagLabel = payment.method === 'pix'  ? 'Pix'
     : payment.method === 'card' ? 'Cartão na entrega'
@@ -155,11 +174,18 @@ function CheckoutModal() {
   }
 
   // Cálculos
-  const discount    = couponState?.valid ? (couponState.discount || 0) : 0;
-  const deliveryFee = form.delivery === 'delivery'
-    ? ((subtotal - discount) >= SANKA_CONFIG.freeDeliveryAbove ? 0 : SANKA_CONFIG.deliveryFee)
-    : 0;
-  const total = Math.max(0, subtotal - discount + deliveryFee);
+  const hasCoupons = Object.keys(SANKA_CONFIG.coupons || {}).length > 0;
+  const discount = couponState?.valid ? (couponState.discount || 0) : 0;
+  const deliveryFeeConfigured = Number.isFinite(SANKA_CONFIG.deliveryFee);
+  const freeDeliveryConfigured = Number.isFinite(SANKA_CONFIG.freeDeliveryAbove);
+  const deliveryFee = form.delivery !== 'delivery'
+    ? 0
+    : !deliveryFeeConfigured
+      ? null
+      : freeDeliveryConfigured && (subtotal - discount) >= SANKA_CONFIG.freeDeliveryAbove
+        ? 0
+        : SANKA_CONFIG.deliveryFee;
+  const total = Math.max(0, subtotal - discount + (deliveryFee || 0));
 
   // Validação
   function validate() {
@@ -240,16 +266,6 @@ function CheckoutModal() {
 
   if (!checkoutOpen) return null;
 
-  const FI = ({ id, label, required, error, children }) => (
-    <div className="co-field">
-      <label className="co-label" htmlFor={id}>
-        {label}{required && <span aria-hidden="true"> *</span>}
-      </label>
-      {children}
-      {error && <span className="co-error" role="alert">{error}</span>}
-    </div>
-  );
-
   return (
     <div className="co-overlay" role="dialog" aria-modal="true" aria-label="Finalizar pedido">
       <div className="co-backdrop" onClick={submitting ? undefined : closeCheckout} aria-hidden="true" />
@@ -277,17 +293,17 @@ function CheckoutModal() {
             <fieldset className="co-section">
               <legend className="co-section-title">Identificação</legend>
 
-              <FI id="co-name" label="Nome" required error={errors.name}>
+              <FormField id="co-name" label="Nome" required error={errors.name}>
                 <input id="co-name" className={`co-input${errors.name ? ' is-err' : ''}`}
                   type="text" autoComplete="name" placeholder="Seu nome"
                   value={form.name} onChange={e => field('name', e.target.value)} />
-              </FI>
+              </FormField>
 
-              <FI id="co-phone" label="Telefone" required error={errors.phone}>
+              <FormField id="co-phone" label="Telefone" required error={errors.phone}>
                 <input id="co-phone" className={`co-input${errors.phone ? ' is-err' : ''}`}
                   type="tel" inputMode="numeric" autoComplete="tel" placeholder="(19) 9 9999-9999"
                   value={form.phone} onChange={e => field('phone', maskPhone(e.target.value))} />
-              </FI>
+              </FormField>
             </fieldset>
 
             {/* Entrega */}
@@ -297,7 +313,7 @@ function CheckoutModal() {
               <div className="co-delivery-opts">
                 {[
                   { val: 'pickup',   label: 'Retirada',  sub: 'Grátis',           icon: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10' },
-                  { val: 'delivery', label: 'Delivery',  sub: brl(SANKA_CONFIG.deliveryFee), icon: 'M1 3h15v13H1z M16 8l4 0 3 3v5h-7V8z M5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z M18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z' },
+                   { val: 'delivery', label: 'Delivery',  sub: deliveryFeeConfigured ? brl(SANKA_CONFIG.deliveryFee) : 'Taxa a confirmar', icon: 'M1 3h15v13H1z M16 8l4 0 3 3v5h-7V8z M5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z M18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z' },
                 ].map(o => (
                   <label key={o.val} className={`co-delivery-opt${form.delivery === o.val ? ' is-active' : ''}`}>
                     <input type="radio" name="delivery" value={o.val}
@@ -315,7 +331,7 @@ function CheckoutModal() {
 
               {form.delivery === 'delivery' && (
                 <div className="co-address">
-                  <FI id="co-cep" label="CEP" required error={errors.cep}>
+                  <FormField id="co-cep" label="CEP" required error={errors.cep}>
                     <div className="co-cep-wrap">
                       <input id="co-cep" className={`co-input${errors.cep ? ' is-err' : ''}`}
                         type="text" inputMode="numeric" placeholder="00000-000" maxLength={9}
@@ -327,32 +343,32 @@ function CheckoutModal() {
                         }} />
                       {cepLoading && <span className="co-cep-spin">…</span>}
                     </div>
-                  </FI>
+                  </FormField>
 
                   <div className="co-row">
-                    <FI id="co-street" label="Rua" required error={errors.street}>
+                    <FormField id="co-street" label="Rua" required error={errors.street}>
                       <input id="co-street" className={`co-input${errors.street ? ' is-err' : ''}`}
                         type="text" placeholder="Rua, Avenida…"
                         value={form.street} onChange={e => field('street', e.target.value)} />
-                    </FI>
-                    <FI id="co-number" label="Número" required error={errors.number}>
+                    </FormField>
+                    <FormField id="co-number" label="Número" required error={errors.number}>
                       <input id="co-number" className={`co-input${errors.number ? ' is-err' : ''}`}
                         type="text" placeholder="42" style={{ maxWidth: 96 }}
                         value={form.number} onChange={e => field('number', e.target.value)} />
-                    </FI>
+                    </FormField>
                   </div>
 
                   <div className="co-row">
-                    <FI id="co-complement" label="Complemento">
+                    <FormField id="co-complement" label="Complemento">
                       <input id="co-complement" className="co-input"
                         type="text" placeholder="Apto, bloco…"
                         value={form.complement} onChange={e => field('complement', e.target.value)} />
-                    </FI>
-                    <FI id="co-neighborhood" label="Bairro">
+                    </FormField>
+                    <FormField id="co-neighborhood" label="Bairro">
                       <input id="co-neighborhood" className="co-input"
                         type="text" placeholder="Bairro"
                         value={form.neighborhood} onChange={e => field('neighborhood', e.target.value)} />
-                    </FI>
+                    </FormField>
                   </div>
                 </div>
               )}
@@ -378,16 +394,16 @@ function CheckoutModal() {
               </div>
 
               {form.payment === 'cash' && (
-                <FI id="co-change" label="Troco para" required error={errors.change}>
+                <FormField id="co-change" label="Troco para" required error={errors.change}>
                   <input id="co-change" className={`co-input${errors.change ? ' is-err' : ''}`}
                     type="text" placeholder="R$ 50,00"
                     value={form.change} onChange={e => field('change', e.target.value)} />
-                </FI>
+                </FormField>
               )}
             </fieldset>
 
-            {/* Cupom */}
-            <div className="co-coupon">
+            {/* Cupom — só aparece quando houver uma regra confirmada no servidor. */}
+            {hasCoupons && <div className="co-coupon">
               <div className="co-coupon-row">
                 <input className="co-input" type="text" placeholder="Cupom de desconto"
                   value={form.coupon}
@@ -402,7 +418,7 @@ function CheckoutModal() {
                   {couponState.valid ? `✓ ${couponState.label}` : '✗ Cupom inválido ou expirado'}
                 </p>
               )}
-            </div>
+            </div>}
 
           </div>
 
@@ -433,14 +449,18 @@ function CheckoutModal() {
                 <div className="co-total-row">
                   <span>Entrega</span>
                   <span>
-                    {form.delivery === 'pickup' ? 'Retirada'
-                      : deliveryFee === 0 ? 'Grátis 🎉'
-                      : brl(deliveryFee)}
+                     {form.delivery === 'pickup' ? 'Retirada'
+                       : deliveryFee === null ? 'A confirmar no WhatsApp'
+                       : deliveryFee === 0 ? 'Grátis 🎉'
+                       : brl(deliveryFee)}
                   </span>
                 </div>
                 <div className="co-total-row co-total-row--total">
-                  <span>Total</span><span>{brl(total)}</span>
+                  <span>{deliveryFee === null ? 'Subtotal dos itens' : 'Total'}</span><span>{brl(total)}</span>
                 </div>
+                {deliveryFee === null && (
+                  <p className="co-submit-note">A taxa de entrega e o total final serão confirmados no WhatsApp.</p>
+                )}
               </div>
 
               {submitError && <p className="co-error" role="alert" style={{ marginBottom: 12 }}>{submitError}</p>}

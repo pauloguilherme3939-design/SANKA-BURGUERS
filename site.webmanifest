@@ -1,7 +1,7 @@
 {
-  "name": "Sanca Burgers",
-  "short_name": "Sanca Burgers",
-  "description": "Hambúrgueres artesanais em Rio Claro/SP. Blend exclusivo, moído no dia.",
+  "name": "Sanka Burgers",
+  "short_name": "Sanka",
+  "description": "Cardápio de lançamento da Sanka Burgers em Rio Claro/SP.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

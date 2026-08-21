@@ -6,13 +6,13 @@
 
 <!-- ── SEO ──────────────────────────────────────────────────── -->
 <title>Cardápio Completo — Sanka Burgers | Rio Claro/SP</title>
-<meta name="description" content="Cardápio completo da Sanka Burgers: hambúrgueres artesanais, porções, bebidas e sobremesas. Blend de acém, peito e costela moído no dia. Peça pelo WhatsApp em Rio Claro/SP." />
+<meta name="description" content="Cardápio de lançamento da Sanka Burgers: 14 lanches, porções e refrigerantes. Monte seu pedido e finalize pelo WhatsApp em Rio Claro/SP." />
 <link rel="canonical" href="https://sankaburguers.vercel.app/cardapio.html" />
 
 <!-- ── Open Graph ─────────────────────────────────────────── -->
 <meta property="og:type"        content="website" />
 <meta property="og:title"       content="Cardápio — Sanka Burgers | Rio Claro/SP" />
-<meta property="og:description" content="Hambúrgueres artesanais, porções, bebidas e sobremesas. Carne moída na hora, pão da padaria local." />
+<meta property="og:description" content="Conheça o cardápio de lançamento da Sanka Burgers e finalize seu pedido pelo WhatsApp." />
 <meta property="og:url"         content="https://sankaburguers.vercel.app/cardapio.html" />
 <!-- TODO: SANKA — og:image: foto do cardápio, 1200×630px, salvar em /og/cardapio.jpg -->
 <meta property="og:image"       content="https://sankaburguers.vercel.app/og/cardapio.jpg" />
@@ -24,7 +24,7 @@
 <!-- ── Twitter Card ──────────────────────────────────────── -->
 <meta name="twitter:card"        content="summary_large_image" />
 <meta name="twitter:title"       content="Cardápio — Sanka Burgers | Rio Claro/SP" />
-<meta name="twitter:description" content="Hambúrgueres artesanais, porções, bebidas e sobremesas. Carne moída na hora." />
+<meta name="twitter:description" content="Cardápio de lançamento da Sanka Burgers em Rio Claro/SP." />
 <meta name="twitter:image"       content="https://sankaburguers.vercel.app/og/cardapio.jpg" />
 
 <!-- ── PWA ───────────────────────────────────────────────── -->
@@ -37,63 +37,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Sanka Burgers" />
 
-
-<!-- ── Google Analytics 4 ─────────────────────────────────── -->
-<!-- TODO: SANKA — Substituir G-XXXXXXXXXX pelo Measurement ID real -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XXXXXXXXXX', { send_page_view: true });
-</script>
-
-<!-- ── Meta Pixel ─────────────────────────────────────────── -->
-<!-- TODO: SANKA — Substituir XXXXXXXXXXXXXXXXXX pelo Pixel ID real -->
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','XXXXXXXXXXXXXXXXXX');
-fbq('track','PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXXXX&ev=PageView&noscript=1"/></noscript>
-
-<!-- ── Tailwind Play CDN ──────────────────────────────────── -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        fire:   { DEFAULT: '#EA580C', light: '#F97316', dark: '#C2410C' },
-        amber:  { DEFAULT: '#D97706', light: '#F59E0B' },
-        ink:    { DEFAULT: '#F8F4F0', mute: '#9CA3AF', dim: '#6B7280' },
-        carbon: { DEFAULT: '#0F0D0B', mid: '#1A1714', surface: '#242019' },
-      },
-      fontFamily: {
-        display: ['Anton', 'sans-serif'],
-        black:   ['"Archivo Black"', 'sans-serif'],
-        body:    ['"Space Grotesk"', 'sans-serif'],
-        mono:    ['"JetBrains Mono"', 'monospace'],
-      },
-    },
-  },
-  plugins: [
-    function({ addUtilities }) {
-      addUtilities({
-        '.grain': {
-          position: 'relative',
-          isolation: 'isolate',
-        },
-      })
-    }
-  ],
-}
-</script>
 
 <!-- ── Fonts ──────────────────────────────────────────────── -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -121,6 +64,6 @@ if ('serviceWorker' in navigator) {
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 
-<script src="/dist/cardapio.js"></script>
+<script src="/dist/cardapio.js?v=20260821-launch-2"></script>
 </body>
 </html>

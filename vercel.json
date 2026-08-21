@@ -3,6 +3,19 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".",
   "installCommand": "npm install",
+  "redirects": [
+    { "source": "/monte.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/oferta.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/nossa-carne.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/clube.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/clube-sanka.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/termos-clube.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/melhor-hamburgueria-rio-claro.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/delivery-hamburgueria-rio-claro.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/hamburgueria-artesanal-rio-claro.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/lanche-prensado-rio-claro.html", "destination": "/cardapio.html", "permanent": false },
+    { "source": "/hamburguer-grande-rio-claro.html", "destination": "/cardapio.html", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/sw.js",

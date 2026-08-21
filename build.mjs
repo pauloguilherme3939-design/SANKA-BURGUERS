@@ -3,9 +3,11 @@ import sharp        from 'sharp'
 import { readdir, mkdir } from 'fs/promises'
 import { existsSync }    from 'fs'
 import path              from 'path'
+import { fileURLToPath } from 'url'
 
 const isProd  = process.argv.includes('--prod')
 const isWatch = process.argv.includes('--watch')
+const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 /* ── esbuild ─────────────────────────────────────────────── */
 const shared = {
@@ -17,15 +19,15 @@ const shared = {
 }
 
 const pages = [
-  { entryPoints: ['src/home.jsx'],           outfile: 'dist/home.js'           },
-  { entryPoints: ['src/cardapio.jsx'],       outfile: 'dist/cardapio.js'       },
-  { entryPoints: ['src/nossa-carne.jsx'],    outfile: 'dist/nossa-carne.js'    },
-  { entryPoints: ['src/admin.jsx'],          outfile: 'dist/admin.js'          },
-  { entryPoints: ['src/monte.jsx'],          outfile: 'dist/monte.js'          },
-  { entryPoints: ['src/oferta.jsx'],         outfile: 'dist/oferta.js'         },
-  { entryPoints: ['src/pedido.jsx'],         outfile: 'dist/pedido.js'         },
-  { entryPoints: ['src/admin-pedidos.jsx'],  outfile: 'dist/admin-pedidos.js'  },
-  { entryPoints: ['src/clube.jsx'],          outfile: 'dist/clube.js'          },
+  { entryPoints: [path.join(rootDir, 'src/home.jsx')],          outfile: path.join(rootDir, 'dist/home.js')          },
+  { entryPoints: [path.join(rootDir, 'src/cardapio.jsx')],      outfile: path.join(rootDir, 'dist/cardapio.js')      },
+  { entryPoints: [path.join(rootDir, 'src/nossa-carne.jsx')],   outfile: path.join(rootDir, 'dist/nossa-carne.js')   },
+  { entryPoints: [path.join(rootDir, 'src/admin.jsx')],         outfile: path.join(rootDir, 'dist/admin.js')         },
+  { entryPoints: [path.join(rootDir, 'src/monte.jsx')],         outfile: path.join(rootDir, 'dist/monte.js')         },
+  { entryPoints: [path.join(rootDir, 'src/oferta.jsx')],        outfile: path.join(rootDir, 'dist/oferta.js')        },
+  { entryPoints: [path.join(rootDir, 'src/pedido.jsx')],        outfile: path.join(rootDir, 'dist/pedido.js')        },
+  { entryPoints: [path.join(rootDir, 'src/admin-pedidos.jsx')], outfile: path.join(rootDir, 'dist/admin-pedidos.js') },
+  { entryPoints: [path.join(rootDir, 'src/clube.jsx')],         outfile: path.join(rootDir, 'dist/clube.js')         },
 ]
 
 /* ── Geração de WebP das imagens de burger ───────────────── */

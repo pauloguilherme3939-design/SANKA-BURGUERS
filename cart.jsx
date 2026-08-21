@@ -3,6 +3,7 @@
 import { FoodPlaceholder } from './placeholders.jsx'
 
 const { createContext, useContext, useState, useEffect } = React;
+const CART_STORAGE_KEY = 'sanka_cart_launch_2026';
 
 /* ── Context ───────────────────────────────────────────────── */
 const CartContext = createContext(null);
@@ -16,7 +17,7 @@ function useCartContext() {
 /* ── Provider ──────────────────────────────────────────────── */
 function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('sanka_cart') || '[]'); }
+    try { return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'); }
     catch { return []; }
   });
   const [drawerOpen,   setDrawerOpen]   = useState(false);
@@ -25,7 +26,7 @@ function CartProvider({ children }) {
 
   // Persistência
   useEffect(() => {
-    localStorage.setItem('sanka_cart', JSON.stringify(items));
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
     window.__sankaCart = items;
   }, [items]);
 
@@ -71,7 +72,7 @@ function CartProvider({ children }) {
 
   function clearCart() {
     setItems([]);
-    localStorage.removeItem('sanka_cart');
+    localStorage.removeItem(CART_STORAGE_KEY);
   }
 
   function openCheckout() {
