@@ -126,8 +126,11 @@ function OrderTracker({ initialOrder }) {
   const [copyStatus, setCopyStatus] = useState('');
   const pollRef = useRef(null);
 
+  const isCancelled = order.status === 'cancelado';
   const currentIdx = getStepIndex(order.status);
-  const baseStep = STEPS[currentIdx] || STEPS[0];
+  const baseStep = isCancelled
+    ? { id: 'cancelado', label: 'Pedido Cancelado', desc: 'Este pedido foi cancelado. Se precisar, fale com a Sanka pelo WhatsApp.' }
+    : (STEPS[currentIdx] || STEPS[0]);
   const isDelivery = order.fulfillmentType === 'delivery';
   const currentStep = baseStep.id === 'saiu_entrega'
     ? {
@@ -138,7 +141,7 @@ function OrderTracker({ initialOrder }) {
     : baseStep;
 
   useEffect(() => {
-    if (order.status === 'entregue') return;
+    if (order.status === 'entregue' || order.status === 'cancelado') return;
     async function poll() {
       try {
         const r = await fetch(`/api/pedido?id=${encodeURIComponent(order.id)}`);
@@ -184,7 +187,11 @@ function OrderTracker({ initialOrder }) {
       </div>
 
       {/* Timeline */}
-      <div className="pedido-timeline" role="list" aria-label="Progresso do pedido">
+      {isCancelled ? (
+        <div className="pedido-search-err" role="status" style={{ padding:20, textAlign:'center', margin:'28px 0' }}>
+          Este pedido não seguirá para preparo ou entrega. Nenhuma informação interna do cancelamento é exibida aqui.
+        </div>
+      ) : <div className="pedido-timeline" role="list" aria-label="Progresso do pedido">
         {STEPS.map((rawStep, i) => {
           const step = rawStep.id === 'saiu_entrega'
             ? {
@@ -221,7 +228,7 @@ function OrderTracker({ initialOrder }) {
             </div>
           );
         })}
-      </div>
+      </div>}
 
       {syncError && <p className="pedido-search-err" role="status">{syncError}</p>}
 

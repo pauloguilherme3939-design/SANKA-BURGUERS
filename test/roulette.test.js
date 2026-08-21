@@ -38,6 +38,9 @@ class MemoryRouletteStore {
   async findByCodeHash(day, codeHash) {
     return (await this.listDay(day)).find(record => record.codeHash === codeHash) || null;
   }
+  async findByOrderId(day, orderId) {
+    return (await this.listDay(day)).filter(record => record.orderId === orderId || record.cancelledOrderId === orderId);
+  }
   async claimUse(record, event) {
     const key = this.key(record.day, record.phoneHash);
     const current = await this.getByPhone(record.day, record.phoneHash);
@@ -225,6 +228,17 @@ test('cancelamento do pedido invalida o prêmio', async () => {
     () => service.consume({ code: spin.code, orderId: ORDER_ID }),
     error => error instanceof RouletteError && error.code === 'PRIZE_CANCELLED',
   );
+});
+
+test('cancelamento administrativo invalida benefício já associado ao pedido', async () => {
+  const { service, store } = setup();
+  const spin = await service.spin({ phone: '19999990000' });
+  await service.consume({ code: spin.code, orderId: ORDER_ID });
+  const result = await service.cancelByOrderId(ORDER_ID);
+  assert.equal(result.cancelledCount, 1);
+  const record = (await store.listDay('2026-08-21'))[0];
+  assert.equal(record.status, 'cancelled');
+  assert.equal(record.cancelledOrderId, ORDER_ID);
 });
 
 test('falha de armazenamento não entrega resultado falso', async () => {

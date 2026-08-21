@@ -56,3 +56,43 @@ test('API só confirma criação após persistência e expõe falha como 503', a
   assert.match(failure.body.error, /persistir/i);
   assert.equal('order' in failure.body, false);
 });
+
+test('cancelamento administrativo persiste antes de invalidar benefício associado', async () => {
+  const calls = [];
+  const cancelled = { id: 'SK-20260821-AAAAAAAAAAAAAAAA', status: 'cancelado' };
+  const handler = createOrderHandler({
+    service: {
+      async cancel(id) { calls.push(`order:${id}`); return cancelled; },
+    },
+    adminPassword: 'senha-teste',
+    cancelBenefits: async id => { calls.push(`benefit:${id}`); },
+  });
+  const res = responseRecorder();
+  await handler({
+    method: 'PATCH',
+    query: { id: cancelled.id },
+    headers: { authorization: 'Bearer senha-teste' },
+    body: { action: 'cancel' },
+  }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.status, 'cancelado');
+  assert.deepEqual(calls, [`order:${cancelled.id}`, `benefit:${cancelled.id}`]);
+});
+
+test('falha ao invalidar benefício não faz o painel fingir sucesso', async () => {
+  const cancelled = { id: 'SK-20260821-AAAAAAAAAAAAAAAA', status: 'cancelado' };
+  const handler = createOrderHandler({
+    service: { async cancel() { return cancelled; } },
+    adminPassword: 'senha-teste',
+    cancelBenefits: async () => { throw new StorageError('Falha simulada.'); },
+  });
+  const res = responseRecorder();
+  await handler({
+    method: 'PATCH',
+    query: { id: cancelled.id },
+    headers: { authorization: 'Bearer senha-teste' },
+    body: { action: 'cancel' },
+  }, res);
+  assert.equal(res.statusCode, 503);
+  assert.equal(res.body.status, undefined);
+});

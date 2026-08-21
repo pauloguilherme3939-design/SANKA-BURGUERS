@@ -53,6 +53,7 @@ test('Vercel Blob guarda dados cifrados e recompõe pedido e eventos', async () 
     payment: { method: 'pix' },
   });
   await service.updateStatus(id, 'preparando');
+  await service.cancel(id, { reason: 'cancelamento administrativo de teste' });
 
   const rawDocuments = Array.from(fake.files.values()).map(file => file.body).join('\n');
   assert.equal(rawDocuments.includes('Pessoa Privada'), false);
@@ -68,6 +69,7 @@ test('Vercel Blob guarda dados cifrados e recompõe pedido e eventos', async () 
   const restarted = createOrderService({ store: restartedStore });
   const listed = await restarted.list('2026-08-13');
   assert.equal(listed.length, 1);
-  assert.equal(listed[0].status, 'preparando');
+  assert.equal(listed[0].status, 'cancelado');
+  assert.equal(listed[0].cancellation.reason, 'cancelamento administrativo de teste');
   assert.equal(listed[0].customer.name, 'Pessoa Privada');
 });

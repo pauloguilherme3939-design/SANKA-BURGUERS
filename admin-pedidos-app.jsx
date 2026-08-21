@@ -1,5 +1,7 @@
 // admin-pedidos-app.jsx — Painel de pedidos · Sanka Burgers
 
+import { requestAdminOrderUpdate } from './lib/admin-order-request.mjs';
+
 const { useState, useEffect } = React;
 
 const STATUSES = ['recebido','preparando','na_chapa','finalizando','saiu_entrega','entregue'];
@@ -10,6 +12,7 @@ const STATUS_LABELS = {
   finalizando:  'Finalizando',
   saiu_entrega: 'Saiu p/ Entrega',
   entregue:     'Entregue',
+  cancelado:    'Cancelado',
 };
 const STATUS_COLORS = {
   recebido:     '#6B7280',
@@ -18,10 +21,12 @@ const STATUS_COLORS = {
   finalizando:  '#F97316',
   saiu_entrega: '#3B82F6',
   entregue:     '#22C55E',
+  cancelado:    '#DC2626',
 };
 
 function nextStatus(current) {
   const i = STATUSES.indexOf(current);
+  if (i < 0) return null;
   return i < STATUSES.length - 1 ? STATUSES[i + 1] : null;
 }
 
@@ -96,21 +101,42 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
     setLoading(true);
     setError('');
     try {
-      const r = await fetch(`/api/pedido?id=${order.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ status: next }),
+      const updated = await requestAdminOrderUpdate({
+        orderId: order.id,
+        token,
+        payload: { status: next },
       });
-      if (r.status === 401) {
+      onUpdate(updated);
+    } catch (requestError) {
+      if (requestError?.status === 401) {
         onUnauthorized();
         return;
       }
-      if (!r.ok) throw new Error(await responseError(r, 'Não foi possível atualizar o pedido.'));
-      onUpdate(await r.json());
-    } catch (requestError) {
       setError(requestError?.message || 'Erro de conexão ao atualizar o pedido.');
     }
     finally { setLoading(false); }
+  }
+
+  async function cancelOrder() {
+    if (!window.confirm(`Cancelar definitivamente o pedido ${order.id}? O pedido continuará no histórico.`)) return;
+    setLoading(true);
+    setError('');
+    try {
+      const updated = await requestAdminOrderUpdate({
+        orderId: order.id,
+        token,
+        payload: { action: 'cancel' },
+      });
+      onUpdate(updated);
+    } catch (requestError) {
+      if (requestError?.status === 401) {
+        onUnauthorized();
+        return;
+      }
+      setError(requestError?.message || 'Erro de conexão ao cancelar o pedido.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   const t = new Date(order.createdAt).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
@@ -122,7 +148,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
           <span className="adm-pedido-id">#{order.id}</span>
           <span className="adm-pedido-time">{t}</span>
         </div>
-        <span className="adm-pedido-status" style={{ background: STATUS_COLORS[order.status] + '22', color: STATUS_COLORS[order.status], border: `1px solid ${STATUS_COLORS[order.status]}55` }}>
+        <span className="adm-pedido-status" style={{ background: (STATUS_COLORS[order.status] || '#6B7280') + '22', color: STATUS_COLORS[order.status] || '#6B7280', border: `1px solid ${STATUS_COLORS[order.status] || '#6B7280'}55` }}>
           {STATUS_LABELS[order.status]}
         </span>
       </div>
@@ -154,7 +180,13 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
           {loading ? 'Atualizando...' : `→ ${STATUS_LABELS[next]}`}
         </button>
       )}
-      {!next && <div style={{ textAlign:'center', marginTop:12, color:'#22C55E', fontFamily:'var(--f-m)', fontSize:12, letterSpacing:'0.12em' }}>✓ ENTREGUE</div>}
+      {next && (
+        <button className="btn btn-outline" style={{ width:'100%', justifyContent:'center', marginTop:8, color:'#DC2626', borderColor:'#DC2626' }} onClick={cancelOrder} disabled={loading}>
+          CANCELAR PEDIDO
+        </button>
+      )}
+      {order.status === 'entregue' && <div style={{ textAlign:'center', marginTop:12, color:'#22C55E', fontFamily:'var(--f-m)', fontSize:12, letterSpacing:'0.12em' }}>✓ ENTREGUE</div>}
+      {order.status === 'cancelado' && <div style={{ textAlign:'center', marginTop:12, color:'#DC2626', fontFamily:'var(--f-m)', fontSize:12, letterSpacing:'0.12em' }}>PEDIDO CANCELADO · HISTÓRICO PRESERVADO</div>}
     </div>
   );
 }
@@ -192,8 +224,8 @@ function Dashboard({ token, onUnauthorized }) {
     setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
   }
 
-  const active = orders.filter(o => o.status !== 'entregue');
-  const done   = orders.filter(o => o.status === 'entregue');
+  const active = orders.filter(o => !['entregue', 'cancelado'].includes(o.status));
+  const done   = orders.filter(o => ['entregue', 'cancelado'].includes(o.status));
 
   return (
     <div className="adm-pedidos-layout">
@@ -225,11 +257,11 @@ function Dashboard({ token, onUnauthorized }) {
             {active.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
           </div>
 
-          {/* Entregues */}
+          {/* Encerrados */}
           {done.length > 0 && (
             <>
               <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:32 }}>
-                Entregues ({done.length})
+                Encerrados ({done.length})
               </div>
               <div className="adm-pedidos-grid">
                 {done.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}

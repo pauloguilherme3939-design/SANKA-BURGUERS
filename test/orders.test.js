@@ -85,6 +85,51 @@ test('persiste avanços sequenciais e rejeita salto de status', async t => {
   assert.deepEqual(listed[0].history.map(entry => entry.status), ['recebido', 'preparando']);
 });
 
+test('cancelamento fica persistido, aparece no rastreio e bloqueia avanço posterior', async t => {
+  const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-cancel-'));
+  t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
+  let tick = 0;
+  const service = createOrderService({
+    store: new FileOrderStore({ rootDir }),
+    now: () => new Date(CREATED_AT.getTime() + tick++ * 1000),
+    idFactory: () => ORDER_ID,
+  });
+  await service.create(validPayload());
+  await service.updateStatus(ORDER_ID, 'preparando');
+  const cancelled = await service.cancel(ORDER_ID, { reason: 'motivo interno de teste' });
+  assert.equal(cancelled.status, 'cancelado');
+  assert.equal(cancelled.cancellation.reason, 'motivo interno de teste');
+
+  await assert.rejects(
+    () => service.updateStatus(ORDER_ID, 'na_chapa'),
+    error => error instanceof OrderError && error.code === 'ORDER_CANCELLED',
+  );
+  const restarted = createOrderService({ store: new FileOrderStore({ rootDir }) });
+  const publicOrder = await restarted.getPublic(ORDER_ID);
+  assert.equal(publicOrder.status, 'cancelado');
+  assert.equal(publicOrder.history.at(-1).status, 'cancelado');
+  assert.equal('cancellation' in publicOrder, false);
+  assert.equal(JSON.stringify(publicOrder).includes('motivo interno'), false);
+  const adminOrder = (await restarted.list('2026-08-13'))[0];
+  assert.equal(adminOrder.cancellation.reason, 'motivo interno de teste');
+});
+
+test('falha de armazenamento durante cancelamento não retorna sucesso', async () => {
+  const current = {
+    ...validPayload(),
+    id: ORDER_ID,
+    status: 'recebido',
+    history: [{ status: 'recebido', ts: CREATED_AT.toISOString() }],
+  };
+  const service = createOrderService({
+    store: {
+      async get() { return current; },
+      async appendCancellation() { throw new StorageError('Falha simulada.'); },
+    },
+  });
+  await assert.rejects(() => service.cancel(ORDER_ID), error => error instanceof StorageError);
+});
+
 test('delivery mantém a taxa e o total final pendentes até a confirmação no WhatsApp', async () => {
   let persisted;
   const service = createOrderService({
