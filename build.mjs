@@ -28,6 +28,7 @@ const pages = [
   { entryPoints: [path.join(rootDir, 'src/pedido.jsx')],        outfile: path.join(rootDir, 'dist/pedido.js')        },
   { entryPoints: [path.join(rootDir, 'src/admin-pedidos.jsx')], outfile: path.join(rootDir, 'dist/admin-pedidos.js') },
   { entryPoints: [path.join(rootDir, 'src/clube.jsx')],         outfile: path.join(rootDir, 'dist/clube.js')         },
+  { entryPoints: [path.join(rootDir, 'src/roleta.jsx')],        outfile: path.join(rootDir, 'dist/roleta.js')        },
 ]
 
 /* ── Geração de WebP das imagens de burger ───────────────── */

@@ -5,6 +5,7 @@ const express = require('express');
 const fs      = require('fs');
 const path    = require('path');
 const orderHandler = require('./api/pedido.js');
+const rouletteHandler = require('./api/roleta.js');
 
 const app      = express();
 const PORT     = process.env.PORT || 3000;
@@ -46,6 +47,7 @@ function validatePayload({ name, whatsapp, birthday }) {
 
 /* ── Pedido: mesma implementação usada na função serverless ────── */
 app.all('/api/pedido', orderHandler);
+app.all('/api/roleta', rouletteHandler);
 
 /* ── POST /api/clube — inscrição ─────────────────────────────── */
 app.post('/api/clube', (req, res) => {

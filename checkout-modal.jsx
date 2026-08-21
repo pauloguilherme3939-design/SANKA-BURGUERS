@@ -2,6 +2,7 @@
 
 import { SANKA_CONFIG } from './lib/config.js'
 import { completeCheckout } from './lib/order-submit.mjs'
+import { consumeRoulettePrize, getRouletteConfig } from './lib/roulette-client.mjs'
 import { useCartContext } from './cart.jsx'
 
 const { useState, useEffect } = React;
@@ -37,7 +38,7 @@ function FormField({ id, label, required, error, children }) {
 }
 
 /* ── Monta mensagem WA ─────────────────────────────────────── */
-function buildWAMessage(order) {
+function buildWAMessage(order, rouletteRedemption = null) {
   const { customer, fulfillment, payment, coupon, items, pricing } = order;
   const lines = [
     '*🍔 PEDIDO SANKA BURGERS*',
@@ -66,9 +67,18 @@ function buildWAMessage(order) {
     : 'Entrega: Retirada no local';
   lines.push(entregaLabel);
 
+  const rouletteBenefit = rouletteRedemption?.benefit;
+  if (rouletteBenefit?.type === 'discount') {
+    lines.push(`Roleta Sanka (${rouletteBenefit.label}): -${brl(rouletteBenefit.discountAmount)}`);
+  } else if (rouletteBenefit?.type === 'free_item') {
+    lines.push(`Roleta Sanka: ${rouletteBenefit.freeItem.quantity}× ${rouletteBenefit.freeItem.name}`);
+  }
+  if (rouletteRedemption?.code) lines.push(`Código da Roleta: ${rouletteRedemption.code}`);
+
+  const displayedTotal = rouletteBenefit ? rouletteBenefit.totalAfterBenefit : pricing.total;
   lines.push(pricing.totalIsFinal
-    ? `*TOTAL: ${brl(pricing.total)}*`
-    : `*SUBTOTAL DOS ITENS: ${brl(pricing.total)}*`);
+    ? `*TOTAL: ${brl(displayedTotal)}*`
+    : `*SUBTOTAL DOS ITENS: ${brl(displayedTotal)}*`);
   if (!pricing.totalIsFinal) lines.push('_O total final depende da confirmação da taxa de entrega._');
 
   const pagLabel = payment.method === 'pix'  ? 'Pix'
@@ -95,7 +105,7 @@ function CheckoutModal() {
   const INITIAL_FORM = {
     name: '', phone: '', delivery: 'pickup',
     cep: '', street: '', number: '', complement: '', neighborhood: '',
-    payment: 'pix', change: '', coupon: '',
+    payment: 'pix', change: '', coupon: '', rouletteCode: '',
   };
 
   const [form,         setForm]         = useState(INITIAL_FORM);
@@ -104,6 +114,15 @@ function CheckoutModal() {
   const [cepLoading,   setCepLoading]   = useState(false);
   const [submitting,   setSubmitting]   = useState(false);
   const [submitError,  setSubmitError]  = useState('');
+  const [rouletteEnabled, setRouletteEnabled] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    getRouletteConfig()
+      .then(config => { if (active) setRouletteEnabled(Boolean(config.enabled)); })
+      .catch(() => { if (active) setRouletteEnabled(false); });
+    return () => { active = false; };
+  }, []);
 
   // Resetar form ao fechar
   useEffect(() => {
@@ -241,14 +260,26 @@ function CheckoutModal() {
           couponCode: form.coupon,
         },
         onConfirmed: async persistedOrder => {
+          let rouletteRedemption = null;
+          let rouletteWarning = '';
+          if (form.rouletteCode.trim()) {
+            try {
+              rouletteRedemption = await consumeRoulettePrize(form.rouletteCode.trim(), persistedOrder.id);
+            } catch (error) {
+              rouletteWarning = error?.message || 'O código da Roleta não foi aplicado.';
+            }
+          }
           const trackUrl = `${window.location.origin}/pedido.html?id=${encodeURIComponent(persistedOrder.id)}`;
-          const message = `${buildWAMessage(persistedOrder)}\n\n📍 Rastreie seu pedido: ${trackUrl}`;
+          const message = `${buildWAMessage(persistedOrder, rouletteRedemption)}\n\n📍 Rastreie seu pedido: ${trackUrl}`;
           const waUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
 
           if (window.SankaAnalytics) window.SankaAnalytics.purchase(persistedOrder.pricing.total);
           clearCart();
           closeCheckout();
-          showToast(`Pedido #${persistedOrder.id} salvo. Abrindo o WhatsApp.`);
+          showToast(rouletteWarning
+            ? `Pedido #${persistedOrder.id} salvo. Roleta não aplicada: ${rouletteWarning}`
+            : `Pedido #${persistedOrder.id} salvo. Abrindo o WhatsApp.`,
+            rouletteWarning ? 'error' : undefined);
 
           if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.location.replace(waUrl);
           else window.location.assign(waUrl);
@@ -419,6 +450,20 @@ function CheckoutModal() {
                 </p>
               )}
             </div>}
+
+            {rouletteEnabled && (
+              <div className="co-coupon">
+                <FormField id="co-roulette-code" label="Código da Roleta">
+                  <input id="co-roulette-code" className="co-input" type="text"
+                    placeholder="RS-XXXX-XXXXXXXX" autoComplete="off"
+                    value={form.rouletteCode}
+                    onChange={e => field('rouletteCode', e.target.value.toUpperCase().replace(/\s/g, ''))} />
+                </FormField>
+                <p className="co-submit-note">
+                  O servidor valida e consome o benefício somente depois que o pedido é salvo.
+                </p>
+              </div>
+            )}
 
           </div>
 
