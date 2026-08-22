@@ -58,6 +58,40 @@ test('persiste pedido, recalcula valores no servidor e sobrevive a nova instânc
   assert.equal(listed[0].items[0].quantity, 2);
 });
 
+test('recalcula pedido com vários produtos e ignora preços e total adulterados', async t => {
+  const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-orders-multi-'));
+  t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
+
+  const service = createOrderService({
+    store: new FileOrderStore({ rootDir }),
+    now: () => CREATED_AT,
+    idFactory: () => ORDER_ID,
+  });
+  const created = await service.create(validPayload({
+    total: 0.01,
+    discount: 999,
+    items: [
+      { id: 'SK-L14', qty: 2, price: 0.01 },
+      { id: 'SK-L01', qty: 1, price: 999 },
+    ],
+  }));
+
+  assert.deepEqual(
+    created.items.map(item => ({ id: item.id, unitPrice: item.unitPrice, quantity: item.quantity })),
+    [
+      { id: 'SK-L14', unitPrice: 34.9, quantity: 2 },
+      { id: 'SK-L01', unitPrice: 37.9, quantity: 1 },
+    ],
+  );
+  assert.equal(created.pricing.subtotal, 107.7);
+  assert.equal(created.pricing.discount, 0);
+  assert.equal(created.pricing.total, 107.7);
+
+  const listed = await service.list('2026-08-13');
+  assert.equal(listed.length, 1);
+  assert.deepEqual(listed[0].items.map(item => item.name), ['Bauru de Carne', 'X-Americano']);
+});
+
 test('persiste avanços sequenciais e rejeita salto de status', async t => {
   const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-status-'));
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));

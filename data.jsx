@@ -128,7 +128,7 @@ export const SANKA_BURGERS = [
     cat: "alem",
     code: "SK-L14",
     desc: "Pão baguete, patinho acebolado, tomate, queijo prato e maionese caseira.",
-    price: 34.99,
+    price: 34.9,
     tags: "sandwich,beef,onion",
     src: "/assets/burgers/sb-014.png",
   },

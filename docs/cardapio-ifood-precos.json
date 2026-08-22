@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "source": "PRECIFICAÇÃO ULTIMA VERSAO.xlsx",
+  "channel": "ifood",
+  "currency": "BRL",
+  "status": "informado",
+  "notes": [
+    "Valores extraídos exclusivamente da linha VALOR IDEAL IFOOD de cada ficha.",
+    "A aba COPIA X AMERICANO foi ignorada.",
+    "Fórmulas de rodapé, custos e margens não foram usados."
+  ],
+  "items": [
+    { "name": "X Americano", "sourceSheet": "X AMERICANO", "sourceCell": "B22", "price": 39.9 },
+    { "name": "X Acebolado", "sourceSheet": "X ACEBOLADO", "sourceCell": "B23", "price": 42.9 },
+    { "name": "X Promel", "sourceSheet": "X PROMEL", "sourceCell": "B23", "price": 45.9 },
+    { "name": "X Biquinho", "sourceSheet": "X BIQUINHO", "sourceCell": "B23", "price": 42.9 },
+    { "name": "X Azeitonado", "sourceSheet": "X AZEITONADO", "sourceCell": "B23", "price": 41.9 },
+    { "name": "X SMACH", "sourceSheet": "X SMACH", "sourceCell": "B23", "price": 29.9 },
+    { "name": "SANKA BURGUER", "sourceSheet": "SANKA BURGUER", "sourceCell": "B23", "price": 21.9 },
+    { "name": "X Panceta", "sourceSheet": "X PANCETA", "sourceCell": "B23", "price": 36.9 },
+    { "name": "X Lombo", "sourceSheet": "X LOMBO", "sourceCell": "B23", "price": 36.9 },
+    { "name": "X Frango Catupiry", "sourceSheet": "X FRANGO CATUPIRY", "sourceCell": "B23", "price": 35.9 },
+    { "name": "Bauru de Carne", "sourceSheet": "BAURU DE CARNE", "sourceCell": "B23", "price": 38.9 },
+    { "name": "Misto Quente", "sourceSheet": "MISTO QUENTE", "sourceCell": "B23", "price": 24.9 },
+    { "name": "Sanka Dog", "sourceSheet": "SANKA DOG", "sourceCell": "B23", "price": 24.9 },
+    { "name": "Prensadinho", "sourceSheet": "PRENSADINHO", "sourceCell": "B23", "price": 16.3 }
+  ]
+}
