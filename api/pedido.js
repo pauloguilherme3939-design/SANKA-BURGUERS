@@ -3,7 +3,7 @@
 const { createOrderService, OrderError } = require('../lib/orders.js');
 const { createDefaultOrderStore, StorageError } = require('../lib/order-store.js');
 const { createDefaultRouletteStore } = require('../lib/roulette-store.js');
-const { createRouletteService } = require('../lib/roulette.js');
+const { createRouletteService, rouletteEnabledFromEnv } = require('../lib/roulette.js');
 const { tryNormalizeBrazilianPhone } = require('../lib/br-phone.js');
 const {
   getDefaultAbuseProtection,
@@ -21,6 +21,10 @@ function getDefaultService() {
 
 function getDefaultBenefitCancellation() {
   if (!defaultBenefitCancellation) {
+    if (!rouletteEnabledFromEnv()) {
+      defaultBenefitCancellation = async () => ({ cancelledCount: 0 });
+      return defaultBenefitCancellation;
+    }
     const rouletteService = createRouletteService({
       store: createDefaultRouletteStore(),
       orderStore: createDefaultOrderStore(),
