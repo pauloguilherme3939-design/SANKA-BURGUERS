@@ -18,7 +18,9 @@ Marque cada item com `[x]` conforme concluir.
 No Vercel → Settings → Environment Variables:
 
 - [ ] `ADMIN_PASSWORD` — senha forte para o painel admin (min. 12 chars)
-- [ ] `BLOB_READ_WRITE_TOKEN` — token do Vercel Blob (Storage → Create store → copiar token)
+- [ ] `DATABASE_URL` — conexão injetada pela integração Neon/Vercel
+- [ ] `ORDER_DATA_SECRET` — chave estável para cifra e HMAC (min. 32 caracteres)
+- [ ] `ROULETTE_ENABLED` e `ROULETTE_LEGAL_APPROVED` ausentes ou `false`
 
 Variáveis opcionais (ativar analytics):
 - [ ] GA4 ID substituído em todos os HTMLs: `index.html`, `cardapio.html`, `nossa-carne.html`
@@ -86,7 +88,7 @@ Substitua todos os blocos `TODO: SANKA` no código:
 ## ETAPA 8 — Backup
 
 - [ ] Repositório no GitHub com todos os arquivos (exceto `/dist/` e `/node_modules/`)
-- [ ] Dados do Clube (`data/clube.json`) incluídos no `.gitignore` ou em Vercel Blob (produção)
+- [ ] Dados do Clube tratados separadamente; não fazem parte da migração do núcleo de pedidos
 - [ ] `.env` **não commitado** — variáveis somente no Vercel
 
 ---

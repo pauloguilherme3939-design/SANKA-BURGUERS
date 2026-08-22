@@ -11,7 +11,11 @@ const {
   StorageError,
 } = require('../lib/order-store.js');
 const { createOrderService, OrderError } = require('../lib/orders.js');
-const { NeonPostgresDatabase, migrations } = require('../lib/postgres-database.js');
+const {
+  DEFAULT_QUERY_TIMEOUT_MS,
+  NeonPostgresDatabase,
+  migrations,
+} = require('../lib/postgres-database.js');
 const { FakePostgresDatabase } = require('./helpers/fake-postgres.js');
 
 const SECRET = 'segredo-postgres-de-teste-com-mais-de-trinta-e-dois-caracteres';
@@ -189,4 +193,23 @@ test('executor aplica a migration mínima uma única vez por instância', async 
     3 + migrations.reduce((total, migration) => total + migration.statements.length, 0),
   );
   assert.ok(calls.some(call => call.text.includes('sanka_order_events_immutable')));
+});
+
+test('consultas Neon recebem timeout abortável sem vazar a conexão', async () => {
+  const calls = [];
+  const sql = {
+    async query(text, params, options) {
+      calls.push({ text, params, options });
+      return [];
+    },
+  };
+  const database = new NeonPostgresDatabase({
+    connectionString: 'postgresql://teste-injetado',
+    neonFactory: () => sql,
+  });
+  await database.query('SELECT 1');
+  assert.equal(calls.length, 1);
+  assert.ok(calls[0].options.fetchOptions.signal instanceof AbortSignal);
+  assert.equal(calls[0].options.fetchOptions.signal.aborted, false);
+  assert.equal(DEFAULT_QUERY_TIMEOUT_MS, 8000);
 });

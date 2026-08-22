@@ -1,7 +1,7 @@
 # Sanka Burgers — Site
 
 Site completo da hamburgueria Sanka Burgers (Rio Claro/SP).
-Stack: Express + React 18 (CDN) + esbuild + Tailwind Play CDN + Vercel Blob.
+Stack: Express + React 18 (CDN) + esbuild + Tailwind Play CDN + Neon Postgres.
 
 ---
 
@@ -92,9 +92,27 @@ Em produção, autentique com a senha real do `.env`.
 Crie um arquivo `.env` na raiz (não comitar):
 
 ```
-ADMIN_PASSWORD=senha-forte-aqui
-BLOB_READ_WRITE_TOKEN=vercel_blob_xxxx   # opcional, para produção com Vercel Blob
+ADMIN_PASSWORD=
+DATABASE_URL=
+ORDER_DATA_SECRET=
+ROULETTE_ENABLED=false
+ROULETTE_LEGAL_APPROVED=false
 ```
+
+Nunca coloque valores reais neste README ou no `.env.example`. A integração Neon da
+Vercel injeta `DATABASE_URL`. `ORDER_DATA_SECRET` deve continuar estável para que os
+pedidos existentes permaneçam legíveis e os HMACs antiabuso continuem consistentes.
+
+Para aplicar o schema mínimo localmente:
+
+```bash
+npm run db:migrate
+```
+
+Pedidos, eventos de status/cancelamento e registros antiabuso usam o Neon. O conteúdo
+sensível do pedido e dos eventos permanece cifrado com AES-256-GCM. O Vercel Blob não é
+fallback do núcleo de pedidos; referências remanescentes atendem somente áreas legadas
+fora desta migração, como Clube/Roleta.
 
 ---
 
@@ -108,7 +126,8 @@ O `vercel.json` já está configurado. O deploy é automático via GitHub:
 
 O Vercel roda `npm run build` automaticamente antes de publicar.
 
-Variáveis de ambiente no Vercel: Settings → Environment Variables → adicionar `ADMIN_PASSWORD`, `BLOB_READ_WRITE_TOKEN`, etc.
+Variáveis essenciais no Vercel: `ADMIN_PASSWORD`, `DATABASE_URL` e `ORDER_DATA_SECRET`.
+As flags da roleta devem permanecer ausentes ou `false` até aprovação específica.
 
 ---
 
@@ -135,7 +154,11 @@ clube-modal.jsx     → Modal do Clube Sanka
 placeholders.jsx    → Componentes de imagem com fallback
 
 server.js           → Express + API /api/clube
-api/pedido.js       → Serverless function (rastreamento)
+api/pedido.js       → Serverless function (pedidos, painel e rastreamento)
+lib/order-store.js  → camada abstrata de persistência de pedidos
+lib/abuse-store.js  → camada abstrata do controle antiabuso
+lib/postgres-database.js → conexão Neon e aplicação idempotente de migrations
+migrations/         → schema Postgres versionado
 lib/config.js       → WhatsApp, taxa de entrega, cupons
 analytics.js        → GA4 + Meta Pixel helpers
 build.mjs           → esbuild + sharp (WebP + ícones PWA)
