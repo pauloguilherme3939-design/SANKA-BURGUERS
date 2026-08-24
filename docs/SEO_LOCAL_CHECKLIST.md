@@ -12,7 +12,7 @@
 - [ ] Área de entrega: Rio Claro e bairros próximos
 - [ ] Telefone/WhatsApp: (16) 99313-8450
 - [ ] Site: URL do site Sanka Burgers
-- [ ] Horário: Ter–Dom 18h–23h30, Segunda fechado
+- [x] Horário: seg–ter fechado; qua–qui e dom 18h30–23h30; sex–sáb 18h30–00h00
 
 ### Fotos (prioridade alta)
 - [ ] Logo em alta resolução (mínimo 720×720)

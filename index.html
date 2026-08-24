@@ -60,6 +60,11 @@
   },
   "telephone": "+5516993138450",
   "menu": "https://sankaburguers.vercel.app/cardapio.html",
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Thursday"], "opens": "18:30", "closes": "23:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "18:30", "closes": "00:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "18:30", "closes": "23:30" }
+  ],
   "sameAs": []
 }
 </script>
@@ -84,6 +89,11 @@
       "@type": "Question",
       "name": "Posso pedir pelo WhatsApp?",
       "acceptedAnswer": { "@type": "Answer", "text": "Sim. Monte o pedido no site e finalize pelo WhatsApp. A Sanka confirma disponibilidade, entrega e demais detalhes diretamente com você." }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual é o horário de funcionamento da Sanka Burgers?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Segunda e terça: fechado. Quarta e quinta: 18h30 às 23h30. Sexta e sábado: 18h30 às 00h00. Domingo: 18h30 às 23h30." }
     }
   ]
 }

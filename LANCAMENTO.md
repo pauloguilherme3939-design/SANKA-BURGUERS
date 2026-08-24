@@ -32,7 +32,7 @@ Variáveis opcionais (ativar analytics):
 
 Substitua todos os blocos `TODO: SANKA` no código:
 
-- [ ] `index.html` → JSON-LD: endereço real, CEP, telefone, horários, link Instagram, link iFood, nº de avaliações
+- [ ] `index.html` → JSON-LD: endereço real, CEP, link Instagram, link iFood e nº de avaliações (telefone e horários já atualizados)
 - [ ] `nossa-carne-app.jsx` → nome da padaria parceira (seção "O pão")
 - [ ] `nossa-carne.html` + outros HTMLs → og:image (foto real salva em `/og/`)
 - [ ] `lib/config.js` → confirmar número WhatsApp correto (`5516993138450`)

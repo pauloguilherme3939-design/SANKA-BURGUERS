@@ -437,6 +437,7 @@ function CardapioPage() {
             <div className="nav-logo-name">SANKA<b>.</b></div>
           </a>
           <p>© 2026 Sanka Burgers · Rio Claro/SP</p>
+          <p className="cardapio-footer-hours">{SANKA_BRAND.openingHours}</p>
           <a
             href={WA}
             className="btn btn-outline"

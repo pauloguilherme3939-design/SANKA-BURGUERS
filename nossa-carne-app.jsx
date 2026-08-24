@@ -436,7 +436,7 @@ const TIMELINE = [
   { time: '08:00',   icon: '🥩', label: 'Açougue parceiro entrega os cortes inteiros' },
   { time: '09:00',   icon: '⚙',  label: 'Moemos tudo. Nada sobra pra amanhã.' },
   { time: '10:30',   icon: '🍞',  label: 'Padaria entrega os pães do dia, ainda mornos' },
-  { time: '11:00',   icon: '🔥',  label: 'Loja abre. Chapa acesa.' },
+  { time: '18:30',   icon: '🔥',  label: 'Atendimento começa. Chapa acesa.' },
   { time: '+ 35min', icon: '🛵',  label: 'Seu pedido na sua porta' },
 ];
 
@@ -451,7 +451,6 @@ function LinhaDeTempo() {
             Da carne fresca<br />até você.
           </h2>
           <p className="nc-body-text" style={{ maxWidth: 480, marginBottom: 52 }}>
-            {/* TODO: SANKA — Confirmar os horários reais antes de publicar */}
             Não tem frigorífico, não tem câmara de congelamento, não tem estoque de dois dias.
             Tudo que vendemos hoje, compramos hoje.
           </p>

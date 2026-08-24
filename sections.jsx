@@ -1027,11 +1027,14 @@ function Location() {
 
             <div className="info-block">
               <div className="info-label"><IcoClock /> Horário</div>
-              {SANKA_BRAND.openingHours ? (
-                <div className="info-value">{SANKA_BRAND.openingHours}</div>
-              ) : (
-                <p className="info-sub">Horários de funcionamento serão confirmados antes da inauguração.</p>
-              )}
+              <div className="hours-grid" aria-label={`Horário de funcionamento no fuso ${SANKA_BRAND.timeZone}`}>
+                {SANKA_BRAND.openingHoursSchedule.map(({ day, hours, closed }) => (
+                  <React.Fragment key={day}>
+                    <span className="hours-day">{day}</span>
+                    <span className={`hours-time${closed ? ' hours-closed' : ''}`}>{hours}</span>
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
 
             <div className="info-block">
@@ -1074,7 +1077,7 @@ const FAQ_ITEMS = [
   { q: 'A Sanka tem iFood?', a: SANKA_BRAND.isIfoodActive ? 'Sim, você pode nos encontrar no iFood.' : 'Ainda não está ativo. No primeiro momento, o contato principal será pelo WhatsApp.' },
   ...(SANKA_BRAND.isClubActive ? [{ q: 'Como funciona o Clube Sanka?', a: 'As regras e os prêmios vigentes ficam disponíveis dentro da área do Clube Sanka.' }] : []),
   ...(SANKA_BRAND.isLaunchCouponActive ? [{ q: 'Tem cupom para a primeira compra?', a: `Use o cupom ${SANKA_BRAND.launchCoupon}: ${SANKA_BRAND.launchCouponLabel}.` }] : []),
-  { q: 'Qual o horário de funcionamento?', a: SANKA_BRAND.openingHours || 'Os horários serão divulgados antes da inauguração.' },
+  { q: 'Qual o horário de funcionamento?', a: SANKA_BRAND.openingHours },
 ];
 
 function FAQ() {
@@ -1190,6 +1193,17 @@ function Footer() {
               {SANKA_BRAND.isClubActive && <a href="clube-sanka.html">Clube Sanka</a>}
             </div>
           )}
+
+          <div className="footer-col">
+            <h5>Horário</h5>
+            <div className="footer-hours" aria-label={`Horário de funcionamento no fuso ${SANKA_BRAND.timeZone}`}>
+              {SANKA_BRAND.openingHoursSchedule.map(({ day, hours, closed }) => (
+                <span key={day} className={closed ? 'hours-closed' : undefined}>
+                  <strong>{day}:</strong> {hours}
+                </span>
+              ))}
+            </div>
+          </div>
 
           <div className="footer-col">
             <h5>Contato</h5>

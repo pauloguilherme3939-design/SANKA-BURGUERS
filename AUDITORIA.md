@@ -22,7 +22,7 @@ Todos os CTAs — "Pedir Agora", "Fazer Pedido", botões individuais de cada ite
 - **Telefone:** (11) 9 8217-0044 (DDD de São Paulo)
 - **CNPJ:** 00.000.000/0001-00
 - **iFood/WhatsApp/Instagram:** todos apontam para `#`
-- **Horário de funcionamento:** não confirmado
+- **Horário de funcionamento:** definido em 24/08/2026 — segunda e terça fechado; quarta, quinta e domingo 18h30–23h30; sexta e sábado 18h30–00h00
 - Se um cliente do iFood tentar localizar a loja, vai achar o endereço errado.
 
 ### 4. Babel standalone no browser = performance ruim
@@ -37,7 +37,7 @@ Não há Open Graph tags, não há structured data (LocalBusiness JSON-LD), não
 
 ```
 Etapa 1 — Conteúdo real (BLOQUEANTE)
-  Coletar: endereço real, horários, telefone, CNPJ, link iFood,
+  Coletar: endereço real, CNPJ, link iFood,
   número WhatsApp, @ Instagram, avaliação iFood real, fotos reais
   dos lanches (pelo menos Hero + 4-6 produtos destaque).
   → Sem isso, nenhuma etapa subsequente vale.

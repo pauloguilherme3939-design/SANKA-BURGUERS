@@ -29,7 +29,11 @@
   "telephone": "+5516993138450",
   "servesCuisine": ["Hamburguer Grande", "Lanche Prensado"],
   "address": { "@type": "PostalAddress", "addressLocality": "Rio Claro", "addressRegion": "SP", "addressCountry": "BR" },
-  "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], "opens": "18:00", "closes": "23:30" }],
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Thursday"], "opens": "18:30", "closes": "23:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "18:30", "closes": "00:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "18:30", "closes": "23:30" }
+  ],
   "menu": "https://sankaburguers.vercel.app/cardapio.html"
 }
 </script>
@@ -51,7 +55,7 @@
     {
       "@type": "Question",
       "name": "Onde encontrar hambúrguer grande em Rio Claro?",
-      "acceptedAnswer": { "@type": "Answer", "text": "A Sanka Burgers trabalha com carne de 150g a 300g (X Hamburgão), recheio generoso e lanche prensado na chapa. Funciona de terça a domingo, das 18h às 23h30, com delivery pelo WhatsApp." }
+      "acceptedAnswer": { "@type": "Answer", "text": "A Sanka Burgers trabalha com carne de 150g a 300g (X Hamburgão), recheio generoso e lanche prensado na chapa. Atende quarta e quinta das 18h30 às 23h30, sexta e sábado das 18h30 às 00h00 e domingo das 18h30 às 23h30; fecha segunda e terça." }
     },
     {
       "@type": "Question",
@@ -258,7 +262,7 @@ nav.seo-nav{background:rgba(10,10,10,0.95);border-bottom:1px solid rgba(245,239,
 
     <div class="seo-faq-item">
       <h3 class="seo-faq-q">Onde encontrar hambúrguer grande em Rio Claro?</h3>
-      <p class="seo-faq-a">A Sanka Burgers trabalha com carne de 150g a 300g, recheio generoso e lanche prensado na chapa. Funciona de terça a domingo, das 18h às 23h30, com delivery pelo WhatsApp.</p>
+      <p class="seo-faq-a">A Sanka Burgers trabalha com carne de 150g a 300g, recheio generoso e lanche prensado na chapa. Atende quarta e quinta das 18h30 às 23h30, sexta e sábado das 18h30 às 00h00 e domingo das 18h30 às 23h30; fecha segunda e terça.</p>
     </div>
     <div class="seo-faq-item">
       <h3 class="seo-faq-q">Qual o hambúrguer mais grande da Sanka?</h3>

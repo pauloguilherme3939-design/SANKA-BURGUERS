@@ -868,7 +868,10 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   margin-bottom: 40px;
 }
 @media (min-width: 640px) {
-  .footer-top { grid-template-columns: 1.8fr 1fr 1fr; gap: 48px; }
+  .footer-top { grid-template-columns: 1.5fr 1fr; gap: 36px 48px; }
+}
+@media (min-width: 960px) {
+  .footer-top { grid-template-columns: 1.6fr 1fr 1.2fr 1fr; }
 }
 .footer-brand-desc {
   font-size: 13px;
@@ -876,6 +879,22 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   line-height: 1.7;
   margin-top: 12px;
   max-width: 280px;
+}
+.footer-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--ink-dim);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.footer-hours strong { color: var(--ink); font-weight: 600; }
+.cardapio-footer-hours {
+  max-width: 680px;
+  margin: 10px auto 0;
+  color: var(--ink-dim);
+  font-size: 13px;
+  line-height: 1.6;
 }
 .footer-col h5 {
   font-family: var(--f-m);

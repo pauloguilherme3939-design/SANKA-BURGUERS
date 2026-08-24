@@ -33,7 +33,11 @@
   "paymentAccepted": "Pix, Cartão de Crédito, Dinheiro",
   "address": { "@type": "PostalAddress", "addressLocality": "Rio Claro", "addressRegion": "SP", "addressCountry": "BR" },
   "geo": { "@type": "GeoCoordinates", "latitude": "-22.4106", "longitude": "-47.5598" },
-  "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], "opens": "18:00", "closes": "23:30" }],
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Thursday"], "opens": "18:30", "closes": "23:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "18:30", "closes": "00:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "18:30", "closes": "23:30" }
+  ],
   "hasDeliveryMethod": "http://schema.org/DeliveryMethod/DeliverAtAddress",
   "menu": "https://sankaburguers.vercel.app/cardapio.html"
 }
@@ -56,7 +60,7 @@
     {
       "@type": "Question",
       "name": "O que é a Sanka Burgers em Rio Claro?",
-      "acceptedAnswer": { "@type": "Answer", "text": "A Sanka Burgers é uma hamburgueria de lanchão prensado estilo São Carlos em Rio Claro/SP. Todo lanche passa pela chapa quente, com carne moída na casa e recheio generoso. Funciona de terça a domingo, das 18h às 23h30." }
+      "acceptedAnswer": { "@type": "Answer", "text": "A Sanka Burgers é uma hamburgueria de lanchão prensado estilo São Carlos em Rio Claro/SP. Todo lanche passa pela chapa quente, com carne moída na casa e recheio generoso. Atende quarta e quinta das 18h30 às 23h30, sexta e sábado das 18h30 às 00h00 e domingo das 18h30 às 23h30; fecha segunda e terça." }
     },
     {
       "@type": "Question",
@@ -261,7 +265,7 @@ nav.seo-nav{background:rgba(10,10,10,0.95);border-bottom:1px solid rgba(245,239,
 
     <div class="seo-faq-item">
       <h3 class="seo-faq-q">O que é a Sanka Burgers em Rio Claro?</h3>
-      <p class="seo-faq-a">A Sanka é uma hamburgueria de lanchão prensado estilo São Carlos em Rio Claro/SP. Todo lanche passa pela chapa, a carne é moída na casa todo dia e o recheio é generoso de verdade. Funciona de terça a domingo, das 18h às 23h30.</p>
+      <p class="seo-faq-a">A Sanka é uma hamburgueria de lanchão prensado estilo São Carlos em Rio Claro/SP. Todo lanche passa pela chapa, a carne é moída na casa todo dia e o recheio é generoso de verdade. Atende quarta e quinta das 18h30 às 23h30, sexta e sábado das 18h30 às 00h00 e domingo das 18h30 às 23h30; fecha segunda e terça.</p>
     </div>
     <div class="seo-faq-item">
       <h3 class="seo-faq-q">A Sanka Burgers faz delivery em Rio Claro?</h3>

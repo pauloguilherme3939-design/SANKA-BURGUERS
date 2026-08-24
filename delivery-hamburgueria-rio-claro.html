@@ -32,7 +32,11 @@
   "paymentAccepted": "Pix, Cartão de Crédito, Dinheiro",
   "address": { "@type": "PostalAddress", "addressLocality": "Rio Claro", "addressRegion": "SP", "addressCountry": "BR" },
   "geo": { "@type": "GeoCoordinates", "latitude": "-22.4106", "longitude": "-47.5598" },
-  "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], "opens": "18:00", "closes": "23:30" }],
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Thursday"], "opens": "18:30", "closes": "23:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "18:30", "closes": "00:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "18:30", "closes": "23:30" }
+  ],
   "hasDeliveryMethod": "http://schema.org/DeliveryMethod/DeliverAtAddress",
   "menu": "https://sankaburguers.vercel.app/cardapio.html"
 }
@@ -75,7 +79,7 @@
     {
       "@type": "Question",
       "name": "Qual o horário do delivery da Sanka Burgers em Rio Claro?",
-      "acceptedAnswer": { "@type": "Answer", "text": "De terça a domingo, das 18h às 23h30. Segunda-feira a Sanka não abre." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Segunda e terça: fechado. Quarta e quinta: 18h30 às 23h30. Sexta e sábado: 18h30 às 00h00. Domingo: 18h30 às 23h30." }
     }
   ]
 }
@@ -286,7 +290,7 @@ nav.seo-nav{background:rgba(10,10,10,0.95);border-bottom:1px solid rgba(245,239,
     </div>
     <div class="seo-faq-item">
       <h3 class="seo-faq-q">Qual o horário do delivery da Sanka em Rio Claro?</h3>
-      <p class="seo-faq-a">De terça a domingo, das 18h às 23h30. Segunda-feira a Sanka não abre.</p>
+      <p class="seo-faq-a">Segunda e terça: fechado. Quarta e quinta: 18h30 às 23h30. Sexta e sábado: 18h30 às 00h00. Domingo: 18h30 às 23h30.</p>
     </div>
     <div class="seo-faq-item">
       <h3 class="seo-faq-q">Tem cupom de desconto para o primeiro pedido?</h3>
