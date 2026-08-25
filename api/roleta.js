@@ -37,15 +37,17 @@ function createRouletteHandler({ service, adminPassword, abuseProtection } = {})
 
     try {
       const rouletteService = service || getDefaultService();
-      const protection = abuseProtection || (!service ? getDefaultAbuseProtection() : null);
       const action = String(req.query?.action || 'config').toLowerCase();
+      const protection = () => abuseProtection || (!service ? getDefaultAbuseProtection() : null);
 
       if (req.method === 'GET' && action === 'config') {
         return res.json(rouletteService.getPublicConfig());
       }
       if (req.method === 'POST' && action === 'spin') {
-        if (protection && rouletteService.getPublicConfig().enabled) {
-          await protection.enforce('roulette_spin', req, res, {
+        const enabled = rouletteService.getPublicConfig().enabled;
+        const guard = enabled ? protection() : null;
+        if (guard) {
+          await guard.enforce('roulette_spin', req, res, {
             phone: tryNormalizeBrazilianPhone(req.body?.phone),
           });
         }
@@ -53,20 +55,20 @@ function createRouletteHandler({ service, adminPassword, abuseProtection } = {})
         return res.status(201).json(result);
       }
       if (req.method === 'POST' && action === 'consume') {
-        if (protection && rouletteService.getPublicConfig().enabled) {
-          await protection.enforce('roulette_consume', req, res);
-        }
+        const guard = rouletteService.getPublicConfig().enabled ? protection() : null;
+        if (guard) await guard.enforce('roulette_consume', req, res);
         const result = await rouletteService.consume(req.body || {});
         return res.json(result);
       }
       if (req.method === 'POST' && action === 'cancel') {
+        const guard = protection();
         const password = adminPassword ?? process.env.ADMIN_PASSWORD;
         if (!password) return res.status(503).json({ error: 'ADMIN_PASSWORD não configurado.' });
         if (!safeAdminPasswordMatches(req.headers.authorization, password)) {
-          if (protection) await protection.enforce('admin_failure', req, res);
+          if (guard) await guard.enforce('admin_failure', req, res);
           return res.status(401).json({ error: 'Não autorizado.' });
         }
-        if (protection) await protection.enforce('admin_action', req, res);
+        if (guard) await guard.enforce('admin_action', req, res);
         const result = await rouletteService.cancel(req.body || {});
         return res.json(result);
       }

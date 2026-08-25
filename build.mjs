@@ -22,12 +22,10 @@ const pages = [
   { entryPoints: [path.join(rootDir, 'src/home.jsx')],          outfile: path.join(rootDir, 'dist/home.js')          },
   { entryPoints: [path.join(rootDir, 'src/cardapio.jsx')],      outfile: path.join(rootDir, 'dist/cardapio.js')      },
   { entryPoints: [path.join(rootDir, 'src/nossa-carne.jsx')],   outfile: path.join(rootDir, 'dist/nossa-carne.js')   },
-  { entryPoints: [path.join(rootDir, 'src/admin.jsx')],         outfile: path.join(rootDir, 'dist/admin.js')         },
   { entryPoints: [path.join(rootDir, 'src/monte.jsx')],         outfile: path.join(rootDir, 'dist/monte.js')         },
   { entryPoints: [path.join(rootDir, 'src/oferta.jsx')],        outfile: path.join(rootDir, 'dist/oferta.js')        },
   { entryPoints: [path.join(rootDir, 'src/pedido.jsx')],        outfile: path.join(rootDir, 'dist/pedido.js')        },
   { entryPoints: [path.join(rootDir, 'src/admin-pedidos.jsx')], outfile: path.join(rootDir, 'dist/admin-pedidos.js') },
-  { entryPoints: [path.join(rootDir, 'src/clube.jsx')],         outfile: path.join(rootDir, 'dist/clube.js')         },
   { entryPoints: [path.join(rootDir, 'src/roleta.jsx')],        outfile: path.join(rootDir, 'dist/roleta.js')        },
 ]
 
