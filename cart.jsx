@@ -1,6 +1,7 @@
 // cart.jsx — Sanka Burgers · Carrinho global + Drawer lateral
 
 import { FoodPlaceholder } from './placeholders.jsx'
+import { reconcileCartItems } from './lib/cart-catalog.mjs'
 
 const { createContext, useContext, useState, useEffect } = React;
 const CART_STORAGE_KEY = 'sanka_cart_launch_2026';
@@ -15,9 +16,12 @@ function useCartContext() {
 }
 
 /* ── Provider ──────────────────────────────────────────────── */
-function CartProvider({ children }) {
+function CartProvider({ children, catalog = [] }) {
   const [items, setItems] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'); }
+    try {
+      const stored = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+      return reconcileCartItems(stored, catalog);
+    }
     catch { return []; }
   });
   const [drawerOpen,   setDrawerOpen]   = useState(false);

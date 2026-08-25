@@ -489,7 +489,7 @@ function CardapioPage() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <CartProvider>
+  <CartProvider catalog={[...SANKA_COMBOS, ...SANKA_BURGERS, ...SANKA_SIDES, ...SANKA_DRINKS]}>
     <CardapioPage />
     <CheckoutModal />
   </CartProvider>
