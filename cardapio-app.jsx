@@ -447,7 +447,6 @@ function CardapioPage() {
           >
             Fazer Pedido pelo WhatsApp
           </a>
-          <a className="admin-shortcut" href="admin-pedidos.html" aria-label="Abrir administração de pedidos">ADM</a>
         </div>
       </footer>
 

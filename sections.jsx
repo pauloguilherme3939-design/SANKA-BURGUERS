@@ -80,11 +80,11 @@ function waLink(msg) {
 const FEATURED_CODES  = ['SK-L03', 'SK-L02', 'SK-L08', 'SK-L01', 'SK-L04', 'SK-L14'];
 const FEATURED_CENTER = 'SK-L03';
 const FEATURED_BADGE  = {
-  'SK-L03': { text: '300 g · Provolone e mel', variant: 'badge-gold' },
-  'SK-L02': { text: '300 g · Bacon',           variant: 'badge-hot'  },
-  'SK-L08': { text: '300 g · Panceta',         variant: 'badge-hot'  },
-  'SK-L01': { text: '300 g',                   variant: 'badge-hot'  },
-  'SK-L04': { text: '300 g · Biquinho',        variant: 'badge-gold' },
+  'SK-L03': { text: '250 g · Provolone e mel', variant: 'badge-gold' },
+  'SK-L02': { text: '250 g · Bacon',           variant: 'badge-hot'  },
+  'SK-L08': { text: '250 g · Panceta',         variant: 'badge-hot'  },
+  'SK-L01': { text: '250 g',                   variant: 'badge-hot'  },
+  'SK-L04': { text: '250 g · Biquinho',        variant: 'badge-gold' },
   'SK-L14': { text: 'Patinho acebolado',       variant: 'badge-hot'  },
 };
 
@@ -238,6 +238,7 @@ function Nav() {
           <a href="#como-funciona"   onClick={close}>Como Pedir</a>
           <a href="#localizacao"     onClick={close}>Localização</a>
           {SANKA_BRAND.isClubActive && <a href="#clube" onClick={close}>Clube Sanka</a>}
+          <a href="admin-pedidos.html" onClick={close} className="nav-drawer-admin">Administração</a>
         </nav>
         <div style={{ padding: '0 24px 32px' }}>
           <a href={WA} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} target="_blank" rel="noopener noreferrer">
@@ -367,7 +368,7 @@ function Hero() {
             </div>
           )}
           <div className="hero-proof-item">
-            <span className="val">100 g–300 g</span>
+            <span className="val">250 g</span>
             <span className="lbl">Carne por lanche</span>
           </div>
         </div>
@@ -1072,7 +1073,7 @@ function Location() {
 const FAQ_ITEMS = [
   { q: 'A Sanka Burgers fica em Rio Claro?', a: 'Sim. A Sanka Burgers está em fase de pré-inauguração em Rio Claro/SP.' },
   { q: 'Quais lanches estarão no lançamento?', a: 'O cardápio de lançamento tem 14 lanches, quatro porções e refrigerantes. Todos estão listados na página de cardápio.' },
-  { q: 'Qual é o tamanho dos hambúrgueres?', a: 'Os hambúrgueres artesanais informados no cardápio variam de 100 g a 300 g. O X-Lombo e o Frango com Catupiri levam 250 g das respectivas carnes.' },
+  { q: 'Qual é o tamanho dos hambúrgueres?', a: 'Os lanches de carne, frango, lombo e panceta levam 250 g do respectivo recheio principal.' },
   { q: 'Posso pedir pelo WhatsApp?', a: 'Sim. Monte o pedido no site e finalize pelo WhatsApp. A Sanka confirma disponibilidade, entrega e demais detalhes diretamente com você.' },
   { q: 'A Sanka tem iFood?', a: SANKA_BRAND.isIfoodActive ? 'Sim, você pode nos encontrar no iFood.' : 'Ainda não está ativo. No primeiro momento, o contato principal será pelo WhatsApp.' },
   ...(SANKA_BRAND.isClubActive ? [{ q: 'Como funciona o Clube Sanka?', a: 'As regras e os prêmios vigentes ficam disponíveis dentro da área do Clube Sanka.' }] : []),
@@ -1237,7 +1238,6 @@ function Footer() {
           <p style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
             <a href="privacidade.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Privacidade</a>
             {SANKA_BRAND.isClubActive && <a href="termos-clube.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Termos do Clube</a>}
-            <a className="admin-shortcut" href="admin-pedidos.html" aria-label="Abrir administração de pedidos">ADM</a>
           </p>
         </div>
       </div>

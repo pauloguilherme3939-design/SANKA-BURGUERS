@@ -922,22 +922,6 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   font-size: 11px; color: var(--ink-mute);
   letter-spacing: 0.09em; text-transform: uppercase;
 }
-.admin-shortcut {
-  color: var(--ink-mute);
-  font-family: var(--f-m);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  line-height: 1;
-  opacity: 0.24;
-  text-decoration: none;
-  transition: opacity 0.2s, color 0.2s;
-}
-.admin-shortcut:hover,
-.admin-shortcut:focus-visible {
-  color: var(--ink);
-  opacity: 0.8;
-}
-
 /* ── Scroll Reveal ───────────────────────────────────────────── */
 [data-reveal] {
   opacity: 0;
@@ -1084,6 +1068,22 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 }
 .nav-drawer-links a:hover { color: var(--ink); background: rgba(245,239,230,0.03); }
 .nav-drawer-links a:last-child { border-bottom: none; }
+.nav-drawer-links .nav-drawer-admin {
+  margin-top: 10px;
+  border-top: 1px solid var(--line-s);
+  color: var(--ink-mute);
+  font-family: var(--f-m);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.68;
+}
+.nav-drawer-links .nav-drawer-admin:hover,
+.nav-drawer-links .nav-drawer-admin:focus-visible {
+  color: var(--ink);
+  opacity: 1;
+}
 
 /* ── Scroll indicator ────────────────────────────────────────── */
 .scroll-indicator {

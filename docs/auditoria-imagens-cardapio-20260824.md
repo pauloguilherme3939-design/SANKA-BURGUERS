@@ -4,7 +4,7 @@ Escopo: cardápio público de lançamento. A classificação considera a corresp
 
 | Produto | Arquivo exibido após a correção | Status | Ação desta rodada |
 | --- | --- | --- | --- |
-| X-Americano | `assets/burgers/x-americano-v2.webp` | correta | Substituída a versão artificial por imagem ampla e prensada, com os ingredientes informados. |
+| X-Americano | `assets/burgers/x-americano-v3.webp` | correta | Substituída por uma imagem mais natural, ampla e prensada, com 250 g de carne e os ingredientes informados. |
 | X-Acebolado | `assets/burgers/sb-005.webp` | correta | Referência corrigida para o WebP que já existia. |
 | X-Promel | `assets/burgers/sb-004.webp` | correta | Referência corrigida para o WebP que já existia. |
 | X-Biquinho | `assets/burgers/sb-007.webp` | duvidosa | Mantida: o arquivo é o asset original destinado ao produto, mas a pimenta biquinho não fica inequívoca no enquadramento. |
