@@ -197,7 +197,7 @@ export const SANKA_SIDES = [
     desc: "500 g de batatas fritas com bacon e catupiry.",
     price: 40.0,
     tags: "fries,cheese,bacon",
-    src: "/assets/sides/fritas-sanka-v3.webp",
+    src: "/assets/sides/fritas-sanka-v4.webp",
   },
   {
     code: "SK-P03",
