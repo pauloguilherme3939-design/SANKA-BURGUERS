@@ -99,9 +99,12 @@ ROULETTE_ENABLED=false
 ROULETTE_LEGAL_APPROVED=false
 ```
 
-Nunca coloque valores reais neste README ou no `.env.example`. A integração Neon da
-Vercel injeta `DATABASE_URL`. `ORDER_DATA_SECRET` deve continuar estável para que os
-pedidos existentes permaneçam legíveis e os HMACs antiabuso continuem consistentes.
+Nunca coloque valores reais neste README ou no `.env.example`. Na Vercel, `DATABASE_URL`
+é um segredo configurado por ambiente: Production usa a branch Neon `main` e Preview usa
+a branch schema-only `preview-sanka`, com roles, senhas e endpoints distintos. Não conecte
+Preview novamente à branch de Production e não copie pedidos reais para a branch de teste.
+`ORDER_DATA_SECRET` deve continuar estável nos ambientes necessários para que os pedidos
+existentes permaneçam legíveis e os HMACs antiabuso continuem consistentes.
 
 Para aplicar o schema mínimo localmente:
 
