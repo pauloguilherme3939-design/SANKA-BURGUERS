@@ -1,7 +1,7 @@
 // cardapio-app.jsx — Sanka Burgers · Página de Cardápio
 // Arquitetura de menu psicológica: entry / hero / premium
 
-import { SANKA_CATS, SANKA_BURGERS, SANKA_SIDES, SANKA_DRINKS } from './data.jsx'
+import { SANKA_CATS, SANKA_BURGERS, SANKA_COMBOS, SANKA_SIDES, SANKA_DRINKS } from './data.jsx'
 import { FoodPlaceholder } from './placeholders.jsx'
 import { CartProvider, useCartContext } from './cart.jsx'
 import { CheckoutModal } from './checkout-modal.jsx'
@@ -40,10 +40,17 @@ const SIDE_TIER = {
   'SK-P04': 'hero',
 };
 
+const COMBO_TIER = {
+  'SK-C01': 'entry',
+  'SK-C02': 'hero',
+  'SK-C03': 'premium',
+};
+
 const TIER_SORT = { hero: 0, premium: 1, entry: 2 };
 
 const FILTER_CATS = [
   { id: 'todos',      label: 'Tudo'                },
+  { id: 'combos',     label: 'Combos'              },
   { id: 'artesanais', label: 'Burgers Artesanais'  },
   { id: 'alem',       label: 'Além dos Burgers'    },
   { id: 'porcoes',    label: 'Porções'             },
@@ -189,6 +196,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
     :                                              'badge-hot';
 
   const hasGradient = !!item.bg && !item.src;
+  const hasCollage = Array.isArray(item.media) && item.media.length > 0;
   const imgTags = item.tags || (item.name || '').toLowerCase().replace(/\s+/g, ',');
   const displayedPrice = item.priceMax
     ? `${brl(item.price)} a ${brl(item.priceMax)}`
@@ -205,6 +213,18 @@ function MenuCard({ item, tier, onAdd, delay }) {
             {item.tag && (
               <span className="drink-tag">{item.tag}</span>
             )}
+          </div>
+        ) : hasCollage ? (
+          <div className={`menu-card-collage menu-card-collage--${Math.min(item.media.length, 4)}`}>
+            {item.media.slice(0, 4).map((src, index) => (
+              <img
+                key={`${src}-${index}`}
+                src={src}
+                alt=""
+                loading="lazy"
+                aria-hidden="true"
+              />
+            ))}
           </div>
         ) : (
           <FoodPlaceholder tags={imgTags} label={item.name} src={item.src} />
@@ -314,6 +334,13 @@ function CardapioPage() {
     []
   );
 
+  const combos = useMemo(() =>
+    SANKA_COMBOS
+      .map(c => ({ ...c, id: c.code, type: 'combo', cat: 'combos', tier: COMBO_TIER[c.code] || 'hero' }))
+      .sort((a, b) => (TIER_SORT[a.tier] ?? 1) - (TIER_SORT[b.tier] ?? 1)),
+    []
+  );
+
   const sides = useMemo(() =>
     SANKA_SIDES
       .map(s => ({ ...s, id: s.code, type: 'side', cat: 'porcoes', tier: SIDE_TIER[s.code] || 'hero' }))
@@ -346,6 +373,7 @@ function CardapioPage() {
   /* ── Visibilidade por filtro ── */
   const isAll      = filter === 'todos';
   const isBurger   = BURGER_CATS.includes(filter);
+  const showCombos = isAll || filter === 'combos';
   const showSides  = isAll || filter === 'porcoes';
   const showDrinks = isAll || filter === 'bebidas';
 
@@ -353,7 +381,7 @@ function CardapioPage() {
     ? burgerGroups.filter(g => g.id === filter)
     : isAll ? burgerGroups : [];
 
-  const hasContent = visibleGroups.length > 0 || showSides || showDrinks;
+  const hasContent = visibleGroups.length > 0 || showCombos || showSides || showDrinks;
 
   function handleFilter(catId) {
     setFilter(catId);
@@ -386,6 +414,18 @@ function CardapioPage() {
                 Cardápio de lançamento da Sanka Burgers. Escolha seus itens e finalize pelo WhatsApp.
               </p>
             </div>
+          )}
+
+          {/* Combos */}
+          {showCombos && (
+            <section className="menu-section" id="sec-combos">
+              <SectionHead title="Combos" count={combos.length} />
+              <div className="menu-grid">
+                {combos.map((item, idx) => (
+                  <MenuCard key={item.id} item={item} tier={item.tier} onAdd={handleAdd} delay={String((idx % 3) + 1)} />
+                ))}
+              </div>
+            </section>
           )}
 
           {/* Seções de hambúrgueres */}

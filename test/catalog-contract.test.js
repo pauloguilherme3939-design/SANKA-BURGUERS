@@ -21,6 +21,7 @@ test('catálogo validado no servidor permanece igual aos itens compráveis da te
   const data = loadMenuData();
   const visibleItems = [
     ...data.SANKA_BURGERS.map(item => ({ id: item.code, name: item.name, price: item.price })),
+    ...data.SANKA_COMBOS.map(item => ({ id: item.code, name: item.name, price: item.price })),
     ...data.SANKA_SIDES.map(item => ({ id: item.code, name: item.name, price: item.price })),
     ...data.SANKA_DRINKS.filter(item => !item.purchaseDisabled).map(item => ({
       id: item.code,

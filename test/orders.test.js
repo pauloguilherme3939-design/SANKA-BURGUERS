@@ -92,6 +92,26 @@ test('recalcula pedido com vários produtos e ignora preços e total adulterados
   assert.deepEqual(listed[0].items.map(item => item.name), ['Bauru de Carne', 'X-Americano']);
 });
 
+test('recalcula combo no servidor e ignora preço adulterado pelo navegador', async t => {
+  const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-orders-combo-'));
+  t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
+
+  const service = createOrderService({
+    store: new FileOrderStore({ rootDir }),
+    now: () => CREATED_AT,
+    idFactory: () => ORDER_ID,
+  });
+  const created = await service.create(validPayload({
+    total: 0.01,
+    items: [{ id: 'SK-C02', qty: 1, price: 0.01 }],
+  }));
+
+  assert.equal(created.items[0].name, 'Combo Duplo Smash');
+  assert.equal(created.items[0].unitPrice, 99.8);
+  assert.equal(created.pricing.subtotal, 99.8);
+  assert.equal(created.pricing.total, 99.8);
+});
+
 test('persiste avanços sequenciais e rejeita salto de status', async t => {
   const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-status-'));
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));

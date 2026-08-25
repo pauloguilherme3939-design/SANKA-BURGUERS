@@ -176,8 +176,64 @@ export const SANKA_TESTIMONIALS = [
 ];
 
 // ============================== COMBOS ==============================
-// Combos ainda não foram confirmados para o lançamento.
-export const SANKA_COMBOS = [];
+// Valores calculados pela soma exata dos itens avulsos do canal direto.
+// Não há desconto promocional enquanto o custo variável completo estiver pendente.
+export const SANKA_COMBOS = [
+  {
+    code: "SK-C01",
+    name: "Combo Clássico",
+    desc: "1 X-Clássico + 1 refrigerante lata de 350 ml.",
+    price: 26.9,
+    tag: "INDIVIDUAL",
+    tags: "combo,burger,drink",
+    media: [
+      "/assets/burgers/x-classico-v1.webp",
+      "/assets/drinks/refrigerante-lata.webp",
+    ],
+    components: [
+      { id: "SK-L07", qty: 1 },
+      { id: "SK-B01", qty: 1 },
+    ],
+  },
+  {
+    code: "SK-C02",
+    name: "Combo Duplo Smash",
+    desc: "2 X-Smash + 1 fritas de 500 g + 2 refrigerantes lata de 350 ml.",
+    price: 99.8,
+    tag: "PARA 2",
+    tags: "combo,burger,fries,drink",
+    media: [
+      "/assets/burgers/x-smash-v3.webp",
+      "/assets/sides/fritas-v2.webp",
+      "/assets/drinks/refrigerante-lata.webp",
+    ],
+    components: [
+      { id: "SK-L06", qty: 2 },
+      { id: "SK-P01", qty: 1 },
+      { id: "SK-B01", qty: 2 },
+    ],
+  },
+  {
+    code: "SK-C03",
+    name: "Combo Sanka Caprichado",
+    desc: "1 X-Americano + 1 X-Lombo + 1 Fritas Sanka de 500 g + 2 refrigerantes lata de 350 ml.",
+    price: 126.8,
+    tag: "PARA 2",
+    tags: "combo,burger,fries,bacon,drink",
+    media: [
+      "/assets/burgers/x-americano-v4.webp",
+      "/assets/burgers/x-lombo-v5.webp",
+      "/assets/sides/fritas-sanka-v4.webp",
+      "/assets/drinks/refrigerante-lata.webp",
+    ],
+    components: [
+      { id: "SK-L01", qty: 1 },
+      { id: "SK-L09", qty: 1 },
+      { id: "SK-P02", qty: 1 },
+      { id: "SK-B01", qty: 2 },
+    ],
+  },
+];
 
 // ============================== PORÇÕES ==============================
 export const SANKA_SIDES = [

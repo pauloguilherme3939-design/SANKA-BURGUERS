@@ -28,6 +28,17 @@ test('todas as imagens declaradas no cardápio existem no projeto', () => {
       `${item.code} aponta para imagem inexistente: ${item.src}`,
     );
   }
+
+  for (const combo of data.SANKA_COMBOS) {
+    for (const src of combo.media || []) {
+      const relativePath = src.replace(/^\//, '');
+      assert.equal(
+        fs.existsSync(path.join(__dirname, '..', relativePath)),
+        true,
+        `${combo.code} aponta para imagem inexistente: ${src}`,
+      );
+    }
+  }
 });
 
 test('produtos corrigidos não voltam a usar associações legadas erradas', () => {

@@ -33,6 +33,9 @@ const DIRECT_PRICES = {
   'SK-L12': 21.9,
   'SK-L13': 14,
   'SK-L14': 34.9,
+  'SK-C01': 26.9,
+  'SK-C02': 99.8,
+  'SK-C03': 126.8,
   'SK-P01': 30,
   'SK-P02': 40,
   'SK-P03': 45,
@@ -58,13 +61,29 @@ const IFOOD_PRICES = {
 
 test('preços diretos oficiais aparecem iguais na tela e no catálogo do servidor', () => {
   const data = loadMenuData();
-  const visible = [...data.SANKA_BURGERS, ...data.SANKA_SIDES];
+  const visible = [...data.SANKA_BURGERS, ...data.SANKA_COMBOS, ...data.SANKA_SIDES];
   const visiblePrices = Object.fromEntries(visible.map(item => [item.code, item.price]));
   const serverPrices = Object.fromEntries(serverCatalog.items.map(item => [item.id, item.price]));
 
   for (const [id, price] of Object.entries(DIRECT_PRICES)) {
     assert.equal(visiblePrices[id], price, `preço público incorreto para ${id}`);
     assert.equal(serverPrices[id], price, `preço do servidor incorreto para ${id}`);
+  }
+});
+
+test('combos do canal direto usam a soma exata dos itens avulsos, sem desconto presumido', () => {
+  const data = loadMenuData();
+  const unitPrices = Object.fromEntries(
+    [...data.SANKA_BURGERS, ...data.SANKA_SIDES, ...data.SANKA_DRINKS]
+      .map(item => [item.code, item.price]),
+  );
+
+  for (const combo of data.SANKA_COMBOS) {
+    const calculated = combo.components.reduce(
+      (sum, component) => sum + unitPrices[component.id] * component.qty,
+      0,
+    );
+    assert.equal(Number(calculated.toFixed(2)), combo.price, `soma incorreta para ${combo.code}`);
   }
 });
 
