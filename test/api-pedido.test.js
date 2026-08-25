@@ -96,3 +96,29 @@ test('falha ao invalidar benefício não faz o painel fingir sucesso', async () 
   assert.equal(res.statusCode, 503);
   assert.equal(res.body.status, undefined);
 });
+
+test('API administrativa arquiva e restaura sem apagar o pedido', async () => {
+  const calls = [];
+  const handler = createOrderHandler({
+    service: {
+      async archive(id) { calls.push(`archive:${id}`); return { id, status: 'entregue', archived: true }; },
+      async restore(id) { calls.push(`restore:${id}`); return { id, status: 'entregue', archived: false }; },
+    },
+    adminPassword: 'senha-teste',
+  });
+  const id = 'SK-20260821-AAAAAAAAAAAAAAAA';
+  const archiveResponse = responseRecorder();
+  await handler({
+    method: 'PATCH', query: { id }, headers: { authorization: 'Bearer senha-teste' }, body: { action: 'archive' },
+  }, archiveResponse);
+  assert.equal(archiveResponse.statusCode, 200);
+  assert.equal(archiveResponse.body.archived, true);
+
+  const restoreResponse = responseRecorder();
+  await handler({
+    method: 'PATCH', query: { id }, headers: { authorization: 'Bearer senha-teste' }, body: { action: 'restore' },
+  }, restoreResponse);
+  assert.equal(restoreResponse.statusCode, 200);
+  assert.equal(restoreResponse.body.archived, false);
+  assert.deepEqual(calls, [`archive:${id}`, `restore:${id}`]);
+});

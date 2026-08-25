@@ -696,6 +696,19 @@ function HowItWorks() {
           ))}
         </div>
 
+        <div className="order-channels" data-reveal aria-label="Canais de pedido da Sanka Burgers">
+          <div className="order-channel order-channel--direct">
+            <span className="order-channel-kicker">Melhor canal direto</span>
+            <h3>Site + WhatsApp</h3>
+            <p>Monte o carrinho no site e confirme com a Sanka. Os preços deste canal não incorporam a taxa do marketplace.</p>
+          </div>
+          <div className="order-channel">
+            <span className="order-channel-kicker">Também teremos</span>
+            <h3>iFood</h3>
+            <p>Para quem prefere a conveniência do aplicativo. O link oficial aparecerá aqui assim que a loja estiver disponível.</p>
+          </div>
+        </div>
+
         <div className="how-cta" data-reveal>
           <a
             href={WA}
@@ -1045,8 +1058,8 @@ function Location() {
                   (16) 99313-8450
                 </a>
               </div>
-              {SANKA_BRAND.isIfoodActive && (
-                <p className="info-sub">Atendemos também pelo iFood.</p>
+              {SANKA_BRAND.isIfoodAnnounced && (
+                <p className="info-sub">Atendimento pelo iFood confirmado; link oficial em breve.</p>
               )}
             </div>
 
@@ -1075,7 +1088,8 @@ const FAQ_ITEMS = [
   { q: 'Quais lanches estarão no lançamento?', a: 'O cardápio de lançamento tem 14 lanches, quatro porções e refrigerantes. Todos estão listados na página de cardápio.' },
   { q: 'Qual é o tamanho dos hambúrgueres?', a: 'Os lanches de carne, frango, lombo e panceta levam 250 g do respectivo recheio principal.' },
   { q: 'Posso pedir pelo WhatsApp?', a: 'Sim. Monte o pedido no site e finalize pelo WhatsApp. A Sanka confirma disponibilidade, entrega e demais detalhes diretamente com você.' },
-  { q: 'A Sanka tem iFood?', a: SANKA_BRAND.isIfoodActive ? 'Sim, você pode nos encontrar no iFood.' : 'Ainda não está ativo. No primeiro momento, o contato principal será pelo WhatsApp.' },
+  { q: 'A Sanka tem iFood?', a: SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl ? 'Sim. Use o link oficial disponível no site.' : 'Sim, a Sanka também atenderá pelo iFood. Enquanto o link oficial não é publicado, você já pode montar o pedido no site e confirmar pelo WhatsApp.' },
+  { q: 'Por que pedir pelo site e WhatsApp?', a: 'É o canal direto da Sanka. Os valores exibidos no site não incorporam a taxa do marketplace e podem ser menores que os preços do iFood.' },
   ...(SANKA_BRAND.isClubActive ? [{ q: 'Como funciona o Clube Sanka?', a: 'As regras e os prêmios vigentes ficam disponíveis dentro da área do Clube Sanka.' }] : []),
   ...(SANKA_BRAND.isLaunchCouponActive ? [{ q: 'Tem cupom para a primeira compra?', a: `Use o cupom ${SANKA_BRAND.launchCoupon}: ${SANKA_BRAND.launchCouponLabel}.` }] : []),
   { q: 'Qual o horário de funcionamento?', a: SANKA_BRAND.openingHours },
@@ -1228,7 +1242,7 @@ function Footer() {
             {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl ? (
               <a href={SANKA_BRAND.ifoodUrl} target="_blank" rel="noopener noreferrer">iFood</a>
             ) : (
-              <span style={{ color: 'var(--ink-mute)', fontSize: 13, opacity: 0.5 }}>Em breve no iFood</span>
+              <span style={{ color: 'var(--ink-mute)', fontSize: 13 }}>iFood confirmado · link em breve</span>
             )}
           </div>
         </div>

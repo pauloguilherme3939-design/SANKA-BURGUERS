@@ -2,7 +2,7 @@
 
 import { requestAdminOrderUpdate } from './lib/admin-order-request.mjs';
 
-const { useState, useEffect } = React;
+const { useState, useEffect, useMemo } = React;
 
 const STATUSES = ['recebido','preparando','na_chapa','finalizando','saiu_entrega','entregue'];
 const STATUS_LABELS = {
@@ -32,6 +32,17 @@ function nextStatus(current) {
 
 function brl(value) {
   return Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function todayInSanka() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(new Date()).reduce((acc, part) => {
+    acc[part.type] = part.value;
+    return acc;
+  }, {});
+  return `${parts.year}-${parts.month}-${parts.day}`;
 }
 
 async function responseError(response, fallback) {
@@ -139,6 +150,32 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
     }
   }
 
+  async function setArchived(archived) {
+    const verb = archived ? 'Arquivar' : 'Restaurar';
+    const detail = archived
+      ? 'Ele sairá da lista principal, mas continuará salvo com todo o histórico.'
+      : 'Ele voltará para a lista de encerrados.';
+    if (!window.confirm(`${verb} o pedido ${order.id}? ${detail}`)) return;
+    setLoading(true);
+    setError('');
+    try {
+      const updated = await requestAdminOrderUpdate({
+        orderId: order.id,
+        token,
+        payload: { action: archived ? 'archive' : 'restore' },
+      });
+      onUpdate(updated);
+    } catch (requestError) {
+      if (requestError?.status === 401) {
+        onUnauthorized();
+        return;
+      }
+      setError(requestError?.message || `Erro de conexão ao ${archived ? 'arquivar' : 'restaurar'} o pedido.`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const t = new Date(order.createdAt).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 
   return (
@@ -152,6 +189,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
           {STATUS_LABELS[order.status]}
         </span>
       </div>
+      {order.archived && <div className="adm-pedido-archived">ARQUIVADO · DADOS E HISTÓRICO PRESERVADOS</div>}
       {order.customer?.name && (
         <div style={{ marginBottom:10, color:'var(--ink)', fontFamily:'var(--f-b)', fontSize:14 }}>
           {order.customer.name} · {order.fulfillment?.type === 'delivery' ? 'Entrega' : 'Retirada'}
@@ -187,6 +225,16 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
       )}
       {order.status === 'entregue' && <div style={{ textAlign:'center', marginTop:12, color:'#22C55E', fontFamily:'var(--f-m)', fontSize:12, letterSpacing:'0.12em' }}>✓ ENTREGUE</div>}
       {order.status === 'cancelado' && <div style={{ textAlign:'center', marginTop:12, color:'#DC2626', fontFamily:'var(--f-m)', fontSize:12, letterSpacing:'0.12em' }}>PEDIDO CANCELADO · HISTÓRICO PRESERVADO</div>}
+      {['entregue', 'cancelado'].includes(order.status) && !order.archived && (
+        <button className="btn btn-outline adm-archive-button" onClick={() => setArchived(true)} disabled={loading}>
+          ARQUIVAR DO PAINEL
+        </button>
+      )}
+      {order.archived && (
+        <button className="btn btn-outline adm-archive-button" onClick={() => setArchived(false)} disabled={loading}>
+          RESTAURAR PEDIDO
+        </button>
+      )}
     </div>
   );
 }
@@ -196,12 +244,15 @@ function Dashboard({ token, onUnauthorized }) {
   const [orders,  setOrders]  = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [day, setDay] = useState(todayInSanka);
+  const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   async function fetchOrders() {
     setLoading(true);
     setLoadError('');
     try {
-      const r = await fetch('/api/pedido?list=1', { headers: { Authorization: `Bearer ${token}` } });
+      const r = await fetch(`/api/pedido?list=1&day=${encodeURIComponent(day)}`, { headers: { Authorization: `Bearer ${token}` } });
       if (r.status === 401) {
         onUnauthorized();
         return;
@@ -218,14 +269,31 @@ function Dashboard({ token, onUnauthorized }) {
     fetchOrders();
     const iv = setInterval(fetchOrders, 30000);
     return () => clearInterval(iv);
-  }, []);
+  }, [day]);
 
   function handleUpdate(updated) {
     setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
   }
 
-  const active = orders.filter(o => !['entregue', 'cancelado'].includes(o.status));
-  const done   = orders.filter(o => ['entregue', 'cancelado'].includes(o.status));
+  const filtered = useMemo(() => {
+    const needle = query.trim().toLocaleLowerCase('pt-BR');
+    return orders.filter(order => {
+      if (statusFilter === 'archived' && !order.archived) return false;
+      if (statusFilter !== 'all' && statusFilter !== 'archived' && order.status !== statusFilter) return false;
+      if (!needle) return true;
+      const searchable = [
+        order.id,
+        order.customer?.name,
+        order.customer?.phone,
+        ...(order.items || []).map(item => item?.name || item),
+      ].filter(Boolean).join(' ').toLocaleLowerCase('pt-BR');
+      return searchable.includes(needle);
+    });
+  }, [orders, query, statusFilter]);
+
+  const active = filtered.filter(o => !o.archived && !['entregue', 'cancelado'].includes(o.status));
+  const done = filtered.filter(o => !o.archived && ['entregue', 'cancelado'].includes(o.status));
+  const archived = filtered.filter(o => o.archived);
 
   return (
     <div className="adm-pedidos-layout">
@@ -236,13 +304,44 @@ function Dashboard({ token, onUnauthorized }) {
             <span style={{ fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase' }}>
               Pedidos · {new Date().toLocaleDateString('pt-BR')}
             </span>
-            <button className="btn btn-outline btn-sm" onClick={fetchOrders}>Atualizar</button>
+            <div style={{ display:'flex', gap:8 }}>
+              <button className="btn btn-outline btn-sm" onClick={fetchOrders}>Atualizar</button>
+              <button className="btn btn-outline btn-sm" onClick={onUnauthorized}>Sair</button>
+            </div>
           </div>
         </div>
       </header>
 
       <main style={{ padding:'32px 0 100px' }}>
         <div className="wrap" style={{ maxWidth:760 }}>
+
+          <section className="adm-overview" aria-label="Resumo e filtros dos pedidos">
+            <div className="adm-stats">
+              <div><strong>{orders.length}</strong><span>Total</span></div>
+              <div><strong>{orders.filter(o => !o.archived && !['entregue','cancelado'].includes(o.status)).length}</strong><span>Ativos</span></div>
+              <div><strong>{orders.filter(o => !o.archived && ['entregue','cancelado'].includes(o.status)).length}</strong><span>Encerrados</span></div>
+              <div><strong>{orders.filter(o => o.archived).length}</strong><span>Arquivados</span></div>
+            </div>
+            <div className="adm-toolbar">
+              <label>
+                <span>Data</span>
+                <input type="date" value={day} onChange={event => setDay(event.target.value)} />
+              </label>
+              <label className="adm-toolbar-search">
+                <span>Buscar</span>
+                <input value={query} onChange={event => setQuery(event.target.value)} placeholder="Pedido, cliente, telefone ou item" />
+              </label>
+              <label>
+                <span>Status</span>
+                <select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}>
+                  <option value="all">Todos</option>
+                  {Object.entries(STATUS_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  <option value="archived">Arquivados</option>
+                </select>
+              </label>
+            </div>
+            <p className="adm-overview-note">Arquivar organiza o painel sem apagar o pedido nem o histórico.</p>
+          </section>
 
           {/* Pedidos ativos */}
           <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:40 }}>
@@ -267,6 +366,21 @@ function Dashboard({ token, onUnauthorized }) {
                 {done.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
               </div>
             </>
+          )}
+
+          {archived.length > 0 && (
+            <>
+              <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:32 }}>
+                Arquivados ({archived.length})
+              </div>
+              <div className="adm-pedidos-grid">
+                {archived.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
+              </div>
+            </>
+          )}
+
+          {!loading && !loadError && filtered.length === 0 && (query || statusFilter !== 'all') && (
+            <p className="adm-empty-filter">Nenhum pedido corresponde aos filtros.</p>
           )}
         </div>
       </main>

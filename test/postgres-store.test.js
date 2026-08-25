@@ -67,6 +67,7 @@ test('Postgres preserva pedido cifrado, painel, status, cancelamento e rastreame
   assert.equal(created.pricing.total, 75.8);
   await service.updateStatus(ORDER_ID, 'preparando');
   await service.cancel(ORDER_ID, { reason: 'motivo interno de teste' });
+  await service.archive(ORDER_ID);
 
   const raw = database.rawPersistedText();
   assert.match(raw, /aes-256-gcm/);
@@ -80,6 +81,8 @@ test('Postgres preserva pedido cifrado, painel, status, cancelamento e rastreame
   assert.equal(adminOrders[0].status, 'cancelado');
   assert.equal(adminOrders[0].customer.name, 'Cliente Neon Teste');
   assert.equal(adminOrders[0].cancellation.reason, 'motivo interno de teste');
+  assert.equal(adminOrders[0].archived, true);
+  assert.equal(adminOrders[0].administrativeHistory.at(-1).kind, 'archived');
 
   const tracking = await restarted.getPublic(ORDER_ID);
   assert.equal(tracking.status, 'cancelado');
@@ -87,6 +90,7 @@ test('Postgres preserva pedido cifrado, painel, status, cancelamento e rastreame
   assert.equal('items' in tracking, false);
   assert.equal('pricing' in tracking, false);
   assert.equal(JSON.stringify(tracking).includes('motivo interno'), false);
+  assert.equal('archived' in tracking, false);
 
   await assert.rejects(
     () => restarted.updateStatus(ORDER_ID, 'na_chapa'),

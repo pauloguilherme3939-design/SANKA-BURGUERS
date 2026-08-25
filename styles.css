@@ -4372,6 +4372,32 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .adm-pedido-items { margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
 .adm-pedido-item { font-size: 13px; color: var(--ink-dim); }
 .adm-pedido-total { font-family: var(--f-m); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.1em; }
+.adm-overview { margin-bottom:30px; padding:18px; border:1px solid var(--line); border-radius:var(--r-lg); background:var(--bg-2); }
+.adm-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:16px; }
+.adm-stats div { padding:14px 10px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02); text-align:center; }
+.adm-stats strong { display:block; color:var(--ink); font-family:var(--f-d); font-size:28px; line-height:1; }
+.adm-stats span { display:block; margin-top:6px; color:var(--ink-mute); font-family:var(--f-m); font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
+.adm-toolbar { display:grid; grid-template-columns:150px minmax(220px,1fr) 160px; gap:10px; }
+.adm-toolbar label { display:flex; flex-direction:column; gap:6px; color:var(--ink-mute); font-family:var(--f-m); font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
+.adm-toolbar input,.adm-toolbar select { width:100%; min-height:42px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); font:inherit; font-size:12px; letter-spacing:0; text-transform:none; }
+.adm-overview-note,.adm-empty-filter { margin:12px 0 0; color:var(--ink-mute); font-size:12px; line-height:1.5; }
+.adm-pedido-archived { margin:-2px 0 12px; padding:7px 9px; border-radius:8px; background:rgba(107,114,128,.12); color:#9CA3AF; font-family:var(--f-m); font-size:9px; letter-spacing:.1em; text-align:center; }
+.adm-archive-button { width:100%; justify-content:center; margin-top:8px; color:var(--ink-mute); border-color:var(--line); font-size:10px; }
+@media (max-width:640px) {
+  .adm-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .adm-toolbar { grid-template-columns:1fr; }
+  .adm-toolbar-search { grid-column:auto; }
+}
+
+/* Canais de pedido — direto em destaque, iFood sem link inventado */
+.order-channels { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:36px 0 24px; }
+.order-channel { position:relative; overflow:hidden; padding:22px; border-radius:var(--r-lg); border:1px solid var(--line); background:var(--bg-2); }
+.order-channel--direct { border-color:rgba(234,88,12,.45); background:linear-gradient(135deg,rgba(234,88,12,.14),rgba(234,88,12,.03)); }
+.order-channel--direct::after { content:'DIRETO'; position:absolute; right:-10px; bottom:-18px; font-family:var(--f-d); font-size:70px; letter-spacing:.04em; color:rgba(234,88,12,.07); pointer-events:none; }
+.order-channel-kicker { display:block; margin-bottom:8px; font-family:var(--f-m); font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--fire-l); }
+.order-channel h3 { position:relative; margin:0 0 8px; font-family:var(--f-d); font-size:28px; letter-spacing:.04em; color:var(--ink); }
+.order-channel p { position:relative; margin:0; max-width:48ch; color:var(--ink-dim); font-size:14px; line-height:1.65; }
+@media (max-width:640px) { .order-channels { grid-template-columns:1fr; } }
 
 /* ═══════════════════════════════════════════════════════════════
    v4 ADDITIONS — Hero coupon badge · btn-ghost · Clube benefits

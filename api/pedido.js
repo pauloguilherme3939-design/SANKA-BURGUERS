@@ -90,6 +90,10 @@ function createOrderHandler({ service, adminPassword, abuseProtection, cancelBen
           });
           const invalidate = cancelBenefits || (!service ? getDefaultBenefitCancellation() : null);
           if (invalidate) await invalidate(order.id);
+        } else if (req.body?.action === 'archive') {
+          order = await orderService.archive(req.query?.id);
+        } else if (req.body?.action === 'restore') {
+          order = await orderService.restore(req.query?.id);
         } else {
           order = await orderService.updateStatus(req.query?.id, req.body?.status);
         }

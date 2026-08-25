@@ -107,9 +107,9 @@ test('recalcula combo no servidor e ignora preço adulterado pelo navegador', as
   }));
 
   assert.equal(created.items[0].name, 'Combo Duplo Smash');
-  assert.equal(created.items[0].unitPrice, 99.8);
-  assert.equal(created.pricing.subtotal, 99.8);
-  assert.equal(created.pricing.total, 99.8);
+  assert.equal(created.items[0].unitPrice, 99.7);
+  assert.equal(created.pricing.subtotal, 99.7);
+  assert.equal(created.pricing.total, 99.7);
 });
 
 test('persiste avanços sequenciais e rejeita salto de status', async t => {
@@ -182,6 +182,39 @@ test('falha de armazenamento durante cancelamento não retorna sucesso', async (
     },
   });
   await assert.rejects(() => service.cancel(ORDER_ID), error => error instanceof StorageError);
+});
+
+test('arquivamento administrativo preserva pedido, exige estado terminal e permite restauração', async t => {
+  const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-archive-'));
+  t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
+  let tick = 0;
+  const createService = () => createOrderService({
+    store: new FileOrderStore({ rootDir }),
+    now: () => new Date(CREATED_AT.getTime() + tick++ * 1000),
+    idFactory: () => ORDER_ID,
+  });
+  const service = createService();
+  await service.create(validPayload());
+  await assert.rejects(
+    () => service.archive(ORDER_ID),
+    error => error instanceof OrderError && error.code === 'ORDER_NOT_TERMINAL',
+  );
+  await service.cancel(ORDER_ID);
+  const archived = await service.archive(ORDER_ID);
+  assert.equal(archived.archived, true);
+  assert.equal(archived.administrativeHistory.at(-1).kind, 'archived');
+
+  const restarted = createService();
+  const listed = await restarted.list('2026-08-13');
+  assert.equal(listed.length, 1);
+  assert.equal(listed[0].status, 'cancelado');
+  assert.equal(listed[0].archived, true);
+  assert.equal((await restarted.getPublic(ORDER_ID)).archived, undefined);
+
+  const restored = await restarted.restore(ORDER_ID);
+  assert.equal(restored.archived, false);
+  assert.equal(restored.administrativeHistory.at(-1).kind, 'restored');
+  assert.equal((await createService().list('2026-08-13'))[0].archived, false);
 });
 
 test('delivery mantém a taxa e o total final pendentes até a confirmação no WhatsApp', async () => {

@@ -27,3 +27,12 @@ test('atalho administrativo fica no menu lateral e no cardápio, mantendo a aute
   assert.match(styles, /\.nav-drawer-links \.nav-drawer-admin/);
   assert.match(styles, /\.nav-admin-link/);
 });
+
+test('painel oferece filtros e arquivamento auditável sem exclusão física', () => {
+  const admin = read('admin-pedidos-app.jsx');
+  assert.match(admin, /type="date"/);
+  assert.match(admin, /Pedido, cliente, telefone ou item/);
+  assert.match(admin, /ARQUIVAR DO PAINEL/);
+  assert.match(admin, /DADOS E HISTÓRICO PRESERVADOS/);
+  assert.doesNotMatch(admin, /fetch\([^)]*method:\s*['"]DELETE['"]/);
+});

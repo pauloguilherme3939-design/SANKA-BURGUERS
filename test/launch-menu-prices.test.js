@@ -34,12 +34,12 @@ const DIRECT_PRICES = {
   'SK-L13': 14,
   'SK-L14': 34.9,
   'SK-C01': 26.9,
-  'SK-C02': 99.8,
-  'SK-C03': 126.8,
-  'SK-P01': 30,
-  'SK-P02': 40,
-  'SK-P03': 45,
-  'SK-P04': 35,
+  'SK-C02': 99.7,
+  'SK-C03': 126.7,
+  'SK-P01': 29.9,
+  'SK-P02': 39.9,
+  'SK-P03': 44.9,
+  'SK-P04': 34.9,
 };
 
 const IFOOD_PRICES = {
@@ -96,4 +96,15 @@ test('registro separado do iFood contém somente os 14 valores informados', () =
     IFOOD_PRICES,
   );
   assert.equal(ifoodCatalog.items.some(item => /copia/i.test(item.name)), false);
+});
+
+test('site anuncia iFood sem inventar link e diferencia o canal direto', () => {
+  const brand = fs.readFileSync(path.join(__dirname, '..', 'lib', 'brand.js'), 'utf8');
+  const sections = fs.readFileSync(path.join(__dirname, '..', 'sections.jsx'), 'utf8');
+  assert.match(brand, /isIfoodAnnounced:\s+true/);
+  assert.match(brand, /ifoodUrl:\s+''/);
+  assert.match(brand, /isIfoodActive:\s+false/);
+  assert.match(sections, /Os preços deste canal não incorporam a taxa do marketplace/);
+  assert.match(sections, /iFood confirmado · link em breve/);
+  assert.doesNotMatch(sections, /href=['"]#['"][^>]*>iFood/);
 });

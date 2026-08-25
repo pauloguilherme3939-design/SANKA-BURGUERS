@@ -16,12 +16,12 @@
     { "id": "SK-L13", "name": "Prensadinho", "price": 14.0 },
     { "id": "SK-L14", "name": "Bauru de Carne", "price": 34.9 },
     { "id": "SK-C01", "name": "Combo Clássico", "price": 26.9 },
-    { "id": "SK-C02", "name": "Combo Duplo Smash", "price": 99.8 },
-    { "id": "SK-C03", "name": "Combo Sanka Caprichado", "price": 126.8 },
-    { "id": "SK-P01", "name": "Fritas", "price": 30.0 },
-    { "id": "SK-P02", "name": "Fritas Sanka", "price": 40.0 },
-    { "id": "SK-P03", "name": "Mandioca", "price": 45.0 },
-    { "id": "SK-P04", "name": "Salgados Sortidos", "price": 35.0 },
+    { "id": "SK-C02", "name": "Combo Duplo Smash", "price": 99.7 },
+    { "id": "SK-C03", "name": "Combo Sanka Caprichado", "price": 126.7 },
+    { "id": "SK-P01", "name": "Fritas", "price": 29.9 },
+    { "id": "SK-P02", "name": "Fritas Sanka", "price": 39.9 },
+    { "id": "SK-P03", "name": "Mandioca", "price": 44.9 },
+    { "id": "SK-P04", "name": "Salgados Sortidos", "price": 34.9 },
     { "id": "SK-B01", "name": "Refrigerante lata", "price": 8.0 }
   ]
 }

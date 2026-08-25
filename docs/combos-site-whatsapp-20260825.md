@@ -8,8 +8,8 @@ Preços unitários utilizados, conforme o catálogo direto vigente no projeto:
 - X-Smash: R$ 26,90
 - X-Americano: R$ 37,90
 - X-Lombo: R$ 32,90
-- Fritas 500 g: R$ 30,00
-- Fritas Sanka 500 g: R$ 40,00
+- Fritas 500 g: R$ 29,90
+- Fritas Sanka 500 g: R$ 39,90
 - Refrigerante lata 350 ml: R$ 8,00
 
 ## Calculado
@@ -17,8 +17,8 @@ Preços unitários utilizados, conforme o catálogo direto vigente no projeto:
 | Combo | Composição | Cálculo | Preço Site/WhatsApp |
 | --- | --- | ---: | ---: |
 | Combo Clássico | 1 X-Clássico + 1 refrigerante lata | R$ 18,90 + R$ 8,00 | R$ 26,90 |
-| Combo Duplo Smash | 2 X-Smash + 1 fritas 500 g + 2 refrigerantes lata | 2 × R$ 26,90 + R$ 30,00 + 2 × R$ 8,00 | R$ 99,80 |
-| Combo Sanka Caprichado | 1 X-Americano + 1 X-Lombo + 1 Fritas Sanka 500 g + 2 refrigerantes lata | R$ 37,90 + R$ 32,90 + R$ 40,00 + 2 × R$ 8,00 | R$ 126,80 |
+| Combo Duplo Smash | 2 X-Smash + 1 fritas 500 g + 2 refrigerantes lata | 2 × R$ 26,90 + R$ 29,90 + 2 × R$ 8,00 | R$ 99,70 |
+| Combo Sanka Caprichado | 1 X-Americano + 1 X-Lombo + 1 Fritas Sanka 500 g + 2 refrigerantes lata | R$ 37,90 + R$ 32,90 + R$ 39,90 + 2 × R$ 8,00 | R$ 126,70 |
 
 Os preços são a soma exata dos itens avulsos. Não foi aplicado desconto promocional.
 
