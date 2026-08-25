@@ -51,7 +51,7 @@ test('produtos corrigidos não voltam a usar associações legadas erradas', () 
   assert.notEqual(byCode['SK-L13'], '/assets/burgers/sb-010.webp');
   assert.notEqual(byCode['SK-L14'], '/assets/burgers/sb-014.webp');
   assert.equal(comboByCode['SK-C01'], '/assets/combos/combo-classico-v2.webp');
-  assert.equal(comboByCode['SK-C02'], '/assets/combos/combo-duplo-smash-v2.webp');
+  assert.equal(comboByCode['SK-C02'], '/assets/combos/combo-duplo-smash-v3.webp');
   assert.equal(comboByCode['SK-C03'], '/assets/combos/combo-sanka-caprichado-v1.webp');
 });
 

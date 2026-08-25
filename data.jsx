@@ -199,7 +199,7 @@ export const SANKA_COMBOS = [
     price: 99.8,
     tag: "PARA 2",
     tags: "combo,burger,fries,drink",
-    src: "/assets/combos/combo-duplo-smash-v2.webp",
+    src: "/assets/combos/combo-duplo-smash-v3.webp",
     components: [
       { id: "SK-L06", qty: 2 },
       { id: "SK-P01", qty: 1 },
