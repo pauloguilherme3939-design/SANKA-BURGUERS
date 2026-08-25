@@ -85,7 +85,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, 250 g de lombo suíno em cubos, queijo prato, cebola caramelizada, tomate e maionese caseira.",
     price: 32.9,
     tags: "sandwich,pork,onion",
-    src: "/assets/burgers/x-lombo-v4.webp",
+    src: "/assets/burgers/x-lombo-v5.webp",
   },
   {
     name: "Sanka Dog",

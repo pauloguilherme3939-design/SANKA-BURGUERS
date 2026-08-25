@@ -12,7 +12,7 @@ Escopo: cardápio público de lançamento. A classificação considera a corresp
 | X-Smash | `assets/burgers/x-smash-v3.webp` | correta | Refeito com pão liso, porção ampla e apresentação mais generosa. |
 | X-Clássico | `assets/burgers/x-classico-v1.webp` | correta | O produto recebeu novo nome e imagem grande e prensada, preservando o ID interno. |
 | X-Panceta | `assets/burgers/sb-015.webp` | duvidosa | Mantida: representa panceta e o padrão prensado, mas uma foto do produto real deve confirmar a aparência do hambúrguer artesanal de panceta. |
-| X-Lombo | `assets/burgers/x-lombo-v4.webp` | correta | Refeito do zero no padrão prensado de São Carlos, com tomate na base, pão inferior proporcional e 250 g de lombo em cubos distribuídos numa única camada. |
+| X-Lombo | `assets/burgers/x-lombo-v5.webp` | correta | Refeito do zero no padrão prensado de São Carlos, com tomate na base, pão superior e inferior proporcionais e 250 g de lombo em cubos distribuídos numa única camada. |
 | Sanka Dog | `assets/burgers/sb-002.webp` | correta | Referência corrigida para o WebP destinado ao hot dog. |
 | X-Frango com Catupiry | `assets/burgers/sb-011.webp` | correta | Nome de apresentação corrigido, preservando o ID interno e a imagem destinada ao produto. |
 | Misto Quente | `assets/burgers/misto-quente-v2.webp` | correta | Removida a foto de calabresa; criada versão de baguete com presunto, queijo, tomate, orégano e maionese. |
