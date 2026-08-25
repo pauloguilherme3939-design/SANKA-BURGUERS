@@ -107,6 +107,13 @@ function CardapioNav() {
 
         {/* Direita: ícone do carrinho + CTA */}
         <div className="nav-right">
+          <a
+            href="admin-pedidos.html"
+            className="nav-admin-link"
+            aria-label="Administração — gerenciar pedidos"
+          >
+            ADM
+          </a>
           <button
             className="nav-cart-btn"
             onClick={openDrawer}

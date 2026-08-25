@@ -1805,6 +1805,30 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   gap: 10px;
   flex-shrink: 0;
 }
+.nav-admin-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--pill);
+  color: var(--ink-mute);
+  font-family: var(--f-m);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  opacity: 0.62;
+  transition: color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.nav-admin-link:hover,
+.nav-admin-link:focus-visible {
+  color: var(--ink);
+  border-color: var(--line-s);
+  opacity: 1;
+}
 .nav-cart-btn {
   position: relative;
   display: grid;

@@ -34,8 +34,11 @@ test('produtos corrigidos não voltam a usar associações legadas erradas', () 
   const data = loadMenuData();
   const byCode = Object.fromEntries(data.SANKA_BURGERS.map(item => [item.code, item.src]));
 
-  assert.equal(byCode['SK-L01'], '/assets/burgers/x-americano-v3.webp');
-  assert.equal(byCode['SK-L14'], '/assets/burgers/bauru-carne-v2.webp');
+  assert.equal(byCode['SK-L01'], '/assets/burgers/x-americano-v4.webp');
+  assert.equal(byCode['SK-L06'], '/assets/burgers/x-smash-v3.webp');
+  assert.equal(byCode['SK-L07'], '/assets/burgers/x-classico-v1.webp');
+  assert.equal(byCode['SK-L09'], '/assets/burgers/x-lombo-v3.webp');
+  assert.equal(byCode['SK-L14'], '/assets/burgers/bauru-carne-v3.webp');
   assert.notEqual(byCode['SK-L09'], '/assets/burgers/sb-009.webp');
   assert.notEqual(byCode['SK-L12'], '/assets/burgers/sb-012.webp');
   assert.notEqual(byCode['SK-L13'], '/assets/burgers/sb-010.webp');
