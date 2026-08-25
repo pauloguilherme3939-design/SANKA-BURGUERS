@@ -186,10 +186,7 @@ export const SANKA_COMBOS = [
     price: 26.9,
     tag: "INDIVIDUAL",
     tags: "combo,burger,drink",
-    media: [
-      "/assets/burgers/x-classico-v1.webp",
-      "/assets/drinks/refrigerante-lata.webp",
-    ],
+    src: "/assets/combos/combo-classico-v1.webp",
     components: [
       { id: "SK-L07", qty: 1 },
       { id: "SK-B01", qty: 1 },
@@ -202,11 +199,7 @@ export const SANKA_COMBOS = [
     price: 99.8,
     tag: "PARA 2",
     tags: "combo,burger,fries,drink",
-    media: [
-      "/assets/burgers/x-smash-v3.webp",
-      "/assets/sides/fritas-v2.webp",
-      "/assets/drinks/refrigerante-lata.webp",
-    ],
+    src: "/assets/combos/combo-duplo-smash-v1.webp",
     components: [
       { id: "SK-L06", qty: 2 },
       { id: "SK-P01", qty: 1 },
@@ -220,12 +213,7 @@ export const SANKA_COMBOS = [
     price: 126.8,
     tag: "PARA 2",
     tags: "combo,burger,fries,bacon,drink",
-    media: [
-      "/assets/burgers/x-americano-v4.webp",
-      "/assets/burgers/x-lombo-v5.webp",
-      "/assets/sides/fritas-sanka-v4.webp",
-      "/assets/drinks/refrigerante-lata.webp",
-    ],
+    src: "/assets/combos/combo-sanka-caprichado-v1.webp",
     components: [
       { id: "SK-L01", qty: 1 },
       { id: "SK-L09", qty: 1 },

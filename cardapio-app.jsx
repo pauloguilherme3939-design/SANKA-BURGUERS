@@ -196,7 +196,6 @@ function MenuCard({ item, tier, onAdd, delay }) {
     :                                              'badge-hot';
 
   const hasGradient = !!item.bg && !item.src;
-  const hasCollage = Array.isArray(item.media) && item.media.length > 0;
   const imgTags = item.tags || (item.name || '').toLowerCase().replace(/\s+/g, ',');
   const displayedPrice = item.priceMax
     ? `${brl(item.price)} a ${brl(item.priceMax)}`
@@ -213,18 +212,6 @@ function MenuCard({ item, tier, onAdd, delay }) {
             {item.tag && (
               <span className="drink-tag">{item.tag}</span>
             )}
-          </div>
-        ) : hasCollage ? (
-          <div className={`menu-card-collage menu-card-collage--${Math.min(item.media.length, 4)}`}>
-            {item.media.slice(0, 4).map((src, index) => (
-              <img
-                key={`${src}-${index}`}
-                src={src}
-                alt=""
-                loading="lazy"
-                aria-hidden="true"
-              />
-            ))}
           </div>
         ) : (
           <FoodPlaceholder tags={imgTags} label={item.name} src={item.src} />

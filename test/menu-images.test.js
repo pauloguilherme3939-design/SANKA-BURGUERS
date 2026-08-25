@@ -17,7 +17,12 @@ function loadMenuData() {
 
 test('todas as imagens declaradas no cardápio existem no projeto', () => {
   const data = loadMenuData();
-  const items = [...data.SANKA_BURGERS, ...data.SANKA_SIDES, ...data.SANKA_DRINKS];
+  const items = [
+    ...data.SANKA_BURGERS,
+    ...data.SANKA_COMBOS,
+    ...data.SANKA_SIDES,
+    ...data.SANKA_DRINKS,
+  ];
 
   for (const item of items) {
     if (!item.src) continue;
@@ -29,16 +34,6 @@ test('todas as imagens declaradas no cardápio existem no projeto', () => {
     );
   }
 
-  for (const combo of data.SANKA_COMBOS) {
-    for (const src of combo.media || []) {
-      const relativePath = src.replace(/^\//, '');
-      assert.equal(
-        fs.existsSync(path.join(__dirname, '..', relativePath)),
-        true,
-        `${combo.code} aponta para imagem inexistente: ${src}`,
-      );
-    }
-  }
 });
 
 test('produtos corrigidos não voltam a usar associações legadas erradas', () => {

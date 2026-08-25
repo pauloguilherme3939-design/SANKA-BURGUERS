@@ -33,6 +33,7 @@ const pages = [
 async function generateWebP() {
   const dirs = [
     { src: 'assets/burgers', out: 'assets/burgers' },
+    { src: 'assets/combos',  out: 'assets/combos'  },
     { src: 'assets/drinks',  out: 'assets/drinks'  },
     { src: 'assets/sides',   out: 'assets/sides'   },
   ]
