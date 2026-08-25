@@ -186,7 +186,7 @@ export const SANKA_COMBOS = [
     price: 26.9,
     tag: "INDIVIDUAL",
     tags: "combo,burger,drink",
-    src: "/assets/combos/combo-classico-v1.webp",
+    src: "/assets/combos/combo-classico-v2.webp",
     components: [
       { id: "SK-L07", qty: 1 },
       { id: "SK-B01", qty: 1 },
@@ -199,7 +199,7 @@ export const SANKA_COMBOS = [
     price: 99.8,
     tag: "PARA 2",
     tags: "combo,burger,fries,drink",
-    src: "/assets/combos/combo-duplo-smash-v1.webp",
+    src: "/assets/combos/combo-duplo-smash-v2.webp",
     components: [
       { id: "SK-L06", qty: 2 },
       { id: "SK-P01", qty: 1 },

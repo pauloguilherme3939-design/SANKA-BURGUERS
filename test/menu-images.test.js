@@ -39,6 +39,7 @@ test('todas as imagens declaradas no cardápio existem no projeto', () => {
 test('produtos corrigidos não voltam a usar associações legadas erradas', () => {
   const data = loadMenuData();
   const byCode = Object.fromEntries(data.SANKA_BURGERS.map(item => [item.code, item.src]));
+  const comboByCode = Object.fromEntries(data.SANKA_COMBOS.map(item => [item.code, item.src]));
 
   assert.equal(byCode['SK-L01'], '/assets/burgers/x-americano-v4.webp');
   assert.equal(byCode['SK-L06'], '/assets/burgers/x-smash-v3.webp');
@@ -49,6 +50,9 @@ test('produtos corrigidos não voltam a usar associações legadas erradas', () 
   assert.notEqual(byCode['SK-L12'], '/assets/burgers/sb-012.webp');
   assert.notEqual(byCode['SK-L13'], '/assets/burgers/sb-010.webp');
   assert.notEqual(byCode['SK-L14'], '/assets/burgers/sb-014.webp');
+  assert.equal(comboByCode['SK-C01'], '/assets/combos/combo-classico-v2.webp');
+  assert.equal(comboByCode['SK-C02'], '/assets/combos/combo-duplo-smash-v2.webp');
+  assert.equal(comboByCode['SK-C03'], '/assets/combos/combo-sanka-caprichado-v1.webp');
 });
 
 test('lanches de carne ou sabor principal exibem os 250 g informados', () => {
