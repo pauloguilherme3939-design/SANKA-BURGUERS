@@ -13,7 +13,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 300 g, queijo prato, presunto, ovo, alface, tomate e maionese caseira.",
     price: 37.9,
     tags: "burger,cheese,egg",
-    src: "/assets/burgers/sb-003.png",
+    src: "/assets/burgers/x-americano-v2.webp",
   },
   {
     name: "X-Acebolado",
@@ -22,7 +22,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 300 g, queijo prato, cebola caramelizada, bacon e maionese caseira.",
     price: 40.9,
     tags: "burger,onion,bacon",
-    src: "/assets/burgers/sb-005.png",
+    src: "/assets/burgers/sb-005.webp",
   },
   {
     name: "X-Promel",
@@ -31,7 +31,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer, hambúrguer artesanal de 300 g, generosa camada de provolone, mel, rúcula e maionese caseira.",
     price: 44.9,
     tags: "burger,provolone,honey",
-    src: "/assets/burgers/sb-004.png",
+    src: "/assets/burgers/sb-004.webp",
   },
   {
     name: "X-Biquinho",
@@ -40,7 +40,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 300 g, requeijão Skala, pimenta biquinho e maionese caseira.",
     price: 40.9,
     tags: "burger,pepper",
-    src: "/assets/burgers/sb-007.png",
+    src: "/assets/burgers/sb-007.webp",
   },
   {
     name: "X-Azeitonado",
@@ -49,7 +49,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 300 g, queijo prato e azeitona verde regada em azeite extravirgem.",
     price: 37.9,
     tags: "burger,olive",
-    src: "/assets/burgers/sb-013.png",
+    src: "/assets/burgers/sb-013.webp",
   },
   {
     name: "X-Smash",
@@ -58,7 +58,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 200 g, queijo prato e maionese caseira.",
     price: 26.9,
     tags: "burger,cheese",
-    src: "/assets/burgers/sb-006.png",
+    src: "/assets/burgers/x-smash-v2.webp",
   },
   {
     name: "X-Basic",
@@ -67,7 +67,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 100 g, queijo prato, cebola, tomate e maionese caseira.",
     price: 18.9,
     tags: "burger,cheese",
-    src: "/assets/burgers/sb-001.png",
+    src: "/assets/burgers/x-basic-v2.webp",
   },
   {
     name: "X-Panceta",
@@ -76,7 +76,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de panceta de 300 g, queijo prato, rúcula, tomate e maionese caseira.",
     price: 32.9,
     tags: "burger,pancetta",
-    src: "/assets/burgers/sb-015.png",
+    src: "/assets/burgers/sb-015.webp",
   },
   {
     name: "X-Lombo",
@@ -85,7 +85,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, 250 g de lombo suíno, queijo prato, cebola caramelizada, tomate e maionese caseira.",
     price: 32.9,
     tags: "sandwich,pork,onion",
-    src: "/assets/burgers/sb-009.png",
+    src: "/assets/burgers/x-lombo-v2.webp",
   },
   {
     name: "Sanka Dog",
@@ -94,7 +94,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hot dog, 2 salsichas Perdigão, molho de tomate da casa, milho, purê de batata, batata palha, maionese caseira e ketchup.",
     price: 21.9,
     tags: "hotdog,sausage",
-    src: "/assets/burgers/sb-002.png",
+    src: "/assets/burgers/sb-002.webp",
   },
   {
     name: "Frango com Catupiri",
@@ -103,7 +103,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, 250 g de frango em cubos, catupiri, tomate e maionese caseira.",
     price: 31.9,
     tags: "chicken,burger,cheese",
-    src: "/assets/burgers/sb-011.png",
+    src: "/assets/burgers/sb-011.webp",
   },
   {
     name: "Misto Quente",
@@ -112,7 +112,7 @@ export const SANKA_BURGERS = [
     desc: "Pão baguete, queijo mussarela, presunto, tomate, orégano e maionese caseira.",
     price: 21.9,
     tags: "sandwich,ham,cheese",
-    src: "/assets/burgers/sb-012.png",
+    src: "/assets/burgers/misto-quente-v2.webp",
   },
   {
     name: "Prensadinho",
@@ -121,7 +121,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hot dog, 1 salsicha Perdigão, molho da casa, batata palha e maionese caseira.",
     price: 14.0,
     tags: "hotdog,sausage",
-    src: "/assets/burgers/sb-010.png",
+    src: "/assets/burgers/prensadinho-v2.webp",
   },
   {
     name: "Bauru de Carne",
@@ -130,7 +130,7 @@ export const SANKA_BURGERS = [
     desc: "Pão baguete, patinho acebolado, tomate, queijo prato e maionese caseira.",
     price: 34.9,
     tags: "sandwich,beef,onion",
-    src: "/assets/burgers/sb-014.png",
+    src: "/assets/burgers/bauru-carne-v2.webp",
   },
 ];
 
@@ -144,7 +144,7 @@ export const SANKA_DRINKS = [
     desc: "Lata de 350 ml. Confirme os sabores disponíveis no pedido.",
     price: 8.0,
     tag: "350 ml",
-    src: "/assets/drinks/refrigerante-lata.png",
+    src: "/assets/drinks/refrigerante-lata.webp",
     bg: "linear-gradient(155deg, #2a2a2a 0%, #1a0a0a 100%)",
   },
   {
@@ -155,6 +155,7 @@ export const SANKA_DRINKS = [
     priceMax: 18.0,
     purchaseDisabled: true,
     tag: "2 litros",
+    src: "/assets/drinks/refrigerante-2l-sanka.webp",
     bg: "linear-gradient(155deg, #c92a1f 0%, #4a0a0a 60%, #1a0202 100%)",
   },
 ];
@@ -187,7 +188,7 @@ export const SANKA_SIDES = [
     desc: "500 g de batatas fritas.",
     price: 30.0,
     tags: "fries,frenchfries",
-    src: "/assets/sides/batata-simples.png",
+    src: "/assets/sides/fritas-v2.webp",
   },
   {
     code: "SK-P02",
@@ -196,7 +197,7 @@ export const SANKA_SIDES = [
     desc: "500 g de batatas fritas com bacon e catupiry.",
     price: 40.0,
     tags: "fries,cheese,bacon",
-    src: "/assets/sides/batata-especial.png",
+    src: "/assets/sides/fritas-sanka-v2.webp",
   },
   {
     code: "SK-P03",
@@ -205,6 +206,7 @@ export const SANKA_SIDES = [
     desc: "500 g de mandioca frita.",
     price: 45.0,
     tags: "cassava,fried",
+    src: "/assets/sides/mandioca-v2.webp",
   },
   {
     code: "SK-P04",
@@ -213,6 +215,7 @@ export const SANKA_SIDES = [
     desc: "25 mini salgados fritos sortidos: coxinha, quibe e bolinha de queijo.",
     price: 35.0,
     tags: "snacks,fried",
+    src: "/assets/sides/salgados-sortidos-v2.webp",
   },
 ];
 

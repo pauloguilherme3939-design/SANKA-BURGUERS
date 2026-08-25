@@ -922,6 +922,21 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   font-size: 11px; color: var(--ink-mute);
   letter-spacing: 0.09em; text-transform: uppercase;
 }
+.admin-shortcut {
+  color: var(--ink-mute);
+  font-family: var(--f-m);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  opacity: 0.24;
+  text-decoration: none;
+  transition: opacity 0.2s, color 0.2s;
+}
+.admin-shortcut:hover,
+.admin-shortcut:focus-visible {
+  color: var(--ink);
+  opacity: 0.8;
+}
 
 /* ── Scroll Reveal ───────────────────────────────────────────── */
 [data-reveal] {

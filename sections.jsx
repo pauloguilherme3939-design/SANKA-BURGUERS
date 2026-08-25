@@ -1237,6 +1237,7 @@ function Footer() {
           <p style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
             <a href="privacidade.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Privacidade</a>
             {SANKA_BRAND.isClubActive && <a href="termos-clube.html" style={{ color: 'var(--ink-mute)', fontSize: 12 }}>Termos do Clube</a>}
+            <a className="admin-shortcut" href="admin-pedidos.html" aria-label="Abrir administração de pedidos">ADM</a>
           </p>
         </div>
       </div>
