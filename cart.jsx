@@ -2,6 +2,7 @@
 
 import { FoodPlaceholder } from './placeholders.jsx'
 import { reconcileCartItems } from './lib/cart-catalog.mjs'
+import { getCartSuggestions } from './lib/cart-suggestions.mjs'
 
 const { createContext, useContext, useState, useEffect } = React;
 const CART_STORAGE_KEY = 'sanka_cart_launch_2026';
@@ -98,6 +99,7 @@ function CartProvider({ children, catalog = [] }) {
 
   const value = {
     items, addItem, removeItem, updateQty, updateObs, clearCart,
+    catalog,
     count, subtotal,
     drawerOpen,
     openDrawer:    () => setDrawerOpen(true),
@@ -135,10 +137,11 @@ function CartToast({ toast }) {
 /* ── Cart Drawer ───────────────────────────────────────────── */
 function CartDrawer() {
   const {
-    items, removeItem, updateQty, updateObs,
+    items, addItem, removeItem, updateQty, updateObs, catalog, showToast,
     count, subtotal,
     drawerOpen, closeDrawer, openCheckout,
   } = useCartContext();
+  const suggestions = getCartSuggestions(items, catalog);
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -208,6 +211,30 @@ function CartDrawer() {
                 />
               ))}
             </div>
+
+            {suggestions.length > 0 && (
+              <section className="cart-suggestions" aria-labelledby="cart-suggestions-title">
+                <div>
+                  <span className="cart-suggestions-kicker">Complete seu pedido</span>
+                  <h3 id="cart-suggestions-title">Vai bem com a Sanka</h3>
+                </div>
+                <div className="cart-suggestions-list">
+                  {suggestions.map(item => (
+                    <button
+                      key={item.code || item.id}
+                      type="button"
+                      onClick={() => {
+                        addItem({ ...item, id: item.id || item.code });
+                        showToast(`${item.name} adicionado ao carrinho.`);
+                      }}
+                    >
+                      <span>{item.name}<small>{brl(item.price)}</small></span>
+                      <strong aria-hidden="true">+</strong>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Rodapé */}
             <div className="cart-foot">

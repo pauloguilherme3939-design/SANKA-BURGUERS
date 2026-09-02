@@ -1,8 +1,14 @@
 // admin-pedidos-app.jsx — Painel de pedidos · Sanka Burgers
 
 import { requestAdminOrderUpdate } from './lib/admin-order-request.mjs';
+import {
+  buildAdminWhatsAppUrl,
+  elapsedLabel,
+  sortActiveOldestFirst,
+  summarizeOrders,
+} from './lib/admin-order-view.mjs';
 
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useRef } = React;
 
 const STATUSES = ['recebido','preparando','na_chapa','finalizando','saiu_entrega','entregue'];
 const STATUS_LABELS = {
@@ -32,6 +38,20 @@ function nextStatus(current) {
 
 function brl(value) {
   return Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function formatPhone(value) {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (digits.length === 11) return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  if (digits.length === 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return value || 'Não informado';
+}
+
+function paymentLabel(payment = {}) {
+  if (payment.method === 'pix') return 'Pix';
+  if (payment.method === 'card') return 'Cartão na entrega';
+  if (payment.method === 'cash') return payment.change ? `Dinheiro · troco para ${payment.change}` : 'Dinheiro';
+  return 'Não informado';
 }
 
 function todayInSanka() {
@@ -102,7 +122,7 @@ function Login({ onAuth }) {
 }
 
 /* ── Order card ──────────────────────────────────────────────── */
-function OrderCard({ order, token, onUpdate, onUnauthorized }) {
+function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation', isNew = false, now = Date.now() }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const next = nextStatus(order.status);
@@ -177,22 +197,45 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
   }
 
   const t = new Date(order.createdAt).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  const whatsappUrl = buildAdminWhatsAppUrl(order);
+  const delivery = order.fulfillment?.type === 'delivery';
+  const address = order.fulfillment?.address;
 
   return (
-    <div className="adm-pedido-card">
+    <article className={`adm-pedido-card${mode === 'kitchen' ? ' adm-pedido-card--kitchen' : ''}${isNew ? ' is-new' : ''}`}>
       <div className="adm-pedido-head">
         <div>
           <span className="adm-pedido-id">#{order.id}</span>
-          <span className="adm-pedido-time">{t}</span>
+          <span className="adm-pedido-time">{t} · esperando {elapsedLabel(order.createdAt, now)}</span>
         </div>
-        <span className="adm-pedido-status" style={{ background: (STATUS_COLORS[order.status] || '#6B7280') + '22', color: STATUS_COLORS[order.status] || '#6B7280', border: `1px solid ${STATUS_COLORS[order.status] || '#6B7280'}55` }}>
-          {STATUS_LABELS[order.status]}
+        <span role="status" className="adm-pedido-status" style={{ background: (STATUS_COLORS[order.status] || '#6B7280') + '22', color: STATUS_COLORS[order.status] || '#6B7280', border: `1px solid ${STATUS_COLORS[order.status] || '#6B7280'}55` }}>
+          {STATUS_LABELS[order.status] || order.status}
         </span>
       </div>
+      {isNew && <div className="adm-new-order">NOVO PEDIDO</div>}
       {order.archived && <div className="adm-pedido-archived">ARQUIVADO · DADOS E HISTÓRICO PRESERVADOS</div>}
       {order.customer?.name && (
-        <div style={{ marginBottom:10, color:'var(--ink)', fontFamily:'var(--f-b)', fontSize:14 }}>
-          {order.customer.name} · {order.fulfillment?.type === 'delivery' ? 'Entrega' : 'Retirada'}
+        <div className="adm-customer-row">
+          <div>
+            <strong>{order.customer.name}</strong>
+            <span>{formatPhone(order.customer.phone)}</span>
+          </div>
+          {whatsappUrl && (
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="adm-whatsapp-button">
+              Falar com cliente
+            </a>
+          )}
+        </div>
+      )}
+      <div className="adm-order-meta">
+        <div><span>Atendimento</span><strong>{delivery ? 'Entrega' : 'Retirada'}</strong></div>
+        <div><span>Pagamento</span><strong>{paymentLabel(order.payment)}</strong></div>
+      </div>
+      {delivery && address && (
+        <div className="adm-address">
+          <span>Endereço</span>
+          <strong>{address.street}, {address.number}{address.complement ? ` · ${address.complement}` : ''}</strong>
+          <small>{address.neighborhood}{address.cep ? ` · CEP ${address.cep}` : ''}</small>
         </div>
       )}
       {order.items?.length > 0 && (
@@ -202,7 +245,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
               {typeof item === 'string' ? item : (
                 <>
                   <strong>{item.quantity}×</strong> {item.name} — {brl(item.lineTotal)}
-                  {item.note && <div style={{ color:'var(--ink-mute)', fontSize:11, marginTop:3 }}>Obs.: {item.note}</div>}
+                  {item.note && <div className="adm-item-note">OBS.: {item.note}</div>}
                 </>
               )}
             </div>
@@ -210,12 +253,28 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
         </div>
       )}
       {order.pricing && (
-        <div className="adm-pedido-total">Total: {brl(order.pricing.total)}</div>
+        <div className="adm-pricing">
+          <span>Subtotal <strong>{brl(order.pricing.subtotal)}</strong></span>
+          {Number(order.pricing.discount) > 0 && <span>Desconto <strong>−{brl(order.pricing.discount)}</strong></span>}
+          <span>Entrega <strong>{order.pricing.deliveryFee === null ? 'A confirmar' : brl(order.pricing.deliveryFee)}</strong></span>
+          <span className="adm-pedido-total">Total <strong>{order.pricing.totalIsFinal === false ? `${brl(order.pricing.total)} + entrega` : brl(order.pricing.total)}</strong></span>
+        </div>
+      )}
+      {mode !== 'kitchen' && order.history?.length > 0 && (
+        <details className="adm-history">
+          <summary>Ver histórico ({order.history.length})</summary>
+          {order.history.map((event, index) => (
+            <div key={`${event.status}-${event.ts}-${index}`}>
+              <span>{STATUS_LABELS[event.status] || event.status}</span>
+              <time>{new Date(event.ts).toLocaleString('pt-BR', { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' })}</time>
+            </div>
+          ))}
+        </details>
       )}
       {error && <p className="pedido-search-err" role="alert">{error}</p>}
       {next && (
         <button className="btn btn-primary" style={{ width:'100%', justifyContent:'center', marginTop:12 }} onClick={advance} disabled={loading}>
-          {loading ? 'Atualizando...' : `→ ${STATUS_LABELS[next]}`}
+          {loading ? 'Atualizando...' : `→ ${STATUS_LABELS[next] || next}`}
         </button>
       )}
       {next && (
@@ -235,7 +294,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized }) {
           RESTAURAR PEDIDO
         </button>
       )}
-    </div>
+    </article>
   );
 }
 
@@ -247,9 +306,14 @@ function Dashboard({ token, onUnauthorized }) {
   const [day, setDay] = useState(todayInSanka);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [mode, setMode] = useState('operation');
+  const [now, setNow] = useState(Date.now());
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [newOrderIds, setNewOrderIds] = useState([]);
+  const knownOrderIds = useRef(new Set());
 
-  async function fetchOrders() {
-    setLoading(true);
+  async function fetchOrders(silent = false) {
+    if (!silent) setLoading(true);
     setLoadError('');
     try {
       const r = await fetch(`/api/pedido?list=1&day=${encodeURIComponent(day)}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -258,18 +322,36 @@ function Dashboard({ token, onUnauthorized }) {
         return;
       }
       if (!r.ok) throw new Error(await responseError(r, 'Não foi possível carregar os pedidos.'));
-      setOrders(await r.json());
+      const loadedOrders = await r.json();
+      if (knownOrderIds.current.size > 0) {
+        const received = loadedOrders
+          .filter(order => !knownOrderIds.current.has(order.id) && !order.archived)
+          .map(order => order.id);
+        if (received.length) {
+          setNewOrderIds(received);
+          window.setTimeout(() => setNewOrderIds([]), 12000);
+        }
+      }
+      knownOrderIds.current = new Set(loadedOrders.map(order => order.id));
+      setOrders(loadedOrders);
+      setLastUpdated(new Date());
     } catch (error) {
       setLoadError(error?.message || 'Erro de conexão ao carregar pedidos.');
     }
-    finally { setLoading(false); }
+    finally { if (!silent) setLoading(false); }
   }
 
   useEffect(() => {
+    knownOrderIds.current = new Set();
     fetchOrders();
-    const iv = setInterval(fetchOrders, 30000);
+    const iv = setInterval(() => fetchOrders(true), 30000);
     return () => clearInterval(iv);
   }, [day]);
+
+  useEffect(() => {
+    const iv = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(iv);
+  }, []);
 
   function handleUpdate(updated) {
     setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
@@ -291,36 +373,52 @@ function Dashboard({ token, onUnauthorized }) {
     });
   }, [orders, query, statusFilter]);
 
-  const active = filtered.filter(o => !o.archived && !['entregue', 'cancelado'].includes(o.status));
+  const active = sortActiveOldestFirst(filtered.filter(o => !o.archived && !['entregue', 'cancelado'].includes(o.status)));
   const done = filtered.filter(o => !o.archived && ['entregue', 'cancelado'].includes(o.status));
   const archived = filtered.filter(o => o.archived);
+  const summary = useMemo(() => summarizeOrders(orders), [orders]);
+  const count = status => summary.statusCounts[status] || 0;
 
   return (
-    <div className="adm-pedidos-layout">
+    <div className={`adm-pedidos-layout${mode === 'kitchen' ? ' is-kitchen' : ''}`}>
       <header className="adm-pedidos-header">
         <div className="wrap">
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 0' }}>
+          <div className="adm-header-row">
             <a href="index.html" className="nav-logo"><div className="nav-logo-mark">S</div><div className="nav-logo-name">SANKA<b>.</b></div></a>
-            <span style={{ fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase' }}>
-              Pedidos · {new Date().toLocaleDateString('pt-BR')}
-            </span>
-            <div style={{ display:'flex', gap:8 }}>
-              <button className="btn btn-outline btn-sm" onClick={fetchOrders}>Atualizar</button>
+            <div className="adm-view-switch" role="group" aria-label="Visualização do painel">
+              <button className={mode === 'operation' ? 'is-active' : ''} onClick={() => setMode('operation')}>Operação</button>
+              <button className={mode === 'kitchen' ? 'is-active' : ''} onClick={() => setMode('kitchen')}>Modo Cozinha</button>
+            </div>
+            <div className="adm-header-actions">
+              <button className="btn btn-outline btn-sm" onClick={() => fetchOrders(false)}>Atualizar</button>
               <button className="btn btn-outline btn-sm" onClick={onUnauthorized}>Sair</button>
             </div>
           </div>
         </div>
       </header>
 
-      <main style={{ padding:'32px 0 100px' }}>
-        <div className="wrap" style={{ maxWidth:760 }}>
+      <main id="main-content" className="adm-main">
+        <div className="wrap adm-main-wrap">
 
-          <section className="adm-overview" aria-label="Resumo e filtros dos pedidos">
-            <div className="adm-stats">
-              <div><strong>{orders.length}</strong><span>Total</span></div>
-              <div><strong>{orders.filter(o => !o.archived && !['entregue','cancelado'].includes(o.status)).length}</strong><span>Ativos</span></div>
-              <div><strong>{orders.filter(o => !o.archived && ['entregue','cancelado'].includes(o.status)).length}</strong><span>Encerrados</span></div>
-              <div><strong>{orders.filter(o => o.archived).length}</strong><span>Arquivados</span></div>
+          <div className="adm-live-line" aria-live="polite">
+            <span>{mode === 'kitchen' ? 'Pedidos mais antigos aparecem primeiro' : `Pedidos de ${day.split('-').reverse().join('/')}`}</span>
+            <span>{lastUpdated ? `Atualizado às ${lastUpdated.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}` : 'Atualizando...'}</span>
+          </div>
+          {newOrderIds.length > 0 && <div className="adm-new-alert" role="status">Novo pedido recebido · confira o topo da fila</div>}
+
+          {mode === 'operation' && <section className="adm-overview" aria-label="Resumo e filtros dos pedidos">
+            <div className="adm-stats adm-stats--business">
+              <div><strong>{summary.total}</strong><span>Pedidos</span></div>
+              <div><strong>{summary.active}</strong><span>Ativos</span></div>
+              <div><strong>{summary.delivered}</strong><span>Entregues</span></div>
+              <div><strong>{summary.cancelled}</strong><span>Cancelados</span></div>
+              <div><strong>{brl(summary.grossValue)}</strong><span>Valor bruto</span></div>
+              <div><strong>{brl(summary.averageTicket)}</strong><span>Ticket médio</span></div>
+              <div><strong>{summary.pickup}</strong><span>Retiradas</span></div>
+              <div><strong>{summary.delivery}</strong><span>Entregas</span></div>
+            </div>
+            <div className="adm-status-strip" aria-label="Pedidos por etapa">
+              {STATUSES.map(status => <span key={status}><strong>{count(status)}</strong>{STATUS_LABELS[status]}</span>)}
             </div>
             <div className="adm-toolbar">
               <label>
@@ -340,12 +438,19 @@ function Dashboard({ token, onUnauthorized }) {
                 </select>
               </label>
             </div>
-            <p className="adm-overview-note">Arquivar organiza o painel sem apagar o pedido nem o histórico.</p>
-          </section>
+            <p className="adm-overview-note">Valor bruto não é lucro. Arquivar organiza o painel sem apagar pedido nem histórico.</p>
+          </section>}
+
+          {mode === 'kitchen' && (
+            <section className="adm-kitchen-summary" aria-label="Fila da cozinha">
+              <div><strong>{active.length}</strong><span>na fila</span></div>
+              <p>Atualização automática a cada 30 segundos. Observações aparecem em destaque.</p>
+            </section>
+          )}
 
           {/* Pedidos ativos */}
-          <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:40 }}>
-            Ativos ({active.length})
+          <div className="adm-section-title">
+            {mode === 'kitchen' ? `Fila da cozinha (${active.length})` : `Ativos (${active.length})`}
           </div>
           {loading && <p style={{ color:'var(--ink-mute)', fontFamily:'var(--f-m)', fontSize:12 }}>Carregando...</p>}
           {loadError && <p className="pedido-search-err" role="alert">{loadError}</p>}
@@ -353,33 +458,33 @@ function Dashboard({ token, onUnauthorized }) {
             <p style={{ color:'var(--ink-mute)', fontFamily:'var(--f-m)', fontSize:12 }}>Nenhum pedido ativo.</p>
           )}
           <div className="adm-pedidos-grid">
-            {active.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
+            {active.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} mode={mode} isNew={newOrderIds.includes(o.id)} now={now} />)}
           </div>
 
           {/* Encerrados */}
-          {done.length > 0 && (
+          {mode === 'operation' && done.length > 0 && (
             <>
               <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:32 }}>
                 Encerrados ({done.length})
               </div>
               <div className="adm-pedidos-grid">
-                {done.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
+                {done.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} now={now} />)}
               </div>
             </>
           )}
 
-          {archived.length > 0 && (
+          {mode === 'operation' && archived.length > 0 && (
             <>
               <div style={{ marginBottom:8, fontFamily:'var(--f-m)', fontSize:11, color:'var(--ink-mute)', letterSpacing:'0.18em', textTransform:'uppercase', marginTop:32 }}>
                 Arquivados ({archived.length})
               </div>
               <div className="adm-pedidos-grid">
-                {archived.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} />)}
+                {archived.map(o => <OrderCard key={o.id} order={o} token={token} onUpdate={handleUpdate} onUnauthorized={onUnauthorized} now={now} />)}
               </div>
             </>
           )}
 
-          {!loading && !loadError && filtered.length === 0 && (query || statusFilter !== 'all') && (
+          {mode === 'operation' && !loading && !loadError && filtered.length === 0 && (query || statusFilter !== 'all') && (
             <p className="adm-empty-filter">Nenhum pedido corresponde aos filtros.</p>
           )}
         </div>

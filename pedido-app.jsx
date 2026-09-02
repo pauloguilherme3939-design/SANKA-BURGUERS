@@ -318,7 +318,7 @@ function PedidoApp() {
           <a href="cardapio.html" className="btn btn-outline btn-sm">Cardápio</a>
         </div>
       </nav>
-      <main className="pedido-main section">
+      <main id="main-content" className="pedido-main section" tabIndex="-1">
         <div className="wrap" style={{maxWidth:640}}>
           {!order
             ? <SearchForm onFound={setOrder} initialError={initialError} />

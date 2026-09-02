@@ -160,21 +160,6 @@ export const SANKA_DRINKS = [
   },
 ];
 
-export const SANKA_FEATURES = [
-  { num: "01", title: "Ingredientes Selecionados", desc: "Hortifrúti diário, queijos da serra mineira, carne fresca moída na casa. Sem congelado, sem atalho.", icon: "leaf" },
-  { num: "02", title: "Hambúrguer Artesanal", desc: "Blend exclusivo de acém, peito e fraldinha. Moído duas vezes, prensado leve, ponto suculento.", icon: "flame" },
-  { num: "03", title: "Entrega Rápida", desc: "Saímos da chapa direto pra moto. Raio de 6km coberto em até 35 minutos ou o próximo é por nossa conta.", icon: "rocket" },
-  { num: "04", title: "Molhos Exclusivos", desc: "Sete molhos da casa, desenvolvidos no balcão. Do barbecue defumado à maionese de ervas frescas.", icon: "drop" },
-  { num: "05", title: "Sabor Marcante", desc: "Receita perfeita pela teimosia. Três anos testando até o cliente dizer que vicia. Não exageramos.", icon: "spark" },
-  { num: "06", title: "Atendimento Premium", desc: "Pedido confirmado em segundos, status em tempo real, e atendente humano quando você precisa.", icon: "heart" },
-];
-
-export const SANKA_TESTIMONIALS = [
-  { quote: "Melhor lanche prensado que comi em Rio Claro. O X Panceta chega pesado mesmo.", stars: 5, name: "Mariana S.", meta: "Cliente · Inauguração" },
-  { quote: "Pedi uma vez e virei viciado. Tamanho de verdade, queijo derretendo em tudo.", stars: 5, name: "Diego R.", meta: "Cliente · Inauguração" },
-  { quote: "X Provolone ao Mel é absurdo. Chega quente, prensado e bem recheado.", stars: 5, name: "Camila A.", meta: "Cliente · Inauguração" },
-];
-
 // ============================== COMBOS ==============================
 // Valores calculados pela soma exata dos itens avulsos do canal direto.
 // Não há desconto promocional enquanto o custo variável completo estiver pendente.

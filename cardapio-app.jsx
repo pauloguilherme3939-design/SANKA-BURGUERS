@@ -386,7 +386,8 @@ function CardapioPage() {
 
       <FilterBar active={filter} onChange={handleFilter} />
 
-      <main className="cardapio-main" id="cardapio">
+      <span id="cardapio" aria-hidden="true" />
+      <main className="cardapio-main" id="main-content" tabIndex="-1">
         <div className="wrap">
 
           {/* Cabeçalho — só no filtro "Tudo" */}

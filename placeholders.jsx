@@ -100,6 +100,7 @@ export function FoodPlaceholder({ label, sub, mood, tags, prompt, seed, src, eag
             src={src}
             alt={label || ""}
             loading={eager ? "eager" : "lazy"}
+            decoding="async"
             fetchPriority={priority ? "high" : "auto"}
             onLoad={() => setLoaded(true)}
             onError={() => setSrcFailed(true)}
@@ -138,4 +139,3 @@ export function FeatureIcon({ name }) {
     return (<svg {...common}><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z" /></svg>);
   return null;
 }
-

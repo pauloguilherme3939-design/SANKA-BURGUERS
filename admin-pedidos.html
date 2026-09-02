@@ -6,29 +6,6 @@
 <title>Admin Pedidos — Sanka Burgers</title>
 <meta name="robots" content="noindex, nofollow" />
 
-<!-- ── Tailwind Play CDN ──────────────────────────────────── -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        fire:   { DEFAULT: '#EA580C', light: '#F97316', dark: '#C2410C' },
-        amber:  { DEFAULT: '#D97706', light: '#F59E0B' },
-        ink:    { DEFAULT: '#F8F4F0', mute: '#9CA3AF', dim: '#6B7280' },
-        carbon: { DEFAULT: '#0F0D0B', mid: '#1A1714', surface: '#242019' },
-      },
-      fontFamily: {
-        display: ['Anton', 'sans-serif'],
-        black:   ['"Archivo Black"', 'sans-serif'],
-        body:    ['"Space Grotesk"', 'sans-serif'],
-        mono:    ['"JetBrains Mono"', 'monospace'],
-      },
-    },
-  },
-}
-</script>
-
 <!-- ── Fonts ──────────────────────────────────────────────── -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -42,11 +19,12 @@ tailwind.config = {
     <link rel="manifest" href="/site.webmanifest" />
   </head>
 <body>
+<a href="#main-content" class="skip-link">Pular para os pedidos</a>
 <div id="root"></div>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 
-<script src="/dist/admin-pedidos.js"></script>
+<script defer src="/dist/admin-pedidos.js"></script>
 </body>
 </html>

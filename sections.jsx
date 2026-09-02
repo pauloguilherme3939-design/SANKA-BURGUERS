@@ -198,8 +198,7 @@ function Nav() {
           </div>
 
           <div className="nav-right-group">
-            <a href={WA} className="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer" onClick={() => window.SankaAnalytics?.waClick('nav')}>
-              <IcoWA />
+            <a href="cardapio.html" className="btn btn-primary btn-sm" onClick={() => window.SankaAnalytics?.viewCardapio('nav_order')}>
               <span className="nav-cta-label">PEDIR</span>
             </a>
             <button
@@ -241,8 +240,8 @@ function Nav() {
           <a href="admin-pedidos.html" onClick={close} className="nav-drawer-admin">Administração</a>
         </nav>
         <div style={{ padding: '0 24px 32px' }}>
-          <a href={WA} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} target="_blank" rel="noopener noreferrer">
-            <IcoWA /> PEDIR AGORA
+          <a href="cardapio.html" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={close}>
+            MONTAR PEDIDO
           </a>
         </div>
       </aside>
@@ -274,13 +273,22 @@ function Hero() {
   const heroContent = _HERO_VARIANTS[SANKA_BRAND.heroVariant] || _HERO_VARIANTS.A;
 
   useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = window.matchMedia('(max-width: 767px)').matches;
+    if (reduced || mobile) return undefined;
+    let frame = null;
     const onScroll = () => {
-      if (bgRef.current) {
-        bgRef.current.style.transform = `scale(1.06) translateY(${window.scrollY * 0.18}px)`;
-      }
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        if (bgRef.current) bgRef.current.style.transform = `scale(1.06) translateY(${window.scrollY * 0.18}px)`;
+        frame = null;
+      });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
@@ -312,19 +320,19 @@ function Hero() {
         <div className="hero-ctas">
           <a
             href="cardapio.html"
-            className="btn btn-outline btn-lg"
-            onClick={() => window.SankaAnalytics?.viewCardapio('hero')}
+            className="btn btn-primary btn-lg"
+            onClick={() => window.SankaAnalytics?.viewCardapio('hero_order')}
           >
-            VER CARDÁPIO <IcoArrow />
+            MONTAR PEDIDO <IcoArrow />
           </a>
           <a
             href={WA}
-            className="btn btn-primary btn-lg"
+            className="btn btn-outline btn-lg"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => window.SankaAnalytics?.waClick('hero')}
+            onClick={() => window.SankaAnalytics?.waClick('hero_help')}
           >
-            <IcoWA /> PEDIR AGORA
+            <IcoWA /> FALAR NO WHATSAPP
           </a>
           {SANKA_BRAND.isClubActive && (
             <a
@@ -369,7 +377,7 @@ function Hero() {
           )}
           <div className="hero-proof-item">
             <span className="val">250 g</span>
-            <span className="lbl">Carne por lanche</span>
+            <span className="lbl">Nos burgers artesanais</span>
           </div>
         </div>
       </div>
@@ -703,21 +711,28 @@ function HowItWorks() {
             <p>Monte o carrinho no site e confirme com a Sanka. Os preços deste canal não incorporam a taxa do marketplace.</p>
           </div>
           <div className="order-channel">
-            <span className="order-channel-kicker">Também teremos</span>
+            <span className="order-channel-kicker">Canal confirmado</span>
             <h3>iFood</h3>
-            <p>Para quem prefere a conveniência do aplicativo. O link oficial aparecerá aqui assim que a loja estiver disponível.</p>
+            <p>Para quem prefere a conveniência do aplicativo. O link oficial aparecerá aqui assim que for informado.</p>
           </div>
         </div>
 
         <div className="how-cta" data-reveal>
           <a
-            href={WA}
+            href="cardapio.html"
             className="btn btn-primary btn-lg"
+            onClick={() => window.SankaAnalytics?.viewCardapio('how_it_works')}
+          >
+            MONTAR PEDIDO <IcoArrow />
+          </a>
+          <a
+            href={WA}
+            className="btn btn-outline btn-lg"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => window.SankaAnalytics?.waClick('how_it_works')}
+            onClick={() => window.SankaAnalytics?.waClick('how_it_works_help')}
           >
-            <IcoWA /> FAZER MEU PEDIDO AGORA
+            <IcoWA /> FALAR COM A SANKA
           </a>
           {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl && (
             <a
@@ -1276,20 +1291,23 @@ function StickyWA() {
   return (
     <div className="sticky-wa" role="complementary" aria-label="Acesso rápido">
       <a
-        href={waLink('Olá! Quero fazer um pedido. 🍔')}
+        href="cardapio.html"
         className="sticky-wa-btn"
+        aria-label="Montar pedido no site"
+        onClick={() => window.SankaAnalytics?.viewCardapio('sticky')}
+      >
+        PEDIR AGORA
+      </a>
+      <a
+        href={waLink('Olá! Preciso de ajuda com um pedido. 🍔')}
+        className="sticky-wa-clube"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Pedir agora pelo WhatsApp"
-        onClick={() => window.SankaAnalytics?.waClick('sticky')}
+        aria-label="Falar com a Sanka no WhatsApp"
+        onClick={() => window.SankaAnalytics?.waClick('sticky_help')}
       >
-        <IcoWA /> PEDIR AGORA
+        <IcoWA /> WhatsApp
       </a>
-      {SANKA_BRAND.isClubActive && (
-        <a href="clube.html" className="sticky-wa-clube" aria-label="Entrar no Clube Sanka">
-          Clube →
-        </a>
-      )}
     </div>
   );
 }

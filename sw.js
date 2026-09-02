@@ -4,8 +4,8 @@
 //   imagens /assets/* → cache-first (raramente mudam)
 //   /api/* e POST → network-only (nunca cachear)
 
-const CACHE_STATIC = 'sanka-static-v4-launch-20260821';
-const CACHE_IMAGES = 'sanka-images-v4-launch-20260821';
+const CACHE_STATIC = 'sanka-static-v5-master-upgrade-20260825';
+const CACHE_IMAGES = 'sanka-images-v5-master-upgrade-20260825';
 
 const STATIC_ASSETS = [
   '/',
