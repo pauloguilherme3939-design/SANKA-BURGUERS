@@ -5,6 +5,7 @@ import { existsSync }    from 'fs'
 import path              from 'path'
 import { fileURLToPath } from 'url'
 import { syncSiteDomain } from './lib/site-domain.mjs'
+import { generatePrint }  from './lib/print-gen.mjs'
 
 const isProd  = process.argv.includes('--prod')
 const isWatch = process.argv.includes('--watch')
@@ -114,6 +115,7 @@ if (isWatch) {
   await generateWebP()
   await generatePwaIcons()
   syncSiteDomain()
+  await generatePrint()
   const ctxs = await Promise.all(pages.map(p => esbuild.context({ ...shared, ...p })))
   await Promise.all(ctxs.map(ctx => ctx.watch()))
   console.log('\n👀 Watching JS changes... (Ctrl+C to stop)')
@@ -121,6 +123,7 @@ if (isWatch) {
   await generateWebP()
   await generatePwaIcons()
   syncSiteDomain()
+  await generatePrint()
   await Promise.all(pages.map(p => esbuild.build({ ...shared, ...p })))
   console.log('\n✅ Build completo! Arquivos em /dist')
 }
