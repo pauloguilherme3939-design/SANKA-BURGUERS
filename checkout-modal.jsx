@@ -2,6 +2,7 @@
 
 import { getOrigin } from './lib/origin.js'
 import { SANKA_CONFIG } from './lib/config.js'
+import { SANKA_BRAND } from './lib/brand.js'
 import { completeCheckout } from './lib/order-submit.mjs'
 import { consumeRoulettePrize, getRouletteConfig } from './lib/roulette-client.mjs'
 import { useCartContext } from './cart.jsx'
@@ -513,6 +514,10 @@ function CheckoutModal() {
                   <p className="co-submit-note">A taxa de entrega e o total final serão confirmados no WhatsApp.</p>
                 )}
               </div>
+
+              {SANKA_BRAND.deliveryTimeText && (
+                <p className="co-submit-note">Tempo médio de entrega: {SANKA_BRAND.deliveryTimeText}</p>
+              )}
 
               {submitError && <p className="co-error" role="alert" style={{ marginBottom: 12 }}>{submitError}</p>}
 

@@ -401,6 +401,9 @@ function CardapioPage() {
               <p className="cardapio-sub">
                 Cardápio de lançamento da Sanka Burgers. Escolha seus itens e finalize pelo WhatsApp.
               </p>
+              {SANKA_BRAND.deliveryTimeText && (
+                <p className="cardapio-sub">Tempo médio de entrega: {SANKA_BRAND.deliveryTimeText}</p>
+              )}
             </div>
           )}
 

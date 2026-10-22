@@ -1,8 +1,10 @@
 // admin-pedidos-app.jsx — Painel de pedidos · Sanka Burgers
 
 import { requestAdminOrderUpdate } from './lib/admin-order-request.mjs';
+import { SANKA_BRAND } from './lib/brand.js';
 import {
   buildAdminWhatsAppUrl,
+  buildReviewRequestUrl,
   elapsedLabel,
   sortActiveOldestFirst,
   summarizeOrders,
@@ -199,6 +201,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
 
   const t = new Date(order.createdAt).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
   const whatsappUrl = buildAdminWhatsAppUrl(order);
+  const reviewUrl = buildReviewRequestUrl(order, SANKA_BRAND.googleReviewUrl);
   const delivery = order.fulfillment?.type === 'delivery';
   const address = order.fulfillment?.address;
 
@@ -224,6 +227,11 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
           {whatsappUrl && (
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="adm-whatsapp-button">
               Falar com cliente
+            </a>
+          )}
+          {reviewUrl && (
+            <a href={reviewUrl} target="_blank" rel="noopener noreferrer" className="adm-whatsapp-button">
+              Pedir avaliação
             </a>
           )}
         </div>

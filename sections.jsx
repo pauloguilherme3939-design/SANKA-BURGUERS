@@ -298,6 +298,7 @@ function Hero() {
         <div className="hero-eyebrow">
           <span className="dot" aria-hidden="true" />
           Rio Claro/SP · Estilo São Carlos · Prensado na chapa
+          {SANKA_BRAND.deliveryTimeText && <> · Tempo médio de entrega: {SANKA_BRAND.deliveryTimeText}</>}
         </div>
 
         <h1>{heroContent.title}</h1>
