@@ -8,3 +8,12 @@ MIGRACAO.md
 screenshots/
 package-lock.json
 CARDAPIO SANKA BURGUERS/
+
+# Arquivos internos (não vão para o site publicado)
+*.md
+docs/
+LOGO/
+ChatGPT Image*
+test/
+scripts/
+.env.example
