@@ -119,20 +119,6 @@ function getOfertaTargetTs(spH) {
   if (t.getTime() <= Date.now()) t.setUTCDate(t.getUTCDate() + 1);
   return t.getTime();
 }
-function _ofertaStore() {
-  try { return JSON.parse(localStorage.getItem('sk-oferta') || '{}'); } catch { return {}; }
-}
-function getOfertaRemaining() {
-  const d = new Date().toISOString().slice(0, 10); const s = _ofertaStore();
-  if (s.date !== d) { try { localStorage.setItem('sk-oferta', JSON.stringify({date:d,n:30})); } catch{} return 30; }
-  return typeof s.n === 'number' ? s.n : 30;
-}
-function decrementOfertaRemaining() {
-  const d = new Date().toISOString().slice(0, 10); const s = _ofertaStore();
-  const n = s.date === d ? Math.max(0, s.n - 1) : 29;
-  try { localStorage.setItem('sk-oferta', JSON.stringify({date:d,n})); } catch{}
-  return n;
-}
 function useOfertaCountdown(targetTs) {
   const [ms, setMs] = useState(Math.max(0, targetTs - Date.now()));
   useEffect(() => { const iv = setInterval(() => setMs(Math.max(0, targetTs - Date.now())), 1000); return () => clearInterval(iv); }, [targetTs]);
@@ -592,7 +578,6 @@ function MonteBanner() {
 function OfertaDia() {
   const [ativa,     setAtiva]     = useState(() => isOfertaAtiva());
   const [targetTs,  setTargetTs]  = useState(() => getOfertaTargetTs(isOfertaAtiva() ? 22 : 19));
-  const [remaining, setRemaining] = useState(() => getOfertaRemaining());
   const cd = useOfertaCountdown(targetTs);
 
   useEffect(() => {
@@ -600,7 +585,6 @@ function OfertaDia() {
       const a = isOfertaAtiva();
       setAtiva(a);
       setTargetTs(getOfertaTargetTs(a ? 22 : 19));
-      if (a) setRemaining(getOfertaRemaining());
     }
     const iv = setInterval(tick, 30000);
     return () => clearInterval(iv);
@@ -615,8 +599,6 @@ function OfertaDia() {
   const origPrice = burger.price.toFixed(2).replace('.', ',');
 
   function handlePedir() {
-    const n = decrementOfertaRemaining();
-    setRemaining(n);
     window.SankaAnalytics?.waClick('oferta_relampago');
     const msg = `Olá! Quero aproveitar a oferta relâmpago! 🍔🔥\n\n*${burger.name}* por R$ ${salePrice} (25% off, só até 22h)`;
     window.open(waLink(msg), '_blank', 'noopener');
@@ -652,15 +634,9 @@ function OfertaDia() {
                   </React.Fragment>
                 ))}
               </div>
-              <div className="oferta-remaining-wrap">
-                <div className="oferta-remaining-bar">
-                  <div className="oferta-remaining-fill" style={{width:`${(remaining/30)*100}%`}} aria-hidden="true" />
-                </div>
-                <span className="oferta-remaining-text">{remaining} de 30 restantes hoje</span>
-              </div>
               <div style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:24}}>
-                <button className="btn btn-primary btn-lg" onClick={handlePedir} disabled={remaining===0}>
-                  <IcoWA /> {remaining===0 ? 'ESGOTADO' : 'QUERO ESSA OFERTA'}
+                <button className="btn btn-primary btn-lg" onClick={handlePedir}>
+                  <IcoWA /> QUERO ESSA OFERTA
                 </button>
                 <a href="oferta.html" className="btn btn-outline btn-sm" style={{alignSelf:'center'}}>
                   Ver página completa

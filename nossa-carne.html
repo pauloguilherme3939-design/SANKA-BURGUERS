@@ -38,29 +38,6 @@
 <meta name="apple-mobile-web-app-title" content="Sanka Burgers" />
 
 
-<!-- ── Google Analytics 4 ─────────────────────────────────── -->
-<!-- TODO: SANKA — Substituir G-XXXXXXXXXX pelo Measurement ID real -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XXXXXXXXXX', { send_page_view: true });
-</script>
-
-<!-- ── Meta Pixel ─────────────────────────────────────────── -->
-<!-- TODO: SANKA — Substituir XXXXXXXXXXXXXXXXXX pelo Pixel ID real -->
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','XXXXXXXXXXXXXXXXXX');
-fbq('track','PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXXXX&ev=PageView&noscript=1"/></noscript>
 
 <!-- ── Tailwind Play CDN ──────────────────────────────────── -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -111,7 +88,7 @@ if ('serviceWorker' in navigator) {
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
 <!-- Framer Motion v10 via CDN — global: window.Motion -->
-<script src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.umd.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.js" crossorigin="anonymous"></script>
 
 <script src="/dist/nossa-carne.js"></script>
 </body>
