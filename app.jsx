@@ -64,8 +64,8 @@ function App() {
       <Nav />
       <main id="main-content">
         <Hero />
-        <Destaques />
         <ProvaArtesanal />
+        <Destaques />
         <HowItWorks />
         {SANKA_BRAND.isLaunchCouponActive && <LaunchCoupon />}
         {SANKA_BRAND.isClubActive && <ClubeCTA />}

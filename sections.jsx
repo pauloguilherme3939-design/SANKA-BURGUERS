@@ -242,18 +242,20 @@ function Hero() {
   const bgRef = useRef(null);
   const WA    = waLink('Olá! Quero fazer um pedido. 🍔');
 
+  // Subtítulo único em todas as variantes: a frase de posicionamento
+  const HERO_SUB = <><span>{SANKA_BRAND.positioningLine} </span><strong>Pão selado na chapa, recheio generoso e maionese caseira.</strong></>;
   const _HERO_VARIANTS = {
     A: {
       title:    <><span>O LANCHÃO PRENSADO</span><br /><span className="accent">QUE CHEGOU PESADO.</span></>,
-      sub:      <><span>Pão prensado na chapa, recheio generoso, queijo derretendo e aquele tamanho que </span><strong>mata a fome de verdade.</strong><span> A Sanka nasceu pra quem não quer lanche pequeno.</span></>,
+      sub:      HERO_SUB,
     },
     B: {
       title:    <><span>FOME DE RESPEITO?</span><br /><span className="accent">A SANKA RESOLVE.</span></>,
-      sub:      <><span>Lanchão prensado estilo São Carlos direto em Rio Claro. </span><strong>Mais recheio, mais queijo, mais lanche.</strong><span> Sem enrolação, sem lanchinho de vitrine.</span></>,
+      sub:      HERO_SUB,
     },
     C: {
       title:    <><span>RIO CLARO TEM</span><br /><span className="accent">UM NOVO LANCHÃO.</span></>,
-      sub:      <><span>Estilo São Carlos de prensado agora aqui. Pão tostado, queijo derretendo, carne de verdade. </span><strong>A Sanka chegou pesada.</strong></>,
+      sub:      HERO_SUB,
     },
   };
   const heroContent = _HERO_VARIANTS[SANKA_BRAND.heroVariant] || _HERO_VARIANTS.A;
@@ -283,7 +285,7 @@ function Hero() {
         <FoodPlaceholder
           label="Hero"
           sub="X PROVOLONE AO MEL"
-          tags="cheeseburger,gourmet,burger,food,dark"
+          tags="cheeseburger,burger,food,dark"
           mood={2}
           seed={42}
           src="/assets/burgers/sb-004.png"
@@ -475,48 +477,26 @@ function Destaques() {
 /* ═══════════════════════════════════════════════════════════════
    4. NÃO É LANCHE PEQUENO. É SANKA.
 ═══════════════════════════════════════════════════════════════ */
-const DIFERENCIAIS = [
-  {
-    icon: '🔥',
-    title: 'Prensado na chapa',
-    desc:  'Cada lanche vai direto pra chapa bem quente. O pão prensa, tosta e cria aquela casquinha que segura tudo junto.',
-  },
-  {
-    icon: '🧀',
-    title: 'Queijo derretendo',
-    desc:  'Generoso. Derretido. Cobrindo tudo. Não tem meio queijo nem queijo de enfeite aqui.',
-  },
-  {
-    icon: '🍔',
-    title: 'Grande de verdade',
-    desc:  'Não é lanchinho de vitrine. É lanche de respeito — aquele que mata a fome e você ainda lembra no dia seguinte.',
-  },
-  {
-    icon: '📍',
-    title: 'Estilo São Carlos',
-    desc:  'Referência regional de lanchão prensado. A Sanka trouxe esse estilo pra Rio Claro com identidade própria.',
-  },
-];
-
-function ProvaArtesanal() {
+/* O que é o lanche de São Carlos? — identidade da marca (lib/brand.js → styleFacts) */
+function EstiloSaoCarlos() {
   return (
-    <section className="prova" aria-labelledby="prova-title">
+    <section className="prova" id="estilo-sao-carlos" aria-labelledby="prova-title">
       <div className="wrap">
-        <div style={{ textAlign: 'center', marginBottom: 48 }} data-reveal>
-          <div className="eyebrow">O que faz a diferença</div>
+        <div style={{ textAlign: 'center', marginBottom: 40 }} data-reveal>
+          <div className="eyebrow">{SANKA_BRAND.positioning}</div>
           <h2 id="prova-title" className="section-title">
-            Não é lanche pequeno.<br /><em>É Sanka.</em>
+            O que é o lanche<br /><em>de São Carlos?</em>
           </h2>
-          <p className="section-sub" style={{ maxWidth: 520, margin: '12px auto 0' }}>
-            Tem lanche que só engana a fome. E tem lanche que chega pesado, quente, prensado e bem recheado.
-            A Sanka segue a pegada dos lanchões de São Carlos: grande, direto, sem miséria e feito pra matar fome de verdade.
+          <p className="section-sub" style={{ maxWidth: 560, margin: '12px auto 0' }}>
+            Em São Carlos, o lanche prensado é tradição de balcão: comum lá e raro em outras cidades.
+            A Sanka trouxe pra Rio Claro.
           </p>
         </div>
 
         <div className="prova-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
-          {DIFERENCIAIS.map((d, i) => (
+          {SANKA_BRAND.styleFacts.map((d, i) => (
             <div key={d.title} className="prova-item" data-reveal data-delay={String(i + 1)}>
-              <div className="prova-num" style={{ fontSize: 40, lineHeight: 1, marginBottom: 12 }}>{d.icon}</div>
+              <div className="prova-num" style={{ fontSize: 40, lineHeight: 1, marginBottom: 12 }} aria-hidden="true">{d.icon}</div>
               <h3>{d.title}</h3>
               <p>{d.desc}</p>
             </div>
@@ -524,19 +504,16 @@ function ProvaArtesanal() {
         </div>
 
         {SANKA_BRAND.isMeatStoryActive && (
-          <div style={{ textAlign: 'center', marginTop: 52 }} data-reveal>
-            <a href="nossa-carne.html" className="btn btn-outline btn-sm" style={{ gap: 8 }}>
-              Ver nossa carne
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
-            </a>
+          <div style={{ textAlign: 'center', marginTop: 40 }} data-reveal>
+            <a href="nossa-carne.html" className="btn btn-outline btn-sm">Entender o estilo</a>
           </div>
         )}
       </div>
     </section>
   );
 }
+// Nome antigo mantido como alias
+const ProvaArtesanal = EstiloSaoCarlos;
 
 /* ═══════════════════════════════════════════════════════════════
    5. MONTE SEU BURGER — CTA banner
@@ -913,7 +890,7 @@ function LocalBrand() {
             </h2>
             <p className="section-sub" style={{ maxWidth: 560, marginBottom: 32 }}>
               A Sanka nasceu para trazer uma pegada diferente: lanche grande, prensado, direto ao ponto e com cara de interior.
-              Nada de lanche pequeno disfarçado de gourmet.
+              Nada de lanchinho pequeno de vitrine.
             </p>
             <div className="local-badges">
               <span className="local-badge">📍 Rio Claro/SP</span>
@@ -1075,6 +1052,7 @@ function Location() {
    14. FAQ — SEO local + conversão
 ═══════════════════════════════════════════════════════════════ */
 const FAQ_ITEMS = [
+  { q: 'O que é o lanche estilo São Carlos?', a: SANKA_BRAND.styleFaqAnswer },
   { q: 'A Sanka Burgers fica em Rio Claro?', a: 'Sim. A Sanka Burgers está em fase de pré-inauguração em Rio Claro/SP.' },
   { q: 'Quais lanches estarão no lançamento?', a: 'O cardápio de lançamento tem 14 lanches, quatro porções e refrigerantes. Todos estão listados na página de cardápio.' },
   { q: 'Qual é o tamanho dos hambúrgueres?', a: 'Os lanches de carne, frango, lombo e panceta levam 250 g do respectivo recheio principal.' },
@@ -1175,8 +1153,7 @@ function Footer() {
               <div className="nav-logo-name">SANKA<b>.</b></div>
             </a>
             <p className="footer-brand-desc">
-              Lanchão prensado estilo São Carlos em {SANKA_BRAND.serviceArea}.
-              Prensado na chapa, bem recheado, grande de verdade.
+              {SANKA_BRAND.positioningLine}
             </p>
           </div>
 
