@@ -35,7 +35,7 @@ Substitua todos os blocos `TODO: SANKA` no código:
 - [ ] `index.html` → JSON-LD: endereço real, CEP, link Instagram, link iFood e nº de avaliações (telefone e horários já atualizados)
 - [ ] `nossa-carne-app.jsx` → nome da padaria parceira (seção "O pão")
 - [ ] `nossa-carne.html` + outros HTMLs → og:image (foto real salva em `/og/`)
-- [ ] `lib/config.js` → confirmar número WhatsApp correto (`5516993138450`)
+- [ ] `lib/brand.js` → número WhatsApp (`5516974069121`, fonte única)
 
 ---
 
@@ -58,7 +58,7 @@ Substitua todos os blocos `TODO: SANKA` no código:
 - [ ] **WhatsApp Business** configurado:
   - Mensagem de ausência (fora do horário)
   - Catálogo com os burgers principais
-  - Número testado como link direto `wa.me/5516993138450`
+  - Número testado como link direto `wa.me/5516974069121`
 - [ ] **iFood**: loja verificada, cardápio atualizado com mesmas fotos, link do site no perfil
 
 ---

@@ -69,6 +69,12 @@ function IcoX() {
   );
 }
 
+// (16) 97406-9121 a partir de SANKA_BRAND.whatsapp
+const WA_DISPLAY = SANKA_CONFIG.whatsapp.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, '($1) $2-$3');
+const MAPS_URL = SANKA_BRAND.address
+  ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${SANKA_BRAND.streetAddress}, ${SANKA_BRAND.city} - ${SANKA_BRAND.state}, ${SANKA_BRAND.zipCode}`)
+  : '';
+
 function waLink(msg) {
   const num = SANKA_CONFIG.whatsapp;
   return msg
@@ -1023,8 +1029,25 @@ function Location() {
           <div className="location-map" data-reveal>
             <div className="location-map-placeholder">
               <IcoPin />
-              <strong>Mapa em breve</strong>
-              <span>Rio Claro / SP</span>
+              {MAPS_URL ? (
+                <>
+                  <span>{SANKA_BRAND.address}</span>
+                  <a
+                    href={MAPS_URL}
+                    className="btn btn-outline btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => window.SankaAnalytics?.seoCta('home', 'ver_no_mapa')}
+                  >
+                    Ver no mapa
+                  </a>
+                </>
+              ) : (
+                <>
+                  <strong>Mapa em breve</strong>
+                  <span>Rio Claro / SP</span>
+                </>
+              )}
             </div>
           </div>
 
@@ -1061,7 +1084,7 @@ function Location() {
               <div className="info-label"><IcoPhone /> WhatsApp</div>
               <div className="info-value">
                 <a href={waLink()} target="_blank" rel="noopener noreferrer" onClick={() => window.SankaAnalytics?.waClick('location_phone')}>
-                  (16) 99313-8450
+                  {WA_DISPLAY}
                 </a>
               </div>
               {SANKA_BRAND.isIfoodAnnounced && (
@@ -1242,7 +1265,7 @@ function Footer() {
             )}
             <a href={waLink()} target="_blank" rel="noopener noreferrer" onClick={() => window.SankaAnalytics?.waClick('footer')}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <IcoWA /> (16) 99313-8450
+                <IcoWA /> {WA_DISPLAY}
               </span>
             </a>
             {SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl ? (

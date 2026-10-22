@@ -10,7 +10,7 @@
 - [ ] Categorias secundárias: Restaurante, Delivery de comida
 - [ ] Endereço completo com CEP (atualizar em `lib/brand.js → address / zipCode`)
 - [ ] Área de entrega: Rio Claro e bairros próximos
-- [ ] Telefone/WhatsApp: (16) 99313-8450
+- [ ] Telefone/WhatsApp: (16) 97406-9121
 - [ ] Site: URL do site Sanka Burgers
 - [x] Horário: seg–ter fechado; qua–qui e dom 18h30–23h30; sex–sáb 18h30–00h00
 
