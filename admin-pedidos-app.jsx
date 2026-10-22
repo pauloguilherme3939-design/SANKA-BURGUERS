@@ -6,6 +6,7 @@ import {
   elapsedLabel,
   sortActiveOldestFirst,
   summarizeOrders,
+  summarizeOrigins,
 } from './lib/admin-order-view.mjs';
 
 const { useState, useEffect, useMemo, useRef } = React;
@@ -230,6 +231,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
       <div className="adm-order-meta">
         <div><span>Atendimento</span><strong>{delivery ? 'Entrega' : 'Retirada'}</strong></div>
         <div><span>Pagamento</span><strong>{paymentLabel(order.payment)}</strong></div>
+        <div><span>Origem</span><strong>{order.origin || 'direto'}</strong></div>
       </div>
       {delivery && address && (
         <div className="adm-address">
@@ -311,6 +313,24 @@ function Dashboard({ token, onUnauthorized }) {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [newOrderIds, setNewOrderIds] = useState([]);
   const knownOrderIds = useRef(new Set());
+  const [recentOrders, setRecentOrders] = useState([]); // últimos 30 dias, para o resumo por origem
+
+  // A API lista um dia por vez: busca os últimos 30 dias pelo mesmo endpoint
+  async function fetchRecentOrders() {
+    const days = [];
+    for (let i = 0; i < 30; i++) {
+      const d = new Date(Date.now() - i * 86400000);
+      days.push(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d));
+    }
+    try {
+      const lists = await Promise.all(days.map(dk =>
+        fetch(`/api/pedido?list=1&day=${dk}`, { headers: { Authorization: `Bearer ${token}` } })
+          .then(r => (r.ok ? r.json() : []))
+          .catch(() => [])
+      ));
+      setRecentOrders(lists.flat());
+    } catch { setRecentOrders([]); }
+  }
 
   async function fetchOrders(silent = false) {
     if (!silent) setLoading(true);
@@ -340,6 +360,8 @@ function Dashboard({ token, onUnauthorized }) {
     }
     finally { if (!silent) setLoading(false); }
   }
+
+  useEffect(() => { fetchRecentOrders(); }, []);
 
   useEffect(() => {
     knownOrderIds.current = new Set();
@@ -377,6 +399,7 @@ function Dashboard({ token, onUnauthorized }) {
   const done = filtered.filter(o => !o.archived && ['entregue', 'cancelado'].includes(o.status));
   const archived = filtered.filter(o => o.archived);
   const summary = useMemo(() => summarizeOrders(orders), [orders]);
+  const originSummary = useMemo(() => summarizeOrigins(recentOrders), [recentOrders]);
   const count = status => summary.statusCounts[status] || 0;
 
   return (
@@ -416,6 +439,11 @@ function Dashboard({ token, onUnauthorized }) {
               <div><strong>{brl(summary.averageTicket)}</strong><span>Ticket médio</span></div>
               <div><strong>{summary.pickup}</strong><span>Retiradas</span></div>
               <div><strong>{summary.delivery}</strong><span>Entregas</span></div>
+            </div>
+            <div className="adm-status-strip" aria-label="Pedidos por origem (7 e 30 dias)">
+              {originSummary.length === 0
+                ? <span>Origem: nenhum pedido nos últimos 30 dias</span>
+                : originSummary.map(o => <span key={o.origin}><strong>{o.d7} / {o.d30}</strong>{o.origin} (7 / 30 dias)</span>)}
             </div>
             <div className="adm-status-strip" aria-label="Pedidos por etapa">
               {STATUSES.map(status => <span key={status}><strong>{count(status)}</strong>{STATUS_LABELS[status]}</span>)}

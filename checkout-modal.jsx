@@ -1,5 +1,6 @@
 // checkout-modal.jsx — Sanka Burgers · Formulário de fechamento do pedido
 
+import { getOrigin } from './lib/origin.js'
 import { SANKA_CONFIG } from './lib/config.js'
 import { completeCheckout } from './lib/order-submit.mjs'
 import { consumeRoulettePrize, getRouletteConfig } from './lib/roulette-client.mjs'
@@ -92,6 +93,10 @@ function buildWAMessage(order, rouletteRedemption = null) {
     lines.push(`*Endereço:* ${address.street}, ${address.number}${address.complement ? ` — ${address.complement}` : ''}`);
     lines.push(`${address.neighborhood} · CEP ${address.cep}`);
   }
+
+  // Origem do cliente (panfleto, sacola...) — pra saber qual canal funciona
+  lines.push('');
+  lines.push(`Origem: ${order.origin || 'direto'}`);
 
   return lines.join('\n');
 }
@@ -258,6 +263,7 @@ function CheckoutModal() {
             change: form.change,
           },
           couponCode: form.coupon,
+          origin: getOrigin(),
         },
         onConfirmed: async persistedOrder => {
           let rouletteRedemption = null;

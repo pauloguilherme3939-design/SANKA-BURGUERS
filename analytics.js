@@ -2,6 +2,19 @@
 // Carregado como <script> simples. Silencioso se IDs não configurados.
 
 (function () {
+  /* ── Origem do cliente (?utm_source= ou ?ref=) ─────────────
+     Salva por 30 dias em localStorage. Nunca grava "direto", então uma
+     origem válida não é apagada por uma visita sem parâmetro.
+     Leitura no checkout: lib/origin.js (mesma chave). */
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var src = (params.get('utm_source') || params.get('ref') || '')
+      .toLowerCase().trim().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+    if (src && src !== 'direto') {
+      localStorage.setItem('sanka_origin', JSON.stringify({ source: src, ts: Date.now() }));
+    }
+  } catch (e) {}
+
   var EVENTS_KEY = 'sanka_analytics_events';
 
   function ga(event, params) {
