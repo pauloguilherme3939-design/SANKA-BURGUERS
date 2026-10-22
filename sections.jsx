@@ -80,11 +80,10 @@ function waLink(msg) {
 const FEATURED_CODES  = ['SK-L03', 'SK-L02', 'SK-L08', 'SK-L01', 'SK-L04', 'SK-L14'];
 const FEATURED_CENTER = 'SK-L03';
 const FEATURED_BADGE  = {
-  'SK-L03': { text: '250 g · Provolone e mel', variant: 'badge-gold' },
-  'SK-L02': { text: '250 g · Bacon',           variant: 'badge-hot'  },
-  'SK-L08': { text: '250 g · Panceta',         variant: 'badge-hot'  },
-  'SK-L01': { text: '250 g',                   variant: 'badge-hot'  },
-  'SK-L04': { text: '250 g · Biquinho',        variant: 'badge-gold' },
+  'SK-L03': { text: 'Provolone e mel',         variant: 'badge-gold' },
+  'SK-L02': { text: 'Bacon',                   variant: 'badge-hot'  },
+  'SK-L08': { text: 'Panceta',                 variant: 'badge-hot'  },
+  'SK-L04': { text: 'Biquinho',                variant: 'badge-gold' },
   'SK-L14': { text: 'Patinho acebolado',       variant: 'badge-hot'  },
 };
 
@@ -363,10 +362,6 @@ function Hero() {
               <span className="lbl">Inaugurando em Rio Claro</span>
             </div>
           )}
-          <div className="hero-proof-item">
-            <span className="val">250 g</span>
-            <span className="lbl">Nos burgers artesanais</span>
-          </div>
         </div>
       </div>
 
@@ -1055,7 +1050,7 @@ const FAQ_ITEMS = [
   { q: 'O que é o lanche estilo São Carlos?', a: SANKA_BRAND.styleFaqAnswer },
   { q: 'A Sanka Burgers fica em Rio Claro?', a: 'Sim. A Sanka Burgers está em fase de pré-inauguração em Rio Claro/SP.' },
   { q: 'Quais lanches estarão no lançamento?', a: 'O cardápio de lançamento tem 14 lanches, quatro porções e refrigerantes. Todos estão listados na página de cardápio.' },
-  { q: 'Qual é o tamanho dos hambúrgueres?', a: 'Os lanches de carne, frango, lombo e panceta levam 250 g do respectivo recheio principal.' },
+  { q: 'Qual é o tamanho dos hambúrgueres?', a: 'São lanches grandes e bem recheados, prensados na chapa. A descrição de cada lanche está no cardápio.' },
   { q: 'Posso pedir pelo WhatsApp?', a: 'Sim. Monte o pedido no site e finalize pelo WhatsApp. A Sanka confirma disponibilidade, entrega e demais detalhes diretamente com você.' },
   { q: 'A Sanka tem iFood?', a: SANKA_BRAND.isIfoodActive && SANKA_BRAND.ifoodUrl ? 'Sim. Use o link oficial disponível no site.' : 'Sim, a Sanka também atenderá pelo iFood. Enquanto o link oficial não é publicado, você já pode montar o pedido no site e confirmar pelo WhatsApp.' },
   { q: 'Por que pedir pelo site e WhatsApp?', a: 'É o canal direto da Sanka. Os valores exibidos no site não incorporam a taxa do marketplace e podem ser menores que os preços do iFood.' },
