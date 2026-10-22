@@ -4,6 +4,7 @@ import { readdir, mkdir } from 'fs/promises'
 import { existsSync }    from 'fs'
 import path              from 'path'
 import { fileURLToPath } from 'url'
+import { syncSiteDomain } from './lib/site-domain.mjs'
 
 const isProd  = process.argv.includes('--prod')
 const isWatch = process.argv.includes('--watch')
@@ -112,12 +113,14 @@ if (isWatch) {
   // No modo watch, roda WebP/ícones uma vez e depois assiste os JS
   await generateWebP()
   await generatePwaIcons()
+  syncSiteDomain()
   const ctxs = await Promise.all(pages.map(p => esbuild.context({ ...shared, ...p })))
   await Promise.all(ctxs.map(ctx => ctx.watch()))
   console.log('\n👀 Watching JS changes... (Ctrl+C to stop)')
 } else {
   await generateWebP()
   await generatePwaIcons()
+  syncSiteDomain()
   await Promise.all(pages.map(p => esbuild.build({ ...shared, ...p })))
   console.log('\n✅ Build completo! Arquivos em /dist')
 }
