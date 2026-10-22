@@ -230,6 +230,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
             <h3 className="menu-card-name">{item.name}</h3>
             {item.size && <span className="menu-card-size">{item.size}</span>}
           </div>
+          {item.type === 'burger' && SANKA_BRAND.sauceInAllBurgers === true && <span className="sauce-seal">com {SANKA_BRAND.signatureSauceName.toLowerCase()}</span>}
           <p className="menu-card-desc">{item.desc}</p>
         </div>
 
@@ -401,6 +402,9 @@ function CardapioPage() {
               <p className="cardapio-sub">
                 Cardápio de lançamento da Sanka Burgers. Escolha seus itens e finalize pelo WhatsApp.
               </p>
+              {SANKA_BRAND.sauceInAllBurgers === true && (
+                <p className="cardapio-sub"><strong>Todo lanche vem com {SANKA_BRAND.signatureSauceName.toLowerCase()}.</strong></p>
+              )}
               {SANKA_BRAND.deliveryTimeText && (
                 <p className="cardapio-sub">Tempo médio de entrega: {SANKA_BRAND.deliveryTimeText}</p>
               )}

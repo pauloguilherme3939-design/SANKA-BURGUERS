@@ -4684,3 +4684,70 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ── Maionese caseira — destaque da home ─────────────────────── */
+.maionese {
+  background: var(--bg-1);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.maionese-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .maionese-inner { grid-template-columns: 1fr 1.1fr; gap: 64px; }
+}
+.maionese-visual {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255,255,255,0.55) 0 28%, transparent 29%),
+    #F3E8D6;
+  color: #1F1F1F;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  padding: 24px;
+  box-shadow: 0 24px 60px -24px var(--fire-glow);
+  order: 2;
+}
+@media (min-width: 768px) { .maionese-visual { order: unset; margin: 0; } }
+.maionese-visual-top {
+  font-family: var(--f-m, 'JetBrains Mono', monospace);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #4A4A4A;
+}
+.maionese-visual-word {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(44px, 13vw, 84px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+.maionese-visual-word--fire { color: var(--fire); }
+.maionese-visual-top:last-child { margin-top: 10px; }
+/* Selo "com maionese caseira" (só com sauceInAllBurgers === true) */
+.sauce-seal {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1F1F1F;
+  background: #F3E8D6;
+  border-radius: var(--pill);
+  padding: 3px 8px;
+  margin: 2px 0 6px;
+}

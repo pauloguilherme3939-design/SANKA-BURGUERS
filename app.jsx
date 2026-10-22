@@ -4,7 +4,8 @@
 import {
   Nav, Hero, Destaques, ProvaArtesanal, HowItWorks,
   LaunchCoupon, ClubeCTA, NossaCarneTeaser, LocalBrand,
-  OfertaDia, MonteBanner, Reviews, Location, FAQ, Footer, StickyWA
+  OfertaDia, MonteBanner, Reviews, Location, FAQ, Footer, StickyWA,
+  MaioneseCaseira,
 } from './sections.jsx'
 import { SANKA_BRAND } from './lib/brand.js'
 
@@ -66,6 +67,7 @@ function App() {
         <Hero />
         <ProvaArtesanal />
         <Destaques />
+        <MaioneseCaseira />
         <HowItWorks />
         {SANKA_BRAND.isLaunchCouponActive && <LaunchCoupon />}
         {SANKA_BRAND.isClubActive && <ClubeCTA />}

@@ -428,6 +428,7 @@ function Destaques() {
 
                 <div className="fcard-body">
                   <h3>{burger.name}</h3>
+                  {SANKA_BRAND.sauceInAllBurgers === true && <span className="sauce-seal">com {SANKA_BRAND.signatureSauceName.toLowerCase()}</span>}
                   <p>{burger.desc}</p>
                   <div className="fcard-foot">
                     <div className="fcard-price" aria-label={`R$ ${burger.price.toFixed(2).replace('.', ',')}`}>
@@ -510,6 +511,42 @@ function EstiloSaoCarlos() {
 }
 // Nome antigo mantido como alias
 const ProvaArtesanal = EstiloSaoCarlos;
+
+/* Maionese caseira — o diferencial que o povo mais ama */
+function MaioneseCaseira() {
+  return (
+    <section className="section maionese" aria-labelledby="maionese-title">
+      <div className="wrap">
+        <div className="maionese-inner" data-reveal>
+          {/* FOTO: trocar por foto real da maionese quando o Paulo mandar */}
+          <div className="maionese-visual" aria-hidden="true">
+            <span className="maionese-visual-top">Feita aqui</span>
+            <span className="maionese-visual-word">MAIONESE</span>
+            <span className="maionese-visual-word maionese-visual-word--fire">CASEIRA</span>
+            <span className="maionese-visual-top">Sanka Burgers</span>
+          </div>
+
+          <div className="maionese-text">
+            <div className="eyebrow">A queridinha</div>
+            <h2 id="maionese-title" className="section-title">
+              Vem pela maionese.<br /><em>Fica pelo lanche.</em>
+            </h2>
+            <p className="section-sub" style={{ marginBottom: 32 }}>
+              {SANKA_BRAND.signatureSauceName}, feita aqui na Sanka, como manda a tradição do lanche de São Carlos.
+            </p>
+            <a
+              href="cardapio.html"
+              className="btn btn-primary btn-lg"
+              onClick={() => window.SankaAnalytics?.viewCardapio('maionese')}
+            >
+              PEDIR AGORA <IcoArrow />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════════
    5. MONTE SEU BURGER — CTA banner
@@ -1266,6 +1303,7 @@ const Proof       = ProvaArtesanal;
 const FeaturedMenu = Destaques;
 
 export {
+  MaioneseCaseira,
   Nav, Hero, Destaques, ProvaArtesanal, MonteBanner, OfertaDia,
   NossaCarneTeaser, HowItWorks, Reviews, Location, ClubeCTA, LaunchCoupon,
   FAQ, Footer, LocalBrand, StickyWA,
