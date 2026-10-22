@@ -4751,3 +4751,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   padding: 3px 8px;
   margin: 2px 0 6px;
 }
+
+/* Upsell do carrinho: recusar a sugestão */
+.cart-suggestions-no {
+  background: none;
+  border: none;
+  color: var(--ink-dim);
+  font-size: 12px;
+  padding: 8px 0 0;
+  cursor: pointer;
+  text-decoration: underline;
+}

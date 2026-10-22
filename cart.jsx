@@ -142,6 +142,8 @@ function CartDrawer() {
     drawerOpen, closeDrawer, openCheckout,
   } = useCartContext();
   const suggestions = getCartSuggestions(items, catalog);
+  // "não, obrigado": esconde a sugestão enquanto a página estiver aberta
+  const [suggestionsDismissed, setSuggestionsDismissed] = useState(false);
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -212,7 +214,7 @@ function CartDrawer() {
               ))}
             </div>
 
-            {suggestions.length > 0 && (
+            {suggestions.length > 0 && !suggestionsDismissed && (
               <section className="cart-suggestions" aria-labelledby="cart-suggestions-title">
                 <div>
                   <span className="cart-suggestions-kicker">Complete seu pedido</span>
@@ -226,6 +228,7 @@ function CartDrawer() {
                       onClick={() => {
                         addItem({ ...item, id: item.id || item.code });
                         showToast(`${item.name} adicionado ao carrinho.`);
+                        window.SankaAnalytics?.trackEvent('upsell_add', { item_id: item.code || item.id, item_name: item.name, price: item.price });
                       }}
                     >
                       <span>{item.name}<small>{brl(item.price)}</small></span>
@@ -233,6 +236,9 @@ function CartDrawer() {
                     </button>
                   ))}
                 </div>
+                <button type="button" className="cart-suggestions-no" onClick={() => setSuggestionsDismissed(true)}>
+                  não, obrigado
+                </button>
               </section>
             )}
 
