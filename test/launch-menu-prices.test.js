@@ -24,8 +24,8 @@ const DIRECT_PRICES = {
   'SK-L03': 44.9,
   'SK-L04': 40.9,
   'SK-L05': 37.9,
-  'SK-L06': 26.9,
-  'SK-L07': 18.9,
+  'SK-L06': 29.9,
+  'SK-L07': 25.9,
   'SK-L08': 32.9,
   'SK-L09': 32.9,
   'SK-L10': 21.9,
@@ -33,8 +33,8 @@ const DIRECT_PRICES = {
   'SK-L12': 21.9,
   'SK-L13': 14,
   'SK-L14': 34.9,
-  'SK-C01': 26.9,
-  'SK-C02': 99.7,
+  'SK-C01': 33.9,
+  'SK-C02': 105.7,
   'SK-C03': 126.7,
   'SK-P01': 29.9,
   'SK-P02': 39.9,
@@ -59,7 +59,7 @@ const IFOOD_PRICES = {
   Prensadinho: 16.3,
 };
 
-test('preços diretos oficiais aparecem iguais na tela e no catálogo do servidor', () => {
+test('preços da proposta direta aparecem iguais na tela e no catálogo do servidor', () => {
   const data = loadMenuData();
   const visible = [...data.SANKA_BURGERS, ...data.SANKA_COMBOS, ...data.SANKA_SIDES];
   const visiblePrices = Object.fromEntries(visible.map(item => [item.code, item.price]));

@@ -107,9 +107,9 @@ test('recalcula combo no servidor e ignora preço adulterado pelo navegador', as
   }));
 
   assert.equal(created.items[0].name, 'Combo Duplo Smash');
-  assert.equal(created.items[0].unitPrice, 99.7);
-  assert.equal(created.pricing.subtotal, 99.7);
-  assert.equal(created.pricing.total, 99.7);
+  assert.equal(created.items[0].unitPrice, 105.7);
+  assert.equal(created.pricing.subtotal, 105.7);
+  assert.equal(created.pricing.total, 105.7);
 });
 
 test('persiste avanços sequenciais e rejeita salto de status', async t => {
