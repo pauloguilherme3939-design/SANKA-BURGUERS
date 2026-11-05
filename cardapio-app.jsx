@@ -197,7 +197,7 @@ function MenuCard({ item, tier, onAdd, delay }) {
 
   const hasGradient = !!item.bg && !item.src;
   const imgTags = item.tags || (item.name || '').toLowerCase().replace(/\s+/g, ',');
-  const displayedPrice = item.priceMax
+  const displayedPrice = item.price === null ? 'Valor a confirmar' : item.priceMax
     ? `${brl(item.price)} a ${brl(item.priceMax)}`
     : brl(item.price);
   const consultUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(`Olá! Quero confirmar os sabores e o valor de ${item.name}.`)}`;
@@ -236,7 +236,11 @@ function MenuCard({ item, tier, onAdd, delay }) {
 
         <div className="menu-card-foot">
           <span className="menu-card-price">{displayedPrice}</span>
-          {item.purchaseDisabled ? (
+          {item.purchaseDisabled && item.price === null ? (
+            <button className="btn-add" disabled aria-label={`${item.name} indisponível para compra`}>
+              Indisponível
+            </button>
+          ) : item.purchaseDisabled ? (
             <a
               className="btn-add"
               href={consultUrl}

@@ -56,15 +56,15 @@ test('produtos corrigidos não voltam a usar associações legadas erradas', () 
 
   assert.equal(byCode['SK-L01'], '/assets/burgers/x-americano-v4.webp');
   assert.equal(byCode['SK-L06'], '/assets/burgers/x-smash-2x125-prensado-v1.png');
-  assert.equal(byCode['SK-L07'], '/assets/burgers/x-classico-v1.webp');
-  assert.equal(byCode['SK-L09'], '/assets/burgers/x-lombo-v5.webp');
-  assert.equal(byCode['SK-L14'], '/assets/burgers/bauru-carne-v3.webp');
+  assert.equal(byCode['SK-L07'], '/assets/burgers/x-classico-prensado-20261105.webp');
+  assert.equal(byCode['SK-L09'], '/assets/burgers/x-lombo-prensado-20261105.webp');
+  assert.equal(byCode['SK-L14'], '/assets/burgers/bauru-carne-prensado-20261105.webp');
   assert.notEqual(byCode['SK-L09'], '/assets/burgers/sb-009.webp');
   assert.notEqual(byCode['SK-L12'], '/assets/burgers/sb-012.webp');
   assert.notEqual(byCode['SK-L13'], '/assets/burgers/sb-010.webp');
   assert.notEqual(byCode['SK-L14'], '/assets/burgers/sb-014.webp');
-  assert.equal(comboByCode['SK-C01'], '/assets/combos/combo-classico-v2.webp');
-  assert.equal(comboByCode['SK-C02'], '/assets/combos/combo-duplo-smash-v3.webp');
+  assert.equal(comboByCode['SK-C01'], '/assets/combos/combo-classico-prensado-20261105.webp');
+  assert.equal(comboByCode['SK-C02'], '/assets/combos/combo-duplo-smash-prensado-20261105.webp');
   assert.equal(comboByCode['SK-C03'], '/assets/combos/combo-sanka-caprichado-v1.webp');
 });
 

@@ -67,7 +67,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, hambúrguer artesanal de 250 g, queijo prato, cebola, tomate e maionese caseira.",
     price: 25.9,
     tags: "burger,cheese",
-    src: "/assets/burgers/x-classico-v1.webp",
+    src: "/assets/burgers/x-classico-prensado-20261105.webp",
   },
   {
     name: "X-Panceta",
@@ -85,7 +85,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, 250 g de lombo suíno em cubos, queijo prato, cebola caramelizada, tomate e maionese caseira.",
     price: 32.9,
     tags: "sandwich,pork,onion",
-    src: "/assets/burgers/x-lombo-v5.webp",
+    src: "/assets/burgers/x-lombo-prensado-20261105.webp",
   },
   {
     name: "Sanka Dog",
@@ -94,7 +94,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hot dog, 2 salsichas Perdigão, molho de tomate da casa, milho, purê de batata, batata palha, maionese caseira e ketchup.",
     price: 21.9,
     tags: "hotdog,sausage",
-    src: "/assets/burgers/sb-002.webp",
+    src: "/assets/burgers/sanka-dog-prensado-20261105.webp",
   },
   {
     name: "X-Frango com Catupiry",
@@ -112,7 +112,7 @@ export const SANKA_BURGERS = [
     desc: "Pão baguete, queijo mussarela, presunto, tomate, orégano e maionese caseira.",
     price: 21.9,
     tags: "sandwich,ham,cheese",
-    src: "/assets/burgers/misto-quente-v2.webp",
+    src: "/assets/burgers/misto-quente-prensado-20261105.webp",
   },
   {
     name: "Prensadinho",
@@ -121,7 +121,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hot dog, 1 salsicha Perdigão, molho da casa, batata palha e maionese caseira.",
     price: 14.0,
     tags: "hotdog,sausage",
-    src: "/assets/burgers/prensadinho-v2.webp",
+    src: "/assets/burgers/prensadinho-prensado-20261105.webp",
   },
   {
     name: "Bauru de Carne",
@@ -130,7 +130,7 @@ export const SANKA_BURGERS = [
     desc: "Pão baguete, 250 g de patinho acebolado, tomate, queijo prato e maionese caseira.",
     price: 34.9,
     tags: "sandwich,beef,onion",
-    src: "/assets/burgers/bauru-carne-v3.webp",
+    src: "/assets/burgers/bauru-carne-prensado-20261105.webp",
   },
 ];
 
@@ -171,7 +171,7 @@ export const SANKA_COMBOS = [
     price: 33.9,
     tag: "INDIVIDUAL",
     tags: "combo,burger,drink",
-    src: "/assets/combos/combo-classico-v2.webp",
+    src: "/assets/combos/combo-classico-prensado-20261105.webp",
     components: [
       { id: "SK-L07", qty: 1 },
       { id: "SK-B01", qty: 1 },
@@ -184,7 +184,7 @@ export const SANKA_COMBOS = [
     price: 105.7,
     tag: "PARA 2",
     tags: "combo,burger,fries,drink",
-    src: "/assets/combos/combo-duplo-smash-v3.webp",
+    src: "/assets/combos/combo-duplo-smash-prensado-20261105.webp",
     components: [
       { id: "SK-L06", qty: 2 },
       { id: "SK-P01", qty: 1 },
@@ -245,6 +245,18 @@ export const SANKA_SIDES = [
     price: 34.9,
     tags: "snacks,fried",
     src: "/assets/sides/salgados-sortidos-v2.webp",
+  },
+  {
+    code: "SK-P05",
+    name: "Chips da Sanka",
+    desc: "Batata chips frita, crocante e feita na hora.",
+    // Peso e preço comerciais aguardam aprovação. Não usar zero como preço.
+    // Proposta pesquisada (ainda não ativa): 100 g / R$ 14,90.
+    price: null,
+    purchaseDisabled: true,
+    consultMessage: "Olá! Quero confirmar a porção e o valor do Chips da Sanka.",
+    tags: "chips,potato,crispy",
+    src: "/assets/sides/chips-sanka-candidata-v1.webp",
   },
 ];
 

@@ -1,0 +1,7 @@
+# Correção visual de produtos prensados
+
+Escopo autorizado pelo proprietário: oito mapeamentos de imagem e recuperação do card das Chips sem venda/preço. Sete imagens recuperadas dos sprints anteriores; somente o Duplo precisou de edição nova para exibir duas carnes em cada um dos dois lanches. Candidatas são ilustrações de cardápio e não fotografias comprovadas dos produtos físicos. Latas personalizadas Sanka preservadas visualmente. As fotos antigas permanecem no repositório para comparação e retorno.
+
+Causa: releases seletivos anteriores integraram CSS, preços e somente a imagem aprovada do Smash. As outras candidatas e Chips ficaram fora da integração, com referências antigas no data.jsx compilado para dist/cardapio.js. Não há evidência de banco/CDN substituindo essas referências. O antigo teste de hash dos combos verificava preservação do arquivo antigo, sem demonstrar correção da composição. O novo manifesto verifica arquivos finais distintos por produto.
+
+Preço, receita, catálogo autoritativo do servidor, carrinho, checkout, backend, banco, credenciais e configurações de produção não mudam. Chips permanecem sem preço, com compra desabilitada, texto Valor a confirmar e botão Indisponível. Nenhuma migration ou mensagem real. Imagens novas usam URLs versionadas para evitar reaproveitamento do cache antigo. Rollback possível por reversão deste commit, sem apagar/reprecificar pedidos ou mexer em banco. A publicação desse escopo foi expressamente autorizada.

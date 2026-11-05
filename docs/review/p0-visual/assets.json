@@ -1,0 +1,67 @@
+[
+  {
+    "id": "SK-L13",
+    "name": "prensadinho",
+    "before": "/assets/burgers/prensadinho-v2.webp",
+    "after": "/assets/burgers/prensadinho-prensado-20261105.webp",
+    "source": "outputs/navegador-e-visual/candidatas/prensadinho-candidata-v1.png",
+    "sha256": "540a6eecb85c324a368dc93a096e2e9dc35bdaed350d66fd60bb308cae1291bd"
+  },
+  {
+    "id": "SK-L12",
+    "name": "misto-quente",
+    "before": "/assets/burgers/misto-quente-v2.webp",
+    "after": "/assets/burgers/misto-quente-prensado-20261105.webp",
+    "source": "outputs/navegador-e-visual/candidatas/misto-quente-candidata-v1.png",
+    "sha256": "e196dde432fadd0c9cb9be03c7a173e8b566452af65e35c15512e641c8626c46"
+  },
+  {
+    "id": "SK-L10",
+    "name": "sanka-dog",
+    "before": "/assets/burgers/sb-002.webp",
+    "after": "/assets/burgers/sanka-dog-prensado-20261105.webp",
+    "source": "outputs/navegador-e-visual/candidatas/sanka-dog-candidata-v2.png",
+    "sha256": "38984fcfbb7b24387ae81523d45787113e241d2ac52ad79cd291402f3e298a51"
+  },
+  {
+    "id": "SK-L14",
+    "name": "bauru-carne",
+    "before": "/assets/burgers/bauru-carne-v3.webp",
+    "after": "/assets/burgers/bauru-carne-prensado-20261105.webp",
+    "source": "outputs/navegador-e-visual/candidatas/bauru-carne-candidata-v1.png",
+    "sha256": "f8a6a76698599c6ba10b220140919a0094a0f365adbb0e72c65515aa17047a9b"
+  },
+  {
+    "id": "SK-L07",
+    "name": "x-classico",
+    "before": "/assets/burgers/x-classico-v1.webp",
+    "after": "/assets/burgers/x-classico-prensado-20261105.webp",
+    "source": "outputs/revisao-comercial-master/candidatas/classico-prensada-v2.png",
+    "sha256": "d0cb51a1522ec02a38b23a0d6b68980bcf5dfb32c0d8947dcd70e285bf831bdb"
+  },
+  {
+    "id": "SK-L09",
+    "name": "x-lombo",
+    "before": "/assets/burgers/x-lombo-v5.webp",
+    "after": "/assets/burgers/x-lombo-prensado-20261105.webp",
+    "source": "outputs/navegador-e-visual/candidatas/x-lombo-candidata-v1.png",
+    "sha256": "f9a93d4df15bff6c4ba65903b31e0d765833027f823128febd2b95e9de269a99"
+  },
+  {
+    "id": "SK-C01",
+    "name": "combo-classico",
+    "before": "/assets/combos/combo-classico-v2.webp",
+    "after": "/assets/combos/combo-classico-prensado-20261105.webp",
+    "source": "outputs/navegador-e-visual/candidatas/combo-classico-candidata-v1.png",
+    "sha256": "9db505f258a32407f2be00d01ac3d3d4cdb4501d050241449d381cc9dadf59b4"
+  },
+  {
+    "id": "SK-C02",
+    "name": "combo-duplo-smash",
+    "before": "/assets/combos/combo-duplo-smash-v3.webp",
+    "after": "/assets/combos/combo-duplo-smash-prensado-20261105.webp",
+    "source": "outputs/p0-visual-release/combo-duplo-smash-final.png",
+    "generated": true,
+    "sha256": "3ee21db28d820d50e91519734fbca190129b3398df926d1e1705a4a7b3d272b2"
+  }
+]
