@@ -1612,6 +1612,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 /* Garante que FoodPlaceholder preencha a mídia */
 .menu-card-media .ph { position: absolute; inset: 0; border-radius: 0 !important; }
+/* Fotos prensadas: manter o quadro inteiro, incluindo lanches e latas dos combos. */
+:is(#sk-l13, #sk-l12, #sk-l10, #sk-l14, #sk-l09, #sk-c01) .menu-card-media {
+  aspect-ratio: 1400 / 933;
+}
+#sk-l07 .menu-card-media { aspect-ratio: 1400 / 788; }
+#sk-c02 .menu-card-media { aspect-ratio: 1086 / 1448; }
+:is(#sk-l13, #sk-l12, #sk-l10, #sk-l14, #sk-l07, #sk-l09, #sk-c01, #sk-c02).menu-card:hover .ph-img {
+  transform: none;
+}
 /* Foto escala suavemente no hover */
 .menu-card:hover .ph-base,
 .menu-card:hover .ph-img { transform: scale(1.05); }
