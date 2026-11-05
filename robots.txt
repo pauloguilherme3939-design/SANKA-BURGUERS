@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin-clube.html
-Disallow: /admin-pedidos.html
 Disallow: /api/
 Disallow: /data/
 

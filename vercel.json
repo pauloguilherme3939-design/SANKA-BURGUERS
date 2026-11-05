@@ -45,5 +45,10 @@
         { "key": "Content-Type", "value": "application/manifest+json" }
       ]
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "codex/integracao-seletiva-master-20261105": false
+    }
+  }
 }
