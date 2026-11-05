@@ -55,7 +55,7 @@ test('produtos corrigidos não voltam a usar associações legadas erradas', () 
   const comboByCode = Object.fromEntries(data.SANKA_COMBOS.map(item => [item.code, item.src]));
 
   assert.equal(byCode['SK-L01'], '/assets/burgers/x-americano-v4.webp');
-  assert.equal(byCode['SK-L06'], '/assets/burgers/x-smash-v3.webp');
+  assert.equal(byCode['SK-L06'], '/assets/burgers/x-smash-2x125-prensado-v1.png');
   assert.equal(byCode['SK-L07'], '/assets/burgers/x-classico-v1.webp');
   assert.equal(byCode['SK-L09'], '/assets/burgers/x-lombo-v5.webp');
   assert.equal(byCode['SK-L14'], '/assets/burgers/bauru-carne-v3.webp');
@@ -79,4 +79,16 @@ test('lanches de carne ou sabor principal exibem os 250 g informados', () => {
   for (const code of portionedCodes) {
     assert.match(byCode[code].desc, /250 g/, `${code} não informa a porção de 250 g`);
   }
+});
+
+
+test('Smash usa o arquivo aprovado e sua versão WebP derivada, mantendo o original anterior', () => {
+  const expected = {
+  "assets/burgers/x-smash-2x125-prensado-v1.png": "4ed52c624190f4b7ad49ba43a85e671989282096d5b52a0988083375b5508ae5",
+  "assets/burgers/x-smash-2x125-prensado-v1.webp": "3cf8d84289e75db86e5ee2f9299f22db8f89d3fbe33ebb29cd5f0ee337c379d3"
+};
+  for (const [file, sha] of Object.entries(expected)) {
+    assert.equal(createHash('sha256').update(fs.readFileSync(path.join(__dirname, '..', file))).digest('hex'), sha, file);
+  }
+  assert.equal(fs.existsSync(path.join(__dirname, '../assets/burgers/x-smash-v3.webp')), true);
 });

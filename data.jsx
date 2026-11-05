@@ -58,7 +58,7 @@ export const SANKA_BURGERS = [
     desc: "Pão de hambúrguer de 20 cm, duas carnes de 125 g crus cada (250 g de carne crua no total), ambas prensadas na chapa, queijo prato entre as carnes e por cima e maionese caseira.",
     price: 29.9,
     tags: "burger,cheese",
-    src: "/assets/burgers/x-smash-v3.webp",
+    src: "/assets/burgers/x-smash-2x125-prensado-v1.png",
   },
   {
     name: "X-Clássico",
