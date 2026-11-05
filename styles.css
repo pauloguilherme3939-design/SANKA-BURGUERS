@@ -1431,13 +1431,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .filter-chip {
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 10px 16px;
+  min-height: 44px;
   border-radius: var(--pill);
   border: 1px solid var(--line);
   font-family: var(--f-b);
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-dim);
+  color: #D3C4B1;
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -1451,7 +1452,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .filter-chip.is-active {
   background: var(--fire);
   border-color: var(--fire);
-  color: #fff;
+  color: #160F0B;
+}
+
+.filter-chip:focus-visible,
+.cardapio-main .btn-add:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
 }
 
 /* ── Cardápio main ───────────────────────────────────────────── */
@@ -1477,7 +1484,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .cardapio-sub {
   font-size: 16px;
-  color: var(--ink-dim);
+  color: #C8BBAA;
   line-height: 1.65;
   max-width: 400px;
 }
@@ -1504,7 +1511,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .menu-sec-count {
   font-family: var(--f-m);
   font-size: 11px;
-  color: var(--ink-mute);
+  color: #B7A895;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1514,7 +1521,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .menu-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 24px;
 }
 @media (min-width: 560px)  { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 900px)  { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -1524,8 +1531,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media (min-width: 640px)  { .menu-grid--drinks { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1024px) { .menu-grid--drinks { grid-template-columns: repeat(4, 1fr); } }
 
+/* Categorias curtas ficam centralizadas, sem ampliar demais as fotos. */
+.menu-grid:has(> .menu-card:only-child) {
+  grid-template-columns: minmax(0, 400px);
+  justify-content: center;
+}
+@media (min-width: 900px) {
+  .menu-grid:has(> .menu-card:nth-child(2):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 400px));
+    justify-content: center;
+  }
+}
+@media (max-width: 399px) {
+  .menu-grid--drinks { grid-template-columns: 1fr; }
+}
+
 /* ── Menu Card — base ────────────────────────────────────────── */
 .menu-card {
+  min-width: 0;
   background: #0D0B09;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 20px;
@@ -1575,8 +1598,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 /* Entry — âncora de preço baixo (discreto) */
-.menu-card.is-entry { opacity: 0.88; }
+.menu-card.is-entry { opacity: 1; }
 .menu-card.is-entry:hover { opacity: 1; }
+.menu-card:focus-within { border-color: var(--fire-l); }
 
 /* ── Card: Mídia ─────────────────────────────────────────────── */
 .menu-card-media {
@@ -1632,13 +1656,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
+  flex-wrap: wrap;
 }
 .menu-card-name {
   font-family: var(--f-d);
   text-transform: uppercase;
   font-size: clamp(18px, 1.9vw, 22px);
   color: var(--ink);
-  line-height: 1.0;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
   letter-spacing: 0.01em;
 }
 .menu-card-size {
@@ -1646,20 +1672,17 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: #B7A895;
   white-space: nowrap;
   flex-shrink: 0;
   margin-top: 2px;
 }
 .menu-card-desc {
-  font-size: 13px;
-  color: var(--ink-mute);
-  line-height: 1.60;
+  font-size: 14px;
+  color: #C8BBAA;
+  line-height: 1.70;
   flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 .menu-card-foot {
   display: flex;
@@ -1678,6 +1701,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 /* ── Botão Adicionar ─────────────────────────────────────────── */
+.cardapio-main .btn-add { color: #160F0B; min-height: 44px; }
+.cardapio-main .btn-add.is-added { color: #4ade80; }
 .btn-add {
   display: flex;
   align-items: center;

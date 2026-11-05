@@ -48,7 +48,8 @@
   ],
   "git": {
     "deploymentEnabled": {
-      "codex/integracao-seletiva-master-20261105": false
+      "codex/integracao-seletiva-master-20261105": false,
+      "codex/sprint7-cardapio-legivel-20261105": false
     }
   }
 }
