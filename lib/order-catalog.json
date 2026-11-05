@@ -22,6 +22,8 @@
     { "id": "SK-P02", "name": "Fritas Sanka", "price": 39.9 },
     { "id": "SK-P03", "name": "Mandioca", "price": 44.9 },
     { "id": "SK-P04", "name": "Salgados Sortidos", "price": 34.9 },
+    { "id": "SK-P05", "name": "Chips da Sanka — 100 g", "price": 14.9 },
+    { "id": "SK-P06", "name": "Chips da Sanka — 500 g", "price": 39.9 },
     { "id": "SK-B01", "name": "Refrigerante lata", "price": 8.0 }
   ]
 }

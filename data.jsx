@@ -248,13 +248,19 @@ export const SANKA_SIDES = [
   },
   {
     code: "SK-P05",
-    name: "Chips da Sanka",
-    desc: "Batata chips frita, crocante e feita na hora.",
-    // Peso e preço comerciais aguardam aprovação. Não usar zero como preço.
-    // Proposta pesquisada (ainda não ativa): 100 g / R$ 14,90.
-    price: null,
-    purchaseDisabled: true,
-    consultMessage: "Olá! Quero confirmar a porção e o valor do Chips da Sanka.",
+    name: "Chips da Sanka — 100 g",
+    size: "100 g prontas",
+    desc: "100 g de batata chips frita, crocante e feita na hora. Peso da porção pronta para consumo.",
+    price: 14.9,
+    tags: "chips,potato,crispy",
+    src: "/assets/sides/chips-sanka-candidata-v1.webp",
+  },
+  {
+    code: "SK-P06",
+    name: "Chips da Sanka — 500 g",
+    size: "500 g prontas",
+    desc: "500 g de batata chips frita, crocante e feita na hora. Peso da porção pronta para consumo.",
+    price: 39.9,
     tags: "chips,potato,crispy",
     src: "/assets/sides/chips-sanka-candidata-v1.webp",
   },
