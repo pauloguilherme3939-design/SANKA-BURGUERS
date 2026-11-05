@@ -5,6 +5,19 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const esbuild = require('esbuild');
+const { createHash } = require('node:crypto');
+
+test('imagens aprovadas dos combos preservam as latas Sanka sem alteração', () => {
+  const approved = {
+    'combo-classico-v2.webp': 'b1581e7db8b19deb3aee004ff21cf30098c3c23f849052e1dec829eed330a860',
+    'combo-duplo-smash-v3.webp': '15a19c9321b3da63523ba65a0358ce492d4e52cf7175d9d63fce53a48b1d8869',
+    'combo-sanka-caprichado-v1.webp': 'f0b4e249836f264e489597b6d404a9264fa16961c77519b0048b6804b0944ed5',
+  };
+  for (const [name, expected] of Object.entries(approved)) {
+    const bytes = fs.readFileSync(path.join(__dirname, '../assets/combos', name));
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), expected, name);
+  }
+});
 
 function loadMenuData() {
   const filename = path.join(__dirname, '..', 'data.jsx');

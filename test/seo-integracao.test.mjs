@@ -5,4 +5,12 @@ test('canonical e sitemap preservam o domínio público sem apontar para preview
 test('Restaurant mantém endereço confirmado e Instagram informado, sem inventar prova social',()=>{const html=read('index.html'),data=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(data['@type'],'Restaurant');assert.match(data.address.streetAddress,/46.*250.*Jardim Primavera/);assert.equal(data.address.addressLocality,'Rio Claro');assert(data.sameAs.includes('https://www.instagram.com/sanka.burger019/'));assert(!data.aggregateRating);assert(!data.geo);});
 test('admin e pedido continuam noindex e rastreáveis para essa diretiva, mantendo API e dados fora de robots',()=>{const robots=read('robots.txt');for(const f of ['admin-clube.html','admin-pedidos.html','pedido.html']){assert.match(read(f),/<meta name="robots" content="noindex/);assert(!robots.includes('Disallow: /'+f));}assert.match(robots,/Disallow: \/api\//);assert.match(robots,/Disallow: \/data\//);});
 test('páginas legadas seguem redirecionadas e recebem noindex sem reativação',()=>{const config=JSON.parse(read('vercel.json'));for(const name of ['lanche-prensado-rio-claro','delivery-hamburgueria-rio-claro','hamburgueria-artesanal-rio-claro','hamburguer-grande-rio-claro','melhor-hamburgueria-rio-claro']){assert(config.redirects.some(r=>r.source==='/'+name+'.html'&&r.destination==='/cardapio.html'));assert.match(read(name+'.html'),/<meta name="robots" content="noindex, follow"/);}assert.match(read('lib/brand.js'),/isLocalSeoPagesActive:\s*false/);});
-test('deploy automático bloqueado somente para a branch de integração; master não tem regra alterada',()=>{const c=JSON.parse(read('vercel.json')),rules=c.git.deploymentEnabled;assert.deepEqual(Object.keys(rules),['codex/integracao-seletiva-master-20261105']);assert.equal(rules['codex/integracao-seletiva-master-20261105'],false);assert(!('master' in rules));assert.equal(c.buildCommand,'npm run build');assert.equal(c.outputDirectory,'.');});
+test('deploy das branches de revisão bloqueado; master não tem regra alterada', () => {
+  const c = JSON.parse(read('vercel.json')), rules = c.git.deploymentEnabled;
+  const branches = ['codex/integracao-seletiva-master-20261105', 'codex/sprint7-cardapio-legivel-20261105'];
+  assert.deepEqual(Object.keys(rules), branches);
+  for (const branch of branches) assert.equal(rules[branch], false);
+  assert(!('master' in rules));
+  assert.equal(c.buildCommand, 'npm run build');
+  assert.equal(c.outputDirectory, '.');
+});
