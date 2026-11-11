@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { BUSINESS_HOURS, displayHours, hoursSummary } = require('../lib/business-hours.js');
 
 const root = path.resolve(__dirname, '..');
 
@@ -32,17 +33,21 @@ function normalizeStructuredHours(specifications) {
   }));
 }
 
-test('configuração visual contém os sete dias e o fuso oficial', () => {
+test('grade existente tem sete dias e fuso de São Paulo, aprovada e com bloqueio ativo na candidata', () => {
   const brand = read('lib/brand.js');
+  assert.equal(BUSINESS_HOURS.timeZone, 'America/Sao_Paulo');
+  assert.equal(BUSINESS_HOURS.approved, true);
+  assert.equal(BUSINESS_HOURS.enforce, true);
+  assert.deepEqual(displayHours(), [
+    {day:'Segunda',hours:'Fechado',closed:true}, {day:'Terça',hours:'Fechado',closed:true},
+    {day:'Quarta',hours:'18h30 às 23h30'}, {day:'Quinta',hours:'18h30 às 23h30'},
+    {day:'Sexta',hours:'18h30 às 00h00'}, {day:'Sábado',hours:'18h30 às 00h00'},
+    {day:'Domingo',hours:'18h30 às 23h30'},
+  ]);
+  assert.equal(hoursSummary(), 'Quarta e quinta, 18h30 às 23h30; sexta e sábado, 18h30 às 00h00; domingo, 18h30 às 23h30. Segunda e terça, fechado.');
 
-  assert.match(brand, /timeZone:\s*'America\/Sao_Paulo'/);
-  assert.match(brand, /Segunda', hours: 'Fechado', closed: true/);
-  assert.match(brand, /Terça',\s+hours: 'Fechado', closed: true/);
-  assert.match(brand, /Quarta',\s+hours: '18h30 às 23h30'/);
-  assert.match(brand, /Quinta',\s+hours: '18h30 às 23h30'/);
-  assert.match(brand, /Sexta',\s+hours: '18h30 às 00h00'/);
-  assert.match(brand, /Sábado',\s+hours: '18h30 às 00h00'/);
-  assert.match(brand, /Domingo', hours: '18h30 às 23h30'/);
+
+
 });
 
 test('home e páginas locais usam o mesmo horário estruturado', () => {
@@ -84,7 +89,7 @@ test('site não conserva os horários provisórios conhecidos', () => {
   assert.doesNotMatch(combined, /loja abre\. chapa acesa/iu);
 });
 
-test('seção de contato e rodapés exibem a configuração oficial', () => {
+test('seção de contato e rodapés exibem a configuração central existente', () => {
   const sections = read('sections.jsx');
   const menu = read('cardapio-app.jsx');
 

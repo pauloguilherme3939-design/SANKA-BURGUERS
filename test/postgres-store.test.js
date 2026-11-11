@@ -54,7 +54,7 @@ function request() {
 test('Postgres preserva pedido cifrado, painel, status, cancelamento e rastreamento após reinício', async () => {
   const database = new FakePostgresDatabase();
   let tick = 0;
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: new PostgresOrderStore({ database, secret: SECRET }),
     now: () => new Date(CREATED_AT.getTime() + tick++ * 1000),
     idFactory: () => ORDER_ID,
@@ -73,7 +73,7 @@ test('Postgres preserva pedido cifrado, painel, status, cancelamento e rastreame
   assert.match(raw, /aes-256-gcm/);
   assert.doesNotMatch(raw, /Cliente Neon Teste|19999990000|motivo interno de teste/);
 
-  const restarted = createOrderService({
+  const restarted = createOrderService({ businessHours: { enforce: false },
     store: new PostgresOrderStore({ database, secret: SECRET }),
   });
   const adminOrders = await restarted.list('2026-08-21');
@@ -101,10 +101,10 @@ test('Postgres preserva pedido cifrado, painel, status, cancelamento e rastreame
 test('falha do Postgres não confirma criação nem cancelamento', async () => {
   const failingDatabase = new FakePostgresDatabase({ fail: true });
   const store = new PostgresOrderStore({ database: failingDatabase, secret: SECRET });
-  const createService = createOrderService({ store, idFactory: () => ORDER_ID });
+  const createService = createOrderService({ businessHours: { enforce: false }, store, idFactory: () => ORDER_ID });
   await assert.rejects(() => createService.create(validPayload()), StorageError);
 
-  const cancelService = createOrderService({
+  const cancelService = createOrderService({ businessHours: { enforce: false },
     store: {
       async get() { return { id: ORDER_ID, status: 'recebido', history: [] }; },
       async appendCancellation() { throw new StorageError('Banco indisponível.'); },
@@ -175,12 +175,12 @@ test('fábricas de Production exigem Postgres e não usam Blob como fallback', (
   );
 });
 
-test('executor aplica a migration mínima uma única vez por instância', async () => {
+test('runtime valida migrations sem executar DDL e memoriza validação por instância', async () => {
   const calls = [];
   const sql = {
     async query(text, params) {
       calls.push({ text, params });
-      if (text.startsWith('SELECT id FROM sanka_schema_migrations')) return [];
+      if (text.startsWith('SELECT id FROM sanka_schema_migrations')) return ['001_neon_core','002_order_archive_event_kind','003_order_confirmation_idempotency'].map(id=>({id}));
       return [];
     },
   };
@@ -194,9 +194,9 @@ test('executor aplica a migration mínima uma única vez por instância', async 
   assert.equal(calls.length, countAfterFirstRun);
   assert.equal(
     countAfterFirstRun,
-    3 + migrations.reduce((total, migration) => total + migration.statements.length, 0),
+    1,
   );
-  assert.ok(calls.some(call => call.text.includes('sanka_order_events_immutable')));
+  assert(calls.every(call => /^SELECT /.test(call.text)));
 });
 
 test('consultas Neon recebem timeout abortável sem vazar a conexão', async () => {

@@ -65,12 +65,14 @@ function createOrderHandler({ service, adminPassword, abuseProtection, cancelBen
       }
 
       if (req.method === 'POST') {
+        const idempotencyKey = req.headers?.['idempotency-key'];
+        if (!idempotencyKey) throw new OrderError('Chave de tentativa obrigatória.', 400, 'IDEMPOTENCY_KEY_REQUIRED');
         if (protection) {
           await protection.enforce('order_create', req, res, {
             phone: tryNormalizeBrazilianPhone(req.body?.customer?.phone),
           });
         }
-        const order = await orderService.create(req.body);
+        const order = await orderService.create(req.body, { idempotencyKey });
         return res.status(201).json({ id: order.id, order });
       }
 
@@ -83,7 +85,9 @@ function createOrderHandler({ service, adminPassword, abuseProtection, cancelBen
         }
         if (protection) await protection.enforce('admin_action', req, res);
         let order;
-        if (req.body?.action === 'cancel') {
+        if (req.body?.action === 'confirm_delivery') {
+          order = await orderService.confirmDelivery(req.query?.id, req.body?.confirmation);
+        } else if (req.body?.action === 'cancel') {
           order = await orderService.cancel(req.query?.id, {
             reasonCode: 'administrative',
             reason: req.body?.reason,

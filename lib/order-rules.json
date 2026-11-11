@@ -2,5 +2,10 @@
   "deliveryFee": null,
   "freeDeliveryAbove": null,
   "deliveryFeeStatus": "confirm_on_whatsapp",
-  "coupons": {}
+  "coupons": {},
+  "fulfillmentTypes": [
+    "pickup",
+    "delivery"
+  ],
+  "deliveryAvailabilityStatus": "confirm_on_whatsapp"
 }

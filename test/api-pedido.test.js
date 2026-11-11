@@ -43,7 +43,7 @@ test('API só confirma criação após persistência e expõe falha como 503', a
   const persisted = { id: 'SK-20260813-CCCCCCCCCCCCCCCC', pricing: {}, items: [] };
   const successHandler = createOrderHandler({ service: { async create() { return persisted; } } });
   const success = responseRecorder();
-  await successHandler({ method: 'POST', query: {}, headers: {}, body: {} }, success);
+  await successHandler({ method: 'POST', query: {}, headers: { 'idempotency-key': 'test-api-1234567890123456' }, body: {} }, success);
   assert.equal(success.statusCode, 201);
   assert.equal(success.body.order, persisted);
 
@@ -51,7 +51,7 @@ test('API só confirma criação após persistência e expõe falha como 503', a
     service: { async create() { throw new StorageError('Falha simulada.'); } },
   });
   const failure = responseRecorder();
-  await failureHandler({ method: 'POST', query: {}, headers: {}, body: {} }, failure);
+  await failureHandler({ method: 'POST', query: {}, headers: { 'idempotency-key': 'test-api-1234567890123456' }, body: {} }, failure);
   assert.equal(failure.statusCode, 503);
   assert.match(failure.body.error, /persistir/i);
   assert.equal('order' in failure.body, false);
