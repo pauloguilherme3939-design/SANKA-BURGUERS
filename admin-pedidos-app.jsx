@@ -15,7 +15,7 @@ const { useState, useEffect, useMemo, useRef } = React;
 
 const STATUSES = ['recebido','preparando','na_chapa','finalizando','saiu_entrega','entregue'];
 const STATUS_LABELS = {
-  recebido:     'Recebido',
+  recebido:     'Aguardando confirmação',
   preparando:   'Preparando',
   na_chapa:     'Na Chapa',
   finalizando:  'Finalizando',
@@ -50,9 +50,9 @@ function formatPhone(value) {
   return value || 'Não informado';
 }
 
-function paymentLabel(payment = {}) {
+function paymentLabel(payment = {}, fulfillment = {}) {
   if (payment.method === 'pix') return 'Pix';
-  if (payment.method === 'card') return 'Cartão na entrega';
+  if (payment.method === 'card') return fulfillment.type === 'pickup' ? 'Cartão na retirada' : 'Cartão na entrega';
   if (payment.method === 'cash') return payment.change ? `Dinheiro · troco para ${payment.change}` : 'Dinheiro';
   return 'Não informado';
 }
@@ -129,6 +129,25 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const next = nextStatus(order.status);
+  const pendingDelivery = order.fulfillment?.type === 'delivery' && order.commercialConfirmation?.state !== 'confirmed';
+  const [freight, setFreight] = useState('');
+  const [areaConfirmed, setAreaConfirmed] = useState(false);
+  const [customerAccepted, setCustomerAccepted] = useState(false);
+  const feeCents = /^\d+$/.test(freight) ? Number(freight) : NaN;
+  const finalCents = (order.pricing?.subtotalCents || 0) - (order.pricing?.discountCents || 0) + feeCents;
+  async function confirmDelivery(e) {
+    e.preventDefault();
+    setLoading(true); setError('');
+    try {
+      const updated = await requestAdminOrderUpdate({ orderId: order.id, token,
+        payload: { action: 'confirm_delivery', confirmation: { areaConfirmed, customerAccepted,
+          deliveryFeeCents: feeCents, totalCents: finalCents } } });
+      onUpdate(updated);
+    } catch (requestError) {
+      if (requestError?.status === 401) onUnauthorized();
+      setError(requestError?.message || 'Não foi possível confirmar a entrega.');
+    } finally { setLoading(false); }
+  }
 
   async function advance() {
     if (!next) return;
@@ -238,7 +257,8 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
       )}
       <div className="adm-order-meta">
         <div><span>Atendimento</span><strong>{delivery ? 'Entrega' : 'Retirada'}</strong></div>
-        <div><span>Pagamento</span><strong>{paymentLabel(order.payment)}</strong></div>
+        {order.status === 'recebido' && <p className="adm-confirmation-note">Aguardando confirmação da equipe{delivery ? ' sobre disponibilidade e entrega' : ' para retirada'}.</p>}
+        <div><span>Pagamento</span><strong>{paymentLabel(order.payment, order.fulfillment)}</strong></div>
         <div><span>Origem</span><strong>{order.origin || 'direto'}</strong></div>
       </div>
       {delivery && address && (
@@ -246,6 +266,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
           <span>Endereço</span>
           <strong>{address.street}, {address.number}{address.complement ? ` · ${address.complement}` : ''}</strong>
           <small>{address.neighborhood}{address.cep ? ` · CEP ${address.cep}` : ''}</small>
+          {address.reference && <small>Referência: {address.reference}</small>}
         </div>
       )}
       {order.items?.length > 0 && (
@@ -267,7 +288,7 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
           <span>Subtotal <strong>{brl(order.pricing.subtotal)}</strong></span>
           {Number(order.pricing.discount) > 0 && <span>Desconto <strong>−{brl(order.pricing.discount)}</strong></span>}
           <span>Entrega <strong>{order.pricing.deliveryFee === null ? 'A confirmar' : brl(order.pricing.deliveryFee)}</strong></span>
-          <span className="adm-pedido-total">Total <strong>{order.pricing.totalIsFinal === false ? `${brl(order.pricing.total)} + entrega` : brl(order.pricing.total)}</strong></span>
+          <span className="adm-pedido-total">{order.pricing.totalIsFinal === false ? 'Subtotal dos itens' : 'Total'} <strong>{order.pricing.totalIsFinal === false ? `${brl(order.pricing.total)} · entrega a confirmar` : brl(order.pricing.total)}</strong></span>
         </div>
       )}
       {mode !== 'kitchen' && order.history?.length > 0 && (
@@ -282,8 +303,21 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
         </details>
       )}
       {error && <p className="pedido-search-err" role="alert">{error}</p>}
+      {pendingDelivery && order.status === 'recebido' && mode !== 'kitchen' && (
+        <form onSubmit={confirmDelivery} className="adm-history">
+          <p>Entrega aguardando confirmação comercial. O preparo está bloqueado.</p>
+          <label>Frete em centavos (0 para frete gratuito autorizado)
+            <input type="number" min="0" step="1" required value={freight} onChange={e => setFreight(e.target.value)} disabled={loading} />
+          </label>
+          <p>Total final: {Number.isSafeInteger(finalCents) ? brl(finalCents / 100) : 'Informe o frete'}</p>
+          <label><input type="checkbox" checked={areaConfirmed} onChange={e => setAreaConfirmed(e.target.checked)} disabled={loading} /> Confirmei atendimento ao endereço e bairro</label>
+          <label><input type="checkbox" checked={customerAccepted} onChange={e => setCustomerAccepted(e.target.checked)} disabled={loading} /> Cliente aceitou o frete e o total final</label>
+          <button type="submit" className="btn btn-outline" disabled={loading || !areaConfirmed || !customerAccepted || !Number.isSafeInteger(feeCents) || feeCents < 0}>Confirmar entrega</button>
+        </form>
+      )}
+      {order.commercialConfirmation?.state === 'confirmed' && <p>Entrega confirmada em {new Date(order.commercialConfirmation.ts).toLocaleString('pt-BR')} · frete {brl(order.pricing.deliveryFee)}</p>}
       {next && (
-        <button className="btn btn-primary" style={{ width:'100%', justifyContent:'center', marginTop:12 }} onClick={advance} disabled={loading}>
+        <button className="btn btn-primary" style={{ width:'100%', justifyContent:'center', marginTop:12 }} onClick={advance} disabled={loading || pendingDelivery}>
           {loading ? 'Atualizando...' : `→ ${STATUS_LABELS[next] || next}`}
         </button>
       )}

@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const express = require('express');
 const orderHandler = require('./api/pedido.js');
+const openingHoursHandler = require('./api/funcionamento.js');
 const rouletteHandler = require('./api/roleta.js');
 const clubHandler = require('./api/clube/index.js');
 const clubMembersHandler = require('./api/clube/members.js');
@@ -20,6 +21,7 @@ app.use(express.static(__dirname));
 
 /* ── Pedido: mesma implementação usada na função serverless ────── */
 app.all('/api/pedido', orderHandler);
+app.all('/api/funcionamento', openingHoursHandler);
 app.all('/api/roleta', rouletteHandler);
 app.all('/api/clube/members', clubMembersHandler);
 app.all('/api/clube', clubHandler);

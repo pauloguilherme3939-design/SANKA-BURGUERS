@@ -3,9 +3,9 @@
 import { FoodPlaceholder } from './placeholders.jsx'
 import { reconcileCartItems } from './lib/cart-catalog.mjs'
 import { getCartSuggestions } from './lib/cart-suggestions.mjs'
+import { getCheckoutCoordinator, CHECKOUT_STATE_KEY, CART_STORAGE_KEY } from './lib/checkout-coordinator.mjs'
 
 const { createContext, useContext, useState, useEffect } = React;
-const CART_STORAGE_KEY = 'sanka_cart_launch_2026';
 
 /* ── Context ───────────────────────────────────────────────── */
 const CartContext = createContext(null);
@@ -18,22 +18,32 @@ function useCartContext() {
 
 /* ── Provider ──────────────────────────────────────────────── */
 function CartProvider({ children, catalog = [] }) {
-  const [items, setItems] = useState(() => {
+  const coordinator = getCheckoutCoordinator();
+  const [cartSnapshot, setCartSnapshot] = useState(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
-      return reconcileCartItems(stored, catalog);
+      return coordinator.snapshot();
     }
-    catch { return []; }
+    catch { return { revision: null, items: [] }; }
   });
+  const items = reconcileCartItems(cartSnapshot.items, catalog);
   const [drawerOpen,   setDrawerOpen]   = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [toast,        setToast]        = useState(null);
 
-  // Persistência
+  // Shared state is persisted only under the checkout lock. Never write an old render back.
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    window.__sankaCart = items;
-  }, [items]);
+    let active = true;
+    const refresh = () => { if (active) setCartSnapshot(coordinator.snapshot()); };
+    const changed = event => { if (!event.key || [CHECKOUT_STATE_KEY, CART_STORAGE_KEY].includes(event.key)) refresh(); };
+    window.addEventListener('storage', changed);
+    window.addEventListener('sanka:checkout-state', refresh);
+    coordinator.initialize().then(refresh).catch(error => { if (active) showToast(error.message, 'error'); });
+    return () => { active = false; window.removeEventListener('storage', changed); window.removeEventListener('sanka:checkout-state', refresh); };
+  }, []);
+  useEffect(() => { window.__sankaCart = items; }, [cartSnapshot]);
+  function mutateCart(change) {
+    return coordinator.mutateCart(change).then(() => setCartSnapshot(coordinator.snapshot())).catch(error => showToast(error.message, 'error'));
+  }
 
   // Bloqueia scroll do body quando drawer/checkout abertos
   useEffect(() => {
@@ -47,7 +57,7 @@ function CartProvider({ children, catalog = [] }) {
   }, [drawerOpen, checkoutOpen]);
 
   function addItem(item) {
-    setItems(prev => {
+    return mutateCart(prev => {
       const exists = prev.find(i => i.id === item.id);
       return exists
         ? prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i)
@@ -63,21 +73,20 @@ function CartProvider({ children, catalog = [] }) {
   }
 
   function removeItem(id) {
-    setItems(prev => prev.filter(i => i.id !== id));
+    return mutateCart(prev => prev.filter(i => i.id !== id));
   }
 
   function updateQty(id, qty) {
     if (qty < 1) { removeItem(id); return; }
-    setItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
+    return mutateCart(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
   }
 
   function updateObs(id, obs) {
-    setItems(prev => prev.map(i => i.id === id ? { ...i, obs } : i));
+    return mutateCart(prev => prev.map(i => i.id === id ? { ...i, obs } : i));
   }
 
   function clearCart() {
-    setItems([]);
-    localStorage.removeItem(CART_STORAGE_KEY);
+    return mutateCart(() => []);
   }
 
   function openCheckout() {
@@ -98,7 +107,7 @@ function CartProvider({ children, catalog = [] }) {
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
 
   const value = {
-    items, addItem, removeItem, updateQty, updateObs, clearCart,
+    items, addItem, removeItem, updateQty, updateObs, clearCart, cartRevision: cartSnapshot.revision,
     catalog,
     count, subtotal,
     drawerOpen,
@@ -248,7 +257,7 @@ function CartDrawer() {
                 <span>Subtotal</span>
                 <span className="cart-subtotal-val">{brl(subtotal)}</span>
               </div>
-              <p className="cart-foot-note">Frete calculado no próximo passo</p>
+              <p className="cart-foot-note">Delivery: área e taxa a confirmar. Retirada sem taxa de entrega.</p>
               <button type="button" className="btn btn-primary btn-lg cart-cta" onClick={openCheckout}>
                 Finalizar pelo WhatsApp
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ flexShrink: 0 }}>
