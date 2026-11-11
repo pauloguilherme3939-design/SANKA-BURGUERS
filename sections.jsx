@@ -1254,7 +1254,7 @@ function Footer() {
             {SANKA_BRAND.isInstagramActive && SANKA_BRAND.instagramUrl && (
               <a href={SANKA_BRAND.instagramUrl} target="_blank" rel="noopener noreferrer">
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                  <IcoIG /> @sankaburgers
+                  <IcoIG /> {SANKA_BRAND.instagramHandle}
                 </span>
               </a>
             )}

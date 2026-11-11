@@ -484,6 +484,13 @@ function CardapioPage() {
           </a>
           <p>© 2026 Sanka Burgers · Rio Claro/SP</p>
           <p className="cardapio-footer-hours">{SANKA_BRAND.openingHours}</p>
+          {SANKA_BRAND.isInstagramActive && SANKA_BRAND.instagramUrl && (
+            <p>
+              <a href={SANKA_BRAND.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ink)', fontSize: 14 }}>
+                Instagram · {SANKA_BRAND.instagramHandle}
+              </a>
+            </p>
+          )}
           <a
             href={WA}
             className="btn btn-outline"
