@@ -16,4 +16,5 @@ LOGO/
 ChatGPT Image*
 test/
 scripts/
+migrations/manual/
 .env.example

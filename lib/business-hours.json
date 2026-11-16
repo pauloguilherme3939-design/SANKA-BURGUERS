@@ -1,0 +1,39 @@
+{
+  "approved": true,
+  "enforce": true,
+  "timeZone": "America/Sao_Paulo",
+  "week": {
+    "0": [
+      {
+        "opens": "18:30",
+        "closes": "23:30"
+      }
+    ],
+    "1": [],
+    "2": [],
+    "3": [
+      {
+        "opens": "18:30",
+        "closes": "23:30"
+      }
+    ],
+    "4": [
+      {
+        "opens": "18:30",
+        "closes": "23:30"
+      }
+    ],
+    "5": [
+      {
+        "opens": "18:30",
+        "closes": "00:00"
+      }
+    ],
+    "6": [
+      {
+        "opens": "18:30",
+        "closes": "00:00"
+      }
+    ]
+  }
+}

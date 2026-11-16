@@ -7,7 +7,7 @@ test('admin e pedido continuam noindex e rastreáveis para essa diretiva, manten
 test('páginas legadas seguem redirecionadas e recebem noindex sem reativação',()=>{const config=JSON.parse(read('vercel.json'));for(const name of ['lanche-prensado-rio-claro','delivery-hamburgueria-rio-claro','hamburgueria-artesanal-rio-claro','hamburguer-grande-rio-claro','melhor-hamburgueria-rio-claro']){assert(config.redirects.some(r=>r.source==='/'+name+'.html'&&r.destination==='/cardapio.html'));assert.match(read(name+'.html'),/<meta name="robots" content="noindex, follow"/);}assert.match(read('lib/brand.js'),/isLocalSeoPagesActive:\s*false/);});
 test('deploy das branches de revisão bloqueado; master não tem regra alterada', () => {
   const c = JSON.parse(read('vercel.json')), rules = c.git.deploymentEnabled;
-  const branches = ['codex/integracao-seletiva-master-20261105', 'codex/sprint7-cardapio-legivel-20261105', 'codex/sprint8-cardapio-comercial-20261105'];
+  const branches = ['codex/p04-seguranca-isolada', 'codex/integracao-seletiva-master-20261105', 'codex/sprint7-cardapio-legivel-20261105', 'codex/sprint8-cardapio-comercial-20261105'];
   assert.deepEqual(Object.keys(rules), branches);
   for (const branch of branches) assert.equal(rules[branch], false);
   assert(!('master' in rules));

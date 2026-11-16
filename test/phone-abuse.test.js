@@ -28,6 +28,7 @@ function request(overrides = {}) {
     method: 'POST',
     query: {},
     headers: {
+      'idempotency-key': 'test-abuse-1234567890123456',
       cookie: 'sanka_abuse_device=1234567890abcdef1234567890abcdef',
       'x-vercel-forwarded-for': '203.0.113.48',
     },
@@ -85,7 +86,8 @@ test('rede compartilhada recebe limite complementar sem fingerprint invasivo', a
   await assert.rejects(
     () => protection.enforce('order_create', request({
       headers: {
-        cookie: 'sanka_abuse_device=ffffffffffffffffffffffffffffffff',
+        'idempotency-key': 'test-abuse-1234567890123456',
+      cookie: 'sanka_abuse_device=ffffffffffffffffffffffffffffffff',
         'x-vercel-forwarded-for': '203.0.113.99',
       },
     }), responseRecorder()),

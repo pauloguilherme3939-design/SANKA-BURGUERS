@@ -48,6 +48,7 @@
   ],
   "git": {
     "deploymentEnabled": {
+      "codex/p04-seguranca-isolada": false,
       "codex/integracao-seletiva-master-20261105": false,
       "codex/sprint7-cardapio-legivel-20261105": false,
       "codex/sprint8-cardapio-comercial-20261105": false

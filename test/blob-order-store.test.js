@@ -40,7 +40,7 @@ test('Vercel Blob guarda dados cifrados e recompõe pedido e eventos', async () 
   });
   const id = 'SK-20260813-BBBBBBBBBBBBBBBB';
   let tick = 0;
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store,
     now: () => new Date(Date.parse('2026-08-13T15:00:00.000Z') + tick++ * 1000),
     idFactory: () => id,
@@ -66,7 +66,7 @@ test('Vercel Blob guarda dados cifrados e recompõe pedido e eventos', async () 
     token: 'token-de-teste',
     secret: 'segredo-de-teste-com-mais-de-32-caracteres',
   });
-  const restarted = createOrderService({ store: restartedStore });
+  const restarted = createOrderService({ businessHours: { enforce: false }, store: restartedStore });
   const listed = await restarted.list('2026-08-13');
   assert.equal(listed.length, 1);
   assert.equal(listed[0].status, 'cancelado');

@@ -31,7 +31,7 @@ test('persiste pedido, recalcula valores no servidor e sobrevive a nova instânc
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
 
   const store = new FileOrderStore({ rootDir });
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store,
     now: () => CREATED_AT,
     idFactory: () => ORDER_ID,
@@ -44,7 +44,7 @@ test('persiste pedido, recalcula valores no servidor e sobrevive a nova instânc
   assert.equal(created.pricing.total, 75.8);
   assert.equal(created.pricingStatus, 'informed_launch_menu');
 
-  const restarted = createOrderService({ store: new FileOrderStore({ rootDir }) });
+  const restarted = createOrderService({ businessHours: { enforce: false }, store: new FileOrderStore({ rootDir }) });
   const tracked = await restarted.getPublic(ORDER_ID);
   assert.equal(tracked.status, 'recebido');
   assert.equal(tracked.fulfillmentType, 'pickup');
@@ -62,7 +62,7 @@ test('recalcula pedido com vários produtos e ignora preços e total adulterados
   const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-orders-multi-'));
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
 
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: new FileOrderStore({ rootDir }),
     now: () => CREATED_AT,
     idFactory: () => ORDER_ID,
@@ -96,7 +96,7 @@ test('recalcula combo no servidor e ignora preço adulterado pelo navegador', as
   const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-orders-combo-'));
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
 
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: new FileOrderStore({ rootDir }),
     now: () => CREATED_AT,
     idFactory: () => ORDER_ID,
@@ -118,7 +118,7 @@ test('persiste avanços sequenciais e rejeita salto de status', async t => {
 
   let tick = 0;
   const now = () => new Date(CREATED_AT.getTime() + tick++ * 1000);
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: new FileOrderStore({ rootDir }),
     now,
     idFactory: () => ORDER_ID,
@@ -130,7 +130,7 @@ test('persiste avanços sequenciais e rejeita salto de status', async t => {
   );
   await service.updateStatus(ORDER_ID, 'preparando');
 
-  const restarted = createOrderService({ store: new FileOrderStore({ rootDir }) });
+  const restarted = createOrderService({ businessHours: { enforce: false }, store: new FileOrderStore({ rootDir }) });
   const tracked = await restarted.getPublic(ORDER_ID);
   assert.equal(tracked.status, 'preparando');
   assert.deepEqual(tracked.history.map(entry => entry.status), ['recebido', 'preparando']);
@@ -143,7 +143,7 @@ test('cancelamento fica persistido, aparece no rastreio e bloqueia avanço poste
   const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-cancel-'));
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
   let tick = 0;
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: new FileOrderStore({ rootDir }),
     now: () => new Date(CREATED_AT.getTime() + tick++ * 1000),
     idFactory: () => ORDER_ID,
@@ -158,7 +158,7 @@ test('cancelamento fica persistido, aparece no rastreio e bloqueia avanço poste
     () => service.updateStatus(ORDER_ID, 'na_chapa'),
     error => error instanceof OrderError && error.code === 'ORDER_CANCELLED',
   );
-  const restarted = createOrderService({ store: new FileOrderStore({ rootDir }) });
+  const restarted = createOrderService({ businessHours: { enforce: false }, store: new FileOrderStore({ rootDir }) });
   const publicOrder = await restarted.getPublic(ORDER_ID);
   assert.equal(publicOrder.status, 'cancelado');
   assert.equal(publicOrder.history.at(-1).status, 'cancelado');
@@ -175,7 +175,7 @@ test('falha de armazenamento durante cancelamento não retorna sucesso', async (
     status: 'recebido',
     history: [{ status: 'recebido', ts: CREATED_AT.toISOString() }],
   };
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: {
       async get() { return current; },
       async appendCancellation() { throw new StorageError('Falha simulada.'); },
@@ -188,7 +188,7 @@ test('arquivamento administrativo preserva pedido, exige estado terminal e permi
   const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sanka-archive-'));
   t.after(() => fs.rm(rootDir, { recursive: true, force: true }));
   let tick = 0;
-  const createService = () => createOrderService({
+  const createService = () => createOrderService({ businessHours: { enforce: false },
     store: new FileOrderStore({ rootDir }),
     now: () => new Date(CREATED_AT.getTime() + tick++ * 1000),
     idFactory: () => ORDER_ID,
@@ -219,7 +219,7 @@ test('arquivamento administrativo preserva pedido, exige estado terminal e permi
 
 test('delivery mantém a taxa e o total final pendentes até a confirmação no WhatsApp', async () => {
   let persisted;
-  const service = createOrderService({
+  const service = createOrderService({ businessHours: { enforce: false },
     store: {
       async create(order) { persisted = order; },
       async get() { return null; },
@@ -258,13 +258,13 @@ test('rejeita produto desconhecido e propaga falha de persistência', async () =
     async list() { return []; },
     async appendStatus() {},
   };
-  const validationService = createOrderService({ store: inMemoryStore });
+  const validationService = createOrderService({ businessHours: { enforce: false }, store: inMemoryStore });
   await assert.rejects(
     () => validationService.create(validPayload({ items: [{ id: 'INEXISTENTE', qty: 1 }] })),
     error => error instanceof OrderError && error.status === 400,
   );
 
-  const failingService = createOrderService({
+  const failingService = createOrderService({ businessHours: { enforce: false },
     store: {
       ...inMemoryStore,
       async create() { throw new StorageError('Falha controlada.'); },

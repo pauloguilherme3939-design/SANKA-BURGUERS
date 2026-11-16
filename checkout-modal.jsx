@@ -1,11 +1,16 @@
 // checkout-modal.jsx — Sanka Burgers · Formulário de fechamento do pedido
 
 import { getOrigin } from './lib/origin.js'
-import { SANKA_CONFIG } from './lib/config.js'
+import { SANKA_CONFIG, storeWhatsAppLink } from './lib/config.js'
+import { buildOrderWhatsAppMessage } from './lib/whatsapp.mjs'
 import { SANKA_BRAND } from './lib/brand.js'
-import { completeCheckout } from './lib/order-submit.mjs'
+import { completeCheckout, pendingCheckoutPayload, recoverCheckoutAttempt } from './lib/order-submit.mjs'
+import { getCheckoutCoordinator } from './lib/checkout-coordinator.mjs'
 import { consumeRoulettePrize, getRouletteConfig } from './lib/roulette-client.mjs'
 import { useCartContext } from './cart.jsx'
+import { StoreLocation } from './store-location.jsx'
+import { STORE_LOCATION } from './lib/store-location.js'
+import { StoreStatus } from './store-status.jsx'
 
 const { useState, useEffect } = React;
 
@@ -39,88 +44,42 @@ function FormField({ id, label, required, error, children }) {
   );
 }
 
-/* ── Monta mensagem WA ─────────────────────────────────────── */
-function buildWAMessage(order, rouletteRedemption = null) {
-  const { customer, fulfillment, payment, coupon, items, pricing } = order;
-  const lines = [
-    '*🍔 PEDIDO SANKA BURGERS*',
-    '',
-    `*Pedido:* #${order.id}`,
-    `*Cliente:* ${customer.name}`,
-    `*Telefone:* ${customer.phone}`,
-    '---',
-  ];
-
-  items.forEach(item => {
-    lines.push(`${item.quantity}× ${item.name} — ${brl(item.lineTotal)}`);
-    if (item.note) lines.push(`  _Obs: ${item.note}_`);
-  });
-
-  lines.push('---');
-  lines.push(`Subtotal: ${brl(pricing.subtotal)}`);
-  if (pricing.discount > 0) lines.push(`Desconto (${coupon?.code}): -${brl(pricing.discount)}`);
-
-  const entregaLabel = fulfillment.type === 'delivery'
-    ? (pricing.deliveryFee === null
-        ? 'Entrega: taxa a confirmar no WhatsApp'
-        : pricing.deliveryFee === 0
-          ? 'Entrega: Grátis'
-          : `Entrega: ${brl(pricing.deliveryFee)}`)
-    : 'Entrega: Retirada no local';
-  lines.push(entregaLabel);
-
-  const rouletteBenefit = rouletteRedemption?.benefit;
-  if (rouletteBenefit?.type === 'discount') {
-    lines.push(`Roleta Sanka (${rouletteBenefit.label}): -${brl(rouletteBenefit.discountAmount)}`);
-  } else if (rouletteBenefit?.type === 'free_item') {
-    lines.push(`Roleta Sanka: ${rouletteBenefit.freeItem.quantity}× ${rouletteBenefit.freeItem.name}`);
-  }
-  if (rouletteRedemption?.code) lines.push(`Código da Roleta: ${rouletteRedemption.code}`);
-
-  const displayedTotal = rouletteBenefit ? rouletteBenefit.totalAfterBenefit : pricing.total;
-  lines.push(pricing.totalIsFinal
-    ? `*TOTAL: ${brl(displayedTotal)}*`
-    : `*SUBTOTAL DOS ITENS: ${brl(displayedTotal)}*`);
-  if (!pricing.totalIsFinal) lines.push('_O total final depende da confirmação da taxa de entrega._');
-
-  const pagLabel = payment.method === 'pix'  ? 'Pix'
-    : payment.method === 'card' ? 'Cartão na entrega'
-    : `Dinheiro${payment.change ? ` (troco: ${payment.change})` : ''}`;
-  lines.push(`Pagamento: ${pagLabel}`);
-
-  if (fulfillment.type === 'delivery') {
-    const address = fulfillment.address;
-    lines.push('');
-    lines.push(`*Endereço:* ${address.street}, ${address.number}${address.complement ? ` — ${address.complement}` : ''}`);
-    lines.push(`${address.neighborhood} · CEP ${address.cep}`);
-  }
-
-  // Origem do cliente (panfleto, sacola...) — pra saber qual canal funciona
-  lines.push('');
-  lines.push(`Origem: ${order.origin || 'direto'}`);
-
-  return lines.join('\n');
-}
-
 /* ── Checkout Modal ────────────────────────────────────────── */
 function CheckoutModal() {
   const {
-    items, subtotal, checkoutOpen, closeCheckout, clearCart, showToast,
+    items, subtotal, checkoutOpen, closeCheckout, cartRevision, showToast,
   } = useCartContext();
 
   const INITIAL_FORM = {
-    name: '', phone: '', delivery: 'pickup',
-    cep: '', street: '', number: '', complement: '', neighborhood: '',
+    name: '', phone: '', delivery: SANKA_CONFIG.fulfillmentTypes[0],
+    cep: '', street: '', number: '', complement: '', neighborhood: '', reference: '',
     payment: 'pix', change: '', coupon: '', rouletteCode: '',
   };
 
-  const [form,         setForm]         = useState(INITIAL_FORM);
+  function initialOrPendingForm() {
+    const pending = pendingCheckoutPayload();
+    if (!pending) return INITIAL_FORM;
+    return { ...INITIAL_FORM, name: pending.customer.name, phone: pending.customer.phone,
+      delivery: pending.fulfillment.type, ...(pending.fulfillment.address || {}),
+      payment: pending.payment.method, change: pending.payment.change || '', coupon: pending.couponCode || '' };
+  }
+  const [form,         setForm]         = useState(initialOrPendingForm);
   const [errors,       setErrors]       = useState({});
   const [couponState,  setCouponState]  = useState(null); // { valid, discount, label }
   const [cepLoading,   setCepLoading]   = useState(false);
   const [submitting,   setSubmitting]   = useState(false);
   const [submitError,  setSubmitError]  = useState('');
   const [rouletteEnabled, setRouletteEnabled] = useState(false);
+  const requestRef = React.useRef(null);
+  const coordinator = getCheckoutCoordinator();
+  const previousAttempts = coordinator.pendingAttempts().filter(attempt => attempt.revision !== cartRevision);
+  useEffect(() => {
+    requestRef.current = null;
+    setSubmitting(false);
+    setErrors({});
+    setSubmitError('');
+    setForm(initialOrPendingForm());
+  }, [cartRevision]);
 
   useEffect(() => {
     let active = true;
@@ -133,7 +92,7 @@ function CheckoutModal() {
   // Resetar form ao fechar
   useEffect(() => {
     if (!checkoutOpen) {
-      setForm(INITIAL_FORM);
+      setForm(initialOrPendingForm());
       setErrors({});
       setCouponState(null);
       setSubmitError('');
@@ -221,6 +180,7 @@ function CheckoutModal() {
       if (form.cep.replace(/\D/g,'').length !== 8) e.cep    = 'CEP inválido';
       if (!form.street.trim())                     e.street = 'Rua obrigatória';
       if (!form.number.trim())                     e.number = 'Número obrigatório';
+      if (!form.neighborhood.trim())               e.neighborhood = 'Bairro obrigatório';
     }
     if (form.payment === 'cash' && !form.change.trim()) e.change = 'Informe o valor para troco';
     return e;
@@ -231,14 +191,24 @@ function CheckoutModal() {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
 
+    // Falha de configuração não deve criar pedido órfão ou abrir destino presumido.
+    if (!storeWhatsAppLink()) {
+      const message = 'WhatsApp de atendimento indisponível. Nenhum novo pedido foi enviado. Seu carrinho foi mantido.';
+      setSubmitError(message); showToast(message, 'error'); return;
+    }
+
     // Reserva a aba durante o clique. Ela só recebe o WhatsApp após persistência confirmada.
     const whatsappWindow = window.open('', '_blank');
     if (whatsappWindow) whatsappWindow.opener = null;
 
     setSubmitting(true);
     setSubmitError('');
+    const requestToken = {};
+    requestRef.current = requestToken;
+    const stillCurrent = () => requestRef.current === requestToken && coordinator.snapshot().revision === cartRevision;
     try {
       await completeCheckout({
+        coordinator, revision: cartRevision,
         payload: {
           customer: {
             name: form.name,
@@ -257,6 +227,7 @@ function CheckoutModal() {
               number: form.number,
               complement: form.complement,
               neighborhood: form.neighborhood,
+              reference: form.reference,
             } : null,
           },
           payment: {
@@ -266,10 +237,10 @@ function CheckoutModal() {
           couponCode: form.coupon,
           origin: getOrigin(),
         },
-        onConfirmed: async persistedOrder => {
+        onConfirmed: async (persistedOrder, { allowExternalEffects }) => {
           let rouletteRedemption = null;
           let rouletteWarning = '';
-          if (form.rouletteCode.trim()) {
+          if (allowExternalEffects && form.rouletteCode.trim()) {
             try {
               rouletteRedemption = await consumeRoulettePrize(form.rouletteCode.trim(), persistedOrder.id);
             } catch (error) {
@@ -277,28 +248,30 @@ function CheckoutModal() {
             }
           }
           const trackUrl = `${window.location.origin}/pedido.html?id=${encodeURIComponent(persistedOrder.id)}`;
-          const message = `${buildWAMessage(persistedOrder, rouletteRedemption)}\n\n📍 Rastreie seu pedido: ${trackUrl}`;
-          const waUrl = `https://wa.me/${SANKA_CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
+          const message = `${buildOrderWhatsAppMessage(persistedOrder, STORE_LOCATION, rouletteRedemption)}\n\n📍 Rastreie seu pedido: ${trackUrl}`;
+          const waUrl = storeWhatsAppLink(message);
 
-          if (window.SankaAnalytics) window.SankaAnalytics.purchase(persistedOrder.pricing.total);
-          clearCart();
+          if (allowExternalEffects && window.SankaAnalytics) window.SankaAnalytics.purchase(persistedOrder.pricing.total);
+          // Cart finalization belongs to the shared coordinator under its ownership lock.
           closeCheckout();
           showToast(rouletteWarning
             ? `Pedido #${persistedOrder.id} salvo. Roleta não aplicada: ${rouletteWarning}`
-            : `Pedido #${persistedOrder.id} salvo. Abrindo o WhatsApp.`,
+            : `Pedido #${persistedOrder.id} registrado. Aguarde a confirmação da Sanka pelo WhatsApp.`,
             rouletteWarning ? 'error' : undefined);
 
-          if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.location.replace(waUrl);
-          else window.location.assign(waUrl);
+          if (allowExternalEffects && waUrl) {
+            if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.location.replace(waUrl);
+            else window.location.assign(waUrl);
+          } else if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
         },
+        onStaleConfirmed: () => { if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close(); },
       });
     } catch (error) {
       if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
       const message = error?.message || 'Não foi possível salvar o pedido. Seu carrinho foi mantido.';
-      setSubmitError(message);
-      showToast(message, 'error');
+      if (stillCurrent()) { setSubmitError(message); showToast(message, 'error'); }
     } finally {
-      setSubmitting(false);
+      if (stillCurrent()) setSubmitting(false);
     }
   }
 
@@ -326,6 +299,7 @@ function CheckoutModal() {
 
           {/* ── Formulário ── */}
           <div className="co-form-col">
+            <StoreStatus />
 
             {/* Identificação */}
             <fieldset className="co-section">
@@ -346,13 +320,13 @@ function CheckoutModal() {
 
             {/* Entrega */}
             <fieldset className="co-section">
-              <legend className="co-section-title">Forma de entrega</legend>
+              <legend className="co-section-title">Modalidade do pedido</legend>
 
               <div className="co-delivery-opts">
                 {[
                   { val: 'pickup',   label: 'Retirada',  sub: 'Grátis',           icon: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10' },
                    { val: 'delivery', label: 'Delivery',  sub: deliveryFeeConfigured ? brl(SANKA_CONFIG.deliveryFee) : 'Taxa a confirmar', icon: 'M1 3h15v13H1z M16 8l4 0 3 3v5h-7V8z M5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z M18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z' },
-                ].map(o => (
+                ].filter(o => SANKA_CONFIG.fulfillmentTypes.includes(o.val)).map(o => (
                   <label key={o.val} className={`co-delivery-opt${form.delivery === o.val ? ' is-active' : ''}`}>
                     <input type="radio" name="delivery" value={o.val}
                       checked={form.delivery === o.val}
@@ -366,6 +340,17 @@ function CheckoutModal() {
                   </label>
                 ))}
               </div>
+
+              {form.delivery === 'pickup' && (
+                <div className="co-fulfillment-info">
+                  <strong>Retirada no local · sem taxa de entrega</strong>
+                  <StoreLocation />
+                  <p>Aguarde a confirmação da Sanka antes de ir ao estabelecimento.</p>
+                </div>
+              )}
+              {form.delivery === 'delivery' && (
+                <p className="co-fulfillment-info" role="note">A equipe confirmará pelo WhatsApp se atende o endereço informado e qual é a taxa de entrega. O registro do pedido não confirma sua aceitação nem o total final.</p>
+              )}
 
               {form.delivery === 'delivery' && (
                 <div className="co-address">
@@ -402,12 +387,17 @@ function CheckoutModal() {
                         type="text" placeholder="Apto, bloco…"
                         value={form.complement} onChange={e => field('complement', e.target.value)} />
                     </FormField>
-                    <FormField id="co-neighborhood" label="Bairro">
-                      <input id="co-neighborhood" className="co-input"
+                    <FormField id="co-neighborhood" label="Bairro" required error={errors.neighborhood}>
+                      <input id="co-neighborhood" className={`co-input${errors.neighborhood ? ' is-err' : ''}`}
                         type="text" placeholder="Bairro"
                         value={form.neighborhood} onChange={e => field('neighborhood', e.target.value)} />
                     </FormField>
                   </div>
+                  <FormField id="co-reference" label="Referência (opcional)">
+                    <input id="co-reference" className="co-input" type="text" maxLength={160}
+                      value={form.reference} onChange={e => field('reference', e.target.value)}
+                      placeholder="Ponto de referência para a entrega" />
+                  </FormField>
                 </div>
               )}
             </fieldset>
@@ -418,7 +408,7 @@ function CheckoutModal() {
               <div className="co-payment-opts">
                 {[
                   { val: 'pix',  label: 'Pix' },
-                  { val: 'card', label: 'Cartão na entrega' },
+                  { val: 'card', label: form.delivery === 'pickup' ? 'Cartão na retirada' : 'Cartão na entrega' },
                   { val: 'cash', label: 'Dinheiro' },
                 ].map(o => (
                   <label key={o.val} className={`co-payment-opt${form.payment === o.val ? ' is-active' : ''}`}>
@@ -511,7 +501,7 @@ function CheckoutModal() {
                   <span>{deliveryFee === null ? 'Subtotal dos itens' : 'Total'}</span><span>{brl(total)}</span>
                 </div>
                 {deliveryFee === null && (
-                  <p className="co-submit-note">A taxa de entrega e o total final serão confirmados no WhatsApp.</p>
+                  <p className="co-submit-note">A disponibilidade, a taxa de entrega e o total final serão confirmados no WhatsApp.</p>
                 )}
               </div>
 
@@ -520,6 +510,19 @@ function CheckoutModal() {
               )}
 
               {submitError && <p className="co-error" role="alert" style={{ marginBottom: 12 }}>{submitError}</p>}
+              {previousAttempts.length > 0 && (
+                <details className="co-submit-note">
+                  <summary>Tentativas anteriores pendentes ({previousAttempts.length})</summary>
+                  {previousAttempts.map(attempt => (
+                    <button key={attempt.key} type="button" className="btn btn-outline" disabled={submitting} onClick={async () => {
+                      try {
+                        const recovered = await recoverCheckoutAttempt(attempt, { coordinator });
+                        showToast(`Pedido #${recovered.id} recuperado. A compra atual foi preservada.`, 'success');
+                      } catch (error) { showToast(error.message, 'error'); }
+                    }}>Consultar tentativa anterior</button>
+                  ))}
+                </details>
+              )}
 
               <button className="btn btn-primary btn-lg co-submit" onClick={handleSubmit} disabled={submitting || items.length === 0}>
                 {submitting ? 'Salvando pedido...' : 'Salvar e abrir WhatsApp'}
