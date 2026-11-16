@@ -303,9 +303,9 @@ function OrderCard({ order, token, onUpdate, onUnauthorized, mode = 'operation',
         </details>
       )}
       {error && <p className="pedido-search-err" role="alert">{error}</p>}
-      {pendingDelivery && order.status === 'recebido' && mode !== 'kitchen' && (
+      {pendingDelivery && next && !order.archived && mode !== 'kitchen' && (
         <form onSubmit={confirmDelivery} className="adm-history">
-          <p>Entrega aguardando confirmação comercial. O preparo está bloqueado.</p>
+          <p>Entrega aguardando confirmação comercial. O avanço está bloqueado até a confirmação.</p>
           <label>Frete em centavos (0 para frete gratuito autorizado)
             <input type="number" min="0" step="1" required value={freight} onChange={e => setFreight(e.target.value)} disabled={loading} />
           </label>
